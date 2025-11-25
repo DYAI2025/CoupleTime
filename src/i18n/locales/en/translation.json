@@ -1,0 +1,135 @@
+{
+  "app": {
+    "title": "Couples Timer",
+    "subtitle": "Structured conversations for couples"
+  },
+  "modes": {
+    "presets": "Preset Modes",
+    "custom": "Custom Modes",
+    "customBadge": "Custom",
+    "selectMode": "Select a mode...",
+    "maintain": {
+      "name": "Maintain",
+      "description": "Extended sessions for deep connection"
+    },
+    "commitment": {
+      "name": "Commitment",
+      "description": "Medium sessions for regular exchange"
+    },
+    "listening": {
+      "name": "Listening",
+      "description": "Shorter sessions focused on mindful listening"
+    }
+  },
+  "phases": {
+    "prep": "Preparation",
+    "slotA": "Partner A speaks",
+    "slotB": "Partner B speaks",
+    "transition": "Transition",
+    "closingA": "Partner A closing",
+    "closingB": "Partner B closing",
+    "cooldown": "Cooldown"
+  },
+  "speaker": {
+    "a": "Partner A",
+    "b": "Partner B",
+    "none": ""
+  },
+  "session": {
+    "selectMode": "Select a mode to begin",
+    "phaseOf": "Phase {{current}} of {{total}}",
+    "status": {
+      "idle": "Ready",
+      "running": "Running",
+      "paused": "Paused",
+      "finished": "Finished"
+    },
+    "finished": {
+      "title": "Session Complete!",
+      "message": "Great job completing your conversation session.",
+      "mode": "Mode",
+      "duration": "Duration",
+      "newSession": "Start New Session"
+    }
+  },
+  "controls": {
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stop": "Stop",
+    "startSession": "Start Session"
+  },
+  "tips": {
+    "title": "Tip",
+    "previous": "Previous tip",
+    "next": "Next tip",
+    "goToTip": "Go to tip {{number}}"
+  },
+  "guidance": {
+    "prep": {
+      "tip1": "Take a moment to arrive and settle in.",
+      "tip2": "Take a few deep breaths together.",
+      "tip3": "Put away electronic devices.",
+      "tip4": "Create an undisturbed space.",
+      "tip5": "Open yourself to what may come."
+    },
+    "transition": {
+      "tip1": "Take time to process what you heard.",
+      "tip2": "What touched you the most?",
+      "tip3": "Stay present and attentive.",
+      "tip4": "Prepare for the next exchange.",
+      "tip5": "Feel the connection between you."
+    },
+    "cooldown": {
+      "tip1": "Let the conversation resonate.",
+      "tip2": "Avoid further discussion now.",
+      "tip3": "Enjoy the shared silence.",
+      "tip4": "Honor the exchange that took place.",
+      "tip5": "Stay connected, even without words."
+    }
+  },
+  "common": {
+    "minutes": "min",
+    "rounds": "rounds",
+    "dismiss": "Dismiss",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit"
+  },
+  "builder": {
+    "createMode": "Create Custom Mode",
+    "editMode": "Edit Mode",
+    "modeName": "Mode Name",
+    "modeNamePlaceholder": "e.g., Deep Connection",
+    "description": "Description",
+    "descriptionPlaceholder": "Optional description",
+    "guidanceLevel": "Guidance Level",
+    "phases": "Phases",
+    "addPhase": "Add Phase",
+    "removePhase": "Remove phase",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "create": "Create Mode",
+    "validationErrors": "Please fix the following issues",
+    "validation": {
+      "needSlotA": "At least one Partner A speaking slot is required",
+      "needSlotB": "At least one Partner B speaking slot is required"
+    },
+    "createNew": "Create New Mode",
+    "deleteConfirm": "Are you sure you want to delete this mode?"
+  },
+  "guidanceLevel": {
+    "minimal": "Minimal",
+    "moderate": "Moderate",
+    "high": "High"
+  },
+  "settings": {
+    "title": "Settings",
+    "darkMode": "Dark Mode",
+    "darkModeDesc": "Reduce eye strain in low light",
+    "language": "Language",
+    "sound": "Sound",
+    "soundDesc": "Singing bowl sounds for phase transitions"
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "app": {
+    "title": "Zwiegespräch Timer",
+    "subtitle": "Strukturierte Gespräche für Paare"
+  },
+  "modes": {
+    "presets": "Voreinstellungen",
+    "custom": "Eigene Modi",
+    "customBadge": "Eigener",
+    "selectMode": "Modus auswählen...",
+    "maintain": {
+      "name": "Pflege",
+      "description": "Ausführliche Gespräche für tiefe Verbindung"
+    },
+    "commitment": {
+      "name": "Verbindlichkeit",
+      "description": "Mittellange Sitzungen für regelmäßigen Austausch"
+    },
+    "listening": {
+      "name": "Zuhören",
+      "description": "Kürzere Sitzungen mit Fokus auf achtsames Zuhören"
+    }
+  },
+  "phases": {
+    "prep": "Vorbereitung",
+    "slotA": "Partner A spricht",
+    "slotB": "Partner B spricht",
+    "transition": "Übergang",
+    "closingA": "Abschluss Partner A",
+    "closingB": "Abschluss Partner B",
+    "cooldown": "Ausklang"
+  },
+  "speaker": {
+    "a": "Partner A",
+    "b": "Partner B",
+    "none": ""
+  },
+  "session": {
+    "selectMode": "Wähle einen Modus um zu beginnen",
+    "phaseOf": "Phase {{current}} von {{total}}",
+    "status": {
+      "idle": "Bereit",
+      "running": "Läuft",
+      "paused": "Pausiert",
+      "finished": "Beendet"
+    },
+    "finished": {
+      "title": "Sitzung abgeschlossen!",
+      "message": "Gut gemacht! Ihr habt eure Gesprächssitzung erfolgreich beendet.",
+      "mode": "Modus",
+      "duration": "Dauer",
+      "newSession": "Neue Sitzung starten"
+    }
+  },
+  "controls": {
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Fortsetzen",
+    "stop": "Stopp",
+    "startSession": "Sitzung starten"
+  },
+  "tips": {
+    "title": "Tipp",
+    "previous": "Vorheriger Tipp",
+    "next": "Nächster Tipp",
+    "goToTip": "Zu Tipp {{number}} gehen"
+  },
+  "guidance": {
+    "prep": {
+      "tip1": "Nehmt euch einen Moment, um anzukommen und zur Ruhe zu kommen.",
+      "tip2": "Atmet ein paar Mal tief durch.",
+      "tip3": "Legt elektronische Geräte beiseite.",
+      "tip4": "Schafft einen ungestörten Raum.",
+      "tip5": "Öffnet euch für das, was kommen mag."
+    },
+    "transition": {
+      "tip1": "Nehmt euch Zeit, das Gehörte zu verarbeiten.",
+      "tip2": "Was hat euch besonders berührt?",
+      "tip3": "Bleibt präsent und aufmerksam.",
+      "tip4": "Bereitet euch auf den nächsten Austausch vor.",
+      "tip5": "Spürt die Verbindung zueinander."
+    },
+    "cooldown": {
+      "tip1": "Lasst das Gespräch nachwirken.",
+      "tip2": "Vermeidet jetzt weitere Diskussionen.",
+      "tip3": "Genießt die gemeinsame Stille.",
+      "tip4": "Würdigt den Austausch, der stattgefunden hat.",
+      "tip5": "Bleibt in der Verbindung, auch ohne Worte."
+    }
+  },
+  "common": {
+    "minutes": "Min",
+    "rounds": "Runden",
+    "dismiss": "Schließen",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "edit": "Bearbeiten"
+  },
+  "builder": {
+    "createMode": "Eigenen Modus erstellen",
+    "editMode": "Modus bearbeiten",
+    "modeName": "Modusname",
+    "modeNamePlaceholder": "z.B. Tiefe Verbindung",
+    "description": "Beschreibung",
+    "descriptionPlaceholder": "Optionale Beschreibung",
+    "guidanceLevel": "Anleitungsstufe",
+    "phases": "Phasen",
+    "addPhase": "Phase hinzufügen",
+    "removePhase": "Phase entfernen",
+    "moveUp": "Nach oben",
+    "moveDown": "Nach unten",
+    "create": "Modus erstellen",
+    "validationErrors": "Bitte beheben Sie die folgenden Probleme",
+    "validation": {
+      "needSlotA": "Mindestens ein Sprechslot für Partner A ist erforderlich",
+      "needSlotB": "Mindestens ein Sprechslot für Partner B ist erforderlich"
+    },
+    "createNew": "Neuen Modus erstellen",
+    "deleteConfirm": "Möchten Sie diesen Modus wirklich löschen?"
+  },
+  "guidanceLevel": {
+    "minimal": "Minimal",
+    "moderate": "Moderat",
+    "high": "Hoch"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "darkMode": "Dunkelmodus",
+    "darkModeDesc": "Augen schonen bei wenig Licht",
+    "language": "Sprache",
+    "sound": "Ton",
+    "soundDesc": "Klangschalen-Töne bei Phasenwechsel"
+  }
+}
