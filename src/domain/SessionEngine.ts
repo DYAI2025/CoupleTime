@@ -6,6 +6,7 @@ import {
   isLastPhase,
 } from './SessionState'
 import { SessionMode, isSessionModeValid } from './SessionMode'
+import { ParticipantConfig } from './ParticipantConfig'
 import { PhaseType } from './PhaseType'
 import { AudioEvent } from './AudioEvent'
 import { AudioServiceProtocol } from '../services/AudioService'
@@ -69,7 +70,7 @@ export class SessionEngine {
   /**
    * Start a new session with the given mode
    */
-  async start(mode: SessionMode): Promise<boolean> {
+  async start(mode: SessionMode, participantConfig?: ParticipantConfig): Promise<boolean> {
     // Validate mode
     if (!isSessionModeValid(mode)) {
       console.error('Cannot start session: invalid mode')
@@ -92,6 +93,7 @@ export class SessionEngine {
       startedAt: Date.now(),
       pausedAt: null,
       totalPausedTime: 0,
+      participantConfig: participantConfig ?? null,
     }
     this.phaseStartElapsed = 0
 

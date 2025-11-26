@@ -1,5 +1,6 @@
 import { PhaseConfig } from './PhaseConfig'
 import { SessionMode } from './SessionMode'
+import { ParticipantConfig } from './ParticipantConfig'
 
 /**
  * Session status enum
@@ -38,6 +39,9 @@ export interface SessionState {
 
   /** Total time spent paused (ms) */
   totalPausedTime: number
+
+  /** Participant configuration (names and colors) */
+  participantConfig: ParticipantConfig | null
 }
 
 /**
@@ -53,6 +57,7 @@ export function createInitialState(): SessionState {
     startedAt: null,
     pausedAt: null,
     totalPausedTime: 0,
+    participantConfig: null,
   }
 }
 
