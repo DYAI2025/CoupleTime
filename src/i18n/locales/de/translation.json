@@ -66,27 +66,132 @@
     "goToTip": "Zu Tipp {{number}} gehen"
   },
   "guidance": {
-    "prep": {
-      "tip1": "Nehmt euch einen Moment, um anzukommen und zur Ruhe zu kommen.",
-      "tip2": "Atmet ein paar Mal tief durch.",
-      "tip3": "Legt elektronische Geräte beiseite.",
-      "tip4": "Schafft einen ungestörten Raum.",
-      "tip5": "Öffnet euch für das, was kommen mag."
+    "quick": {
+      "prep": [
+        "Nehmt euch einen Moment, um anzukommen und zur Ruhe zu kommen.",
+        "Atmet ein paar Mal tief durch.",
+        "Legt elektronische Geräte beiseite.",
+        "Schafft einen ungestörten Raum.",
+        "Öffnet euch für das, was kommen mag."
+      ],
+      "transition": [
+        "Nehmt euch Zeit, das Gehörte zu verarbeiten.",
+        "Was hat euch besonders berührt?",
+        "Bleibt präsent und aufmerksam.",
+        "Bereitet euch auf den nächsten Austausch vor.",
+        "Spürt die Verbindung zueinander."
+      ],
+      "cooldown": [
+        "Lasst das Gespräch nachwirken.",
+        "Vermeidet jetzt weitere Diskussionen.",
+        "Genießt die gemeinsame Stille.",
+        "Würdigt den Austausch, der stattgefunden hat.",
+        "Bleibt in der Verbindung, auch ohne Worte."
+      ]
     },
-    "transition": {
-      "tip1": "Nehmt euch Zeit, das Gehörte zu verarbeiten.",
-      "tip2": "Was hat euch besonders berührt?",
-      "tip3": "Bleibt präsent und aufmerksam.",
-      "tip4": "Bereitet euch auf den nächsten Austausch vor.",
-      "tip5": "Spürt die Verbindung zueinander."
-    },
-    "cooldown": {
-      "tip1": "Lasst das Gespräch nachwirken.",
-      "tip2": "Vermeidet jetzt weitere Diskussionen.",
-      "tip3": "Genießt die gemeinsame Stille.",
-      "tip4": "Würdigt den Austausch, der stattgefunden hat.",
-      "tip5": "Bleibt in der Verbindung, auch ohne Worte."
+    "deepDive": {
+      "beforeSession": {
+        "title": "Phase 1: Vorbereitung",
+        "cards": [
+          {
+            "title": "Terminvereinbarung",
+            "content": "Legt einen festen wöchentlichen Termin fest (z.B. 90 Min.) und eine Startzeit.",
+            "icon": "calendar"
+          },
+          {
+            "title": "Störungsfreien Raum schaffen",
+            "content": "Sorgt für eine ruhige Umgebung ohne Ablenkungen oder Besucher.",
+            "icon": "door-closed"
+          },
+          {
+            "title": "Klare Regeln festlegen",
+            "content": "Vereinbart eine feste Redezeit (z.B. 15 Min.) und ein striktes Zuhör-Protokoll.",
+            "icon": "clipboard-check"
+          },
+          {
+            "title": "Ritual-Fundament",
+            "content": "Macht die Sitzung zu einem festen, nicht verhandelbaren Ritual, das nicht ausfällt.",
+            "icon": "handshake"
+          }
+        ]
+      },
+      "duringListening": {
+        "title": "Phase 2: Während des Zuhörens",
+        "cards": [
+          {
+            "title": "Radikale Empathie",
+            "content": "Deine einzige Aufgabe ist es, mit voller Aufmerksamkeit zuzuhören, ohne eigene Agenda.",
+            "icon": "heart"
+          },
+          {
+            "title": "Strenge Tabus",
+            "content": "Absolutes Verbot: Kein Unterbrechen, Urteilen, Raten oder non-verbale Ablehnung (z.B. Augenrollen).",
+            "icon": "ban"
+          },
+          {
+            "title": "Stille annehmen",
+            "content": "Wenn dein Partner pausiert um nachzudenken, bleib ruhig, auch wenn die Stille sich lang anfühlt.",
+            "icon": "volume-x"
+          },
+          {
+            "title": "Sprecher/Zuhörer-Rollen",
+            "content": "Der Sprecher sagt 'Ich denke/fühle...', der Zuhörer hört nur aufmerksam zu ohne zu urteilen.",
+            "icon": "users"
+          }
+        ]
+      },
+      "emergency": {
+        "title": "Phase 3: Notfallsituationen",
+        "cards": [
+          {
+            "title": "Auszeit nehmen",
+            "content": "Stoppt das Gespräch sobald du oder dein Partner euch emotional überwältigt fühlt.",
+            "icon": "clock"
+          },
+          {
+            "title": "Körperlich beruhigen",
+            "content": "Nutzt die Pause für beruhigende Aktivitäten (z.B. Lesen, Spazieren), nicht zum Grübeln.",
+            "icon": "activity"
+          },
+          {
+            "title": "Gespräch fortsetzen",
+            "content": "Nehmt den Dialog innerhalb von 24 Stunden wieder auf, um eine Eskalation zu vermeiden.",
+            "icon": "play-circle"
+          }
+        ]
+      },
+      "coreRules": {
+        "title": "Kern-Gesprächsprinzipien",
+        "speaker": {
+          "title": "Sprecher-Richtlinien",
+          "icon": "mic",
+          "rules": [
+            "Sage 'Ich denke...' oder 'Ich fühle...' (Ich-Perspektive)",
+            "Vermeide Anschuldigungen",
+            "Absolute Tabus: Kein Unterbrechen, Urteilen, Raten, abweisende Reaktionen"
+          ]
+        },
+        "listener": {
+          "title": "Zuhörer-Richtlinien",
+          "icon": "headphones",
+          "rules": [
+            "Höre aufmerksam und ohne zu urteilen zu",
+            "Halte Blickkontakt",
+            "Absolute Tabus: Kein Unterbrechen, Kommentieren, Urteilen oder non-verbale Ablehnung"
+          ]
+        }
+      }
     }
+  },
+  "guidancePanel": {
+    "title": "Anleitung",
+    "quickTips": "Schnelltipps",
+    "deepDive": "Vertiefung",
+    "hidePanel": "Panel ausblenden",
+    "showPanel": "Anleitung anzeigen",
+    "autoRotate": "Tipps automatisch wechseln",
+    "previousTip": "Vorheriger Tipp",
+    "nextTip": "Nächster Tipp"
   },
   "common": {
     "minutes": "Min",
