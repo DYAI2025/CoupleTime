@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
+import { GuidanceSettings, DEFAULT_GUIDANCE_SETTINGS } from '../domain/GuidanceSettings'
+import { PersistenceService } from '../services/PersistenceService'
 
 /**
  * Settings panel with dark mode toggle and language switcher
@@ -34,6 +36,20 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
     if (typeof window === 'undefined') return false
     return document.documentElement.classList.contains('dark')
   })
+  const [guidanceSettings, setGuidanceSettings] = useState<GuidanceSettings>(DEFAULT_GUIDANCE_SETTINGS)
+
+  // Load guidance settings on mount
+  useEffect(() => {
+    const savedSettings = PersistenceService.loadGuidanceSettings()
+    if (savedSettings) {
+      setGuidanceSettings(savedSettings)
+    }
+  }, [])
+
+  // Save guidance settings when they change
+  useEffect(() => {
+    PersistenceService.saveGuidanceSettings(guidanceSettings)
+  }, [guidanceSettings])
 
   // Apply dark mode
   useEffect(() => {
@@ -125,6 +141,116 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {t('settings.soundDesc', 'Singing bowl sounds for phase transitions')}
             </p>
+          </div>
+
+          {/* Guidance Settings */}
+          <div className="space-y-4">
+            <h3 className="font-medium text-gray-800 dark:text-white">
+              {t('settings.guidance.title', 'Guidance')}
+            </h3>
+
+            {/* Enable in Maintain Mode */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium text-gray-800 dark:text-white">
+                  {t('settings.guidance.enableInMaintain', 'Enable in Maintain Mode')}
+                </h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {t('settings.guidance.enableInMaintainDesc', 'Show guidance tips during Maintain mode')}
+                </p>
+              </div>
+              <ToggleSwitch
+                checked={guidanceSettings.enableInMaintain}
+                onChange={() => setGuidanceSettings({
+                  ...guidanceSettings,
+                  enableInMaintain: !guidanceSettings.enableInMaintain
+                })}
+              />
+            </div>
+
+            {/* Show All Tips */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium text-gray-800 dark:text-white">
+                  {t('settings.guidance.showAllTips', 'Show All Tips')}
+                </h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {t('settings.guidance.showAllTipsDesc', 'Display all available tips during session')}
+                </p>
+              </div>
+              <ToggleSwitch
+                checked={guidanceSettings.showAllTips}
+                onChange={() => setGuidanceSettings({
+                  ...guidanceSettings,
+                  showAllTips: !guidanceSettings.showAllTips
+                })}
+              />
+            </div>
+
+            {/* Auto-rotate Interval */}
+            <div>
+              <h4 className="font-medium text-gray-800 dark:text-white mb-2">
+                {t('settings.guidance.autoRotateInterval', 'Auto-rotate Interval')}
+              </h4>
+              <div className="flex items-center gap-4">
+                <input
+                  type="range"
+                  min="10"
+                  max="60"
+                  value={guidanceSettings.autoRotateInterval}
+                  onChange={(e) => setGuidanceSettings({
+                    ...guidanceSettings,
+                    autoRotateInterval: parseInt(e.target.value)
+                  })}
+                  className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                  aria-label={t('settings.guidance.autoRotateInterval', 'Auto-rotate Interval')}
+                />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 min-w-[3rem]">
+                  {guidanceSettings.autoRotateInterval}s
+                </span>
+              </div>
+            </div>
+
+            {/* Guidance Mode */}
+            <div>
+              <h4 className="font-medium text-gray-800 dark:text-white mb-2">
+                {t('settings.guidance.mode', 'Guidance Mode')}
+              </h4>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setGuidanceSettings({
+                    ...guidanceSettings,
+                    guidanceMode: 'quick'
+                  })}
+                  className={`
+                    flex-1 px-3 py-2 rounded-lg font-medium transition-colors text-sm
+                    ${guidanceSettings.guidanceMode === 'quick'
+                      ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-2 border-blue-500'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600'
+                    }
+                  `}
+                  aria-pressed={guidanceSettings.guidanceMode === 'quick'}
+                >
+                  {t('settings.guidance.quick', 'Quick Tips')}
+                </button>
+                <button
+                  onClick={() => setGuidanceSettings({
+                    ...guidanceSettings,
+                    guidanceMode: 'deep-dive'
+                  })}
+                  className={`
+                    flex-1 px-3 py-2 rounded-lg font-medium transition-colors text-sm
+                    ${guidanceSettings.guidanceMode === 'deep-dive'
+                      ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 border-2 border-blue-500'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600'
+                    }
+                  `}
+                  aria-pressed={guidanceSettings.guidanceMode === 'deep-dive'}
+                >
+                  {t('settings.guidance.deepDive', 'Deep Dive')}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 

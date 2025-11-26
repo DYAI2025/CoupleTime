@@ -1,7 +1,9 @@
 import { SessionMode } from '../domain/SessionMode'
+import { GuidanceSettings, DEFAULT_GUIDANCE_SETTINGS } from '../domain/GuidanceSettings'
 
 const STORAGE_KEY = 'couples-timer-custom-modes'
 const SETTINGS_KEY = 'couples-timer-settings'
+const GUIDANCE_SETTINGS_KEY = 'couples-timer-guidance-settings'
 
 /**
  * User settings stored in localStorage
@@ -33,6 +35,10 @@ export interface PersistenceServiceProtocol {
   loadSettings(): UserSettings
   saveSettings(settings: UserSettings): void
   updateSetting<K extends keyof UserSettings>(key: K, value: UserSettings[K]): void
+
+  // Guidance Settings
+  loadGuidanceSettings(): GuidanceSettings
+  saveGuidanceSettings(settings: GuidanceSettings): void
 }
 
 class PersistenceServiceImpl implements PersistenceServiceProtocol {
@@ -129,6 +135,32 @@ class PersistenceServiceImpl implements PersistenceServiceProtocol {
     settings[key] = value
     this.saveSettings(settings)
   }
+
+  // Guidance Settings
+
+  loadGuidanceSettings(): GuidanceSettings {
+    try {
+      const stored = localStorage.getItem(GUIDANCE_SETTINGS_KEY)
+      if (!stored) return { ...DEFAULT_GUIDANCE_SETTINGS }
+
+      const parsed = JSON.parse(stored)
+      return {
+        ...DEFAULT_GUIDANCE_SETTINGS,
+        ...parsed,
+      }
+    } catch {
+      console.warn('Failed to load guidance settings from localStorage')
+      return { ...DEFAULT_GUIDANCE_SETTINGS }
+    }
+  }
+
+  saveGuidanceSettings(settings: GuidanceSettings): void {
+    try {
+      localStorage.setItem(GUIDANCE_SETTINGS_KEY, JSON.stringify(settings))
+    } catch (error) {
+      console.error('Failed to save guidance settings to localStorage', error)
+    }
+  }
 }
 
 // Singleton export
@@ -172,6 +204,12 @@ export function createMockPersistenceService(): PersistenceServiceProtocol & {
     },
     updateSetting: (key, value) => {
       settings[key] = value
+    },
+
+    // Guidance Settings
+    loadGuidanceSettings: () => ({ ...DEFAULT_GUIDANCE_SETTINGS }),
+    saveGuidanceSettings: (newSettings) => {
+      // For mock purposes, we don't store it, but could if needed
     },
 
     // Test helpers
