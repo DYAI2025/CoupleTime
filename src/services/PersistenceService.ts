@@ -151,7 +151,11 @@ class PersistenceServiceImpl implements PersistenceServiceProtocol {
   }
 
   saveGuidanceSettings(settings: GuidanceSettings): void {
-    localStorage.setItem(GUIDANCE_SETTINGS_KEY, JSON.stringify(settings))
+    try {
+      localStorage.setItem(GUIDANCE_SETTINGS_KEY, JSON.stringify(settings))
+    } catch (error) {
+      console.error('Failed to save guidance settings to localStorage', error)
+    }
   }
 }
 
@@ -165,9 +169,11 @@ export function createMockPersistenceService(): PersistenceServiceProtocol & {
   clear: () => void
   getModes: () => SessionMode[]
   getStoredSettings: () => UserSettings
+  getStoredGuidanceSettings: () => GuidanceSettings
 } {
   let modes: SessionMode[] = []
   let settings: UserSettings = { ...DEFAULT_SETTINGS }
+  let guidanceSettings: GuidanceSettings = { ...DEFAULT_GUIDANCE_SETTINGS }
 
   return {
     loadCustomModes: () => [...modes],
@@ -198,12 +204,19 @@ export function createMockPersistenceService(): PersistenceServiceProtocol & {
       settings[key] = value
     },
 
+    loadGuidanceSettings: () => ({ ...guidanceSettings }),
+    saveGuidanceSettings: (newSettings) => {
+      guidanceSettings = { ...newSettings }
+    },
+
     // Test helpers
     clear: () => {
       modes = []
       settings = { ...DEFAULT_SETTINGS }
+      guidanceSettings = { ...DEFAULT_GUIDANCE_SETTINGS }
     },
     getModes: () => modes,
     getStoredSettings: () => settings,
+    getStoredGuidanceSettings: () => guidanceSettings,
   }
 }
