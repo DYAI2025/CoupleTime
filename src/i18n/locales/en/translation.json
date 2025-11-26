@@ -235,6 +235,13 @@
     "darkModeDesc": "Reduce eye strain in low light",
     "language": "Language",
     "sound": "Sound",
-    "soundDesc": "Singing bowl sounds for phase transitions"
+    "soundDesc": "Singing bowl sounds for phase transitions",
+    "guidance": "Guidance",
+    "defaultMode": "Default Mode",
+    "showAllTips": "Show All Tips",
+    "showAllTipsDesc": "Shuffle through all tips before repeating",
+    "enableInMaintain": "Enable in Maintain Mode",
+    "enableInMaintainDesc": "Show guidance panel in Maintain sessions",
+    "autoRotate": "Auto-rotate Interval"
   }
 }

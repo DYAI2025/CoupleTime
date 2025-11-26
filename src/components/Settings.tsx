@@ -1,6 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
+import {
+  GuidanceSettings,
+  DEFAULT_GUIDANCE_SETTINGS,
+} from '../domain/GuidanceSettings'
+import { PersistenceService } from '../services/PersistenceService'
 
 /**
  * Settings panel with dark mode toggle and language switcher
@@ -34,6 +39,29 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
     if (typeof window === 'undefined') return false
     return document.documentElement.classList.contains('dark')
   })
+
+  // Guidance settings state
+  const [guidanceSettings, setGuidanceSettings] = useState<GuidanceSettings>(
+    DEFAULT_GUIDANCE_SETTINGS
+  )
+
+  // Load guidance settings on mount
+  useEffect(() => {
+    const settings = PersistenceService.loadGuidanceSettings()
+    setGuidanceSettings(settings)
+  }, [])
+
+  // Handle guidance settings changes
+  const updateGuidanceSetting = useCallback(
+    <K extends keyof GuidanceSettings>(key: K, value: GuidanceSettings[K]) => {
+      setGuidanceSettings((prev) => {
+        const updated = { ...prev, [key]: value }
+        PersistenceService.saveGuidanceSettings(updated)
+        return updated
+      })
+    },
+    []
+  )
 
   // Apply dark mode
   useEffect(() => {
@@ -125,6 +153,109 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {t('settings.soundDesc', 'Singing bowl sounds for phase transitions')}
             </p>
+          </div>
+
+          {/* Guidance Section */}
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+            <h3 className="font-medium text-gray-800 dark:text-white mb-4">
+              {t('settings.guidance', 'Guidance')}
+            </h3>
+
+            {/* Default Mode */}
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                {t('settings.defaultMode', 'Default Mode')}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => updateGuidanceSetting('guidanceMode', 'quick')}
+                  className={`
+                    flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                    ${guidanceSettings.guidanceMode === 'quick'
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                    }
+                  `}
+                >
+                  {t('guidancePanel.quickTips', 'Quick Tips')}
+                </button>
+                <button
+                  onClick={() => updateGuidanceSetting('guidanceMode', 'deep-dive')}
+                  className={`
+                    flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                    ${guidanceSettings.guidanceMode === 'deep-dive'
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                    }
+                  `}
+                >
+                  {t('guidancePanel.deepDive', 'Deep Dive')}
+                </button>
+              </div>
+            </div>
+
+            {/* Show All Tips Toggle */}
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t('settings.showAllTips', 'Show All Tips')}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {t('settings.showAllTipsDesc', 'Shuffle through all tips before repeating')}
+                </p>
+              </div>
+              <ToggleSwitch
+                checked={guidanceSettings.showAllTips}
+                onChange={() =>
+                  updateGuidanceSetting('showAllTips', !guidanceSettings.showAllTips)
+                }
+              />
+            </div>
+
+            {/* Enable in Maintain Mode */}
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t('settings.enableInMaintain', 'Enable in Maintain Mode')}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {t('settings.enableInMaintainDesc', 'Show guidance panel in Maintain sessions')}
+                </p>
+              </div>
+              <ToggleSwitch
+                checked={guidanceSettings.enableInMaintain}
+                onChange={() =>
+                  updateGuidanceSetting('enableInMaintain', !guidanceSettings.enableInMaintain)
+                }
+              />
+            </div>
+
+            {/* Auto-rotate Interval */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {t('settings.autoRotate', 'Auto-rotate Interval')}
+                </p>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {guidanceSettings.autoRotateInterval}s
+                </span>
+              </div>
+              <input
+                type="range"
+                min="10"
+                max="60"
+                step="5"
+                value={guidanceSettings.autoRotateInterval}
+                onChange={(e) =>
+                  updateGuidanceSetting('autoRotateInterval', Number(e.target.value))
+                }
+                className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+              />
+              <div className="flex justify-between text-xs text-gray-400 mt-1">
+                <span>10s</span>
+                <span>60s</span>
+              </div>
+            </div>
           </div>
         </div>
 

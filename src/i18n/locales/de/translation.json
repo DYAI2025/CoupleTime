@@ -235,6 +235,13 @@
     "darkModeDesc": "Augen schonen bei wenig Licht",
     "language": "Sprache",
     "sound": "Ton",
-    "soundDesc": "Klangschalen-Töne bei Phasenwechsel"
+    "soundDesc": "Klangschalen-Töne bei Phasenwechsel",
+    "guidance": "Anleitung",
+    "defaultMode": "Standardmodus",
+    "showAllTips": "Alle Tipps anzeigen",
+    "showAllTipsDesc": "Alle Tipps durchmischen bevor sie wiederholt werden",
+    "enableInMaintain": "Im Pflege-Modus aktivieren",
+    "enableInMaintainDesc": "Anleitungs-Panel in Pflege-Sitzungen anzeigen",
+    "autoRotate": "Automatischer Tipp-Wechsel"
   }
 }
