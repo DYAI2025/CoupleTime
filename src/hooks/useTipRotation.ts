@@ -42,14 +42,21 @@ export function useTipRotation(config: TipRotationConfig): TipRotationState {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [shuffledIndices, setShuffledIndices] = useState<number[]>([])
 
-  // Initialize shuffled indices
-  useEffect(() => {
-    if (config.shuffleMode && config.tips.length > 0) {
+  // Reshuffle helper
+  const reshuffleIndices = useCallback(() => {
+    if (config.tips.length > 0) {
       const indices = Array.from({ length: config.tips.length }, (_, i) => i)
       setShuffledIndices(shuffleArray(indices))
+    }
+  }, [config.tips.length])
+
+  // Initialize shuffled indices
+  useEffect(() => {
+    if (config.shuffleMode) {
+      reshuffleIndices()
       setCurrentIndex(0)
     }
-  }, [config.tips.length, config.shuffleMode])
+  }, [config.tips.length, config.shuffleMode, reshuffleIndices])
 
   // Auto-rotation timer
   useEffect(() => {
@@ -60,28 +67,24 @@ export function useTipRotation(config: TipRotationConfig): TipRotationState {
         const nextIdx = (prev + 1) % config.tips.length
         // Reshuffle when deck is exhausted
         if (nextIdx === 0 && config.shuffleMode) {
-          setTimeout(() => {
-            const indices = Array.from({ length: config.tips.length }, (_, i) => i)
-            setShuffledIndices(shuffleArray(indices))
-          }, 100)
+          reshuffleIndices()
         }
         return nextIdx
       })
     }, config.interval * 1000)
 
     return () => clearInterval(timer)
-  }, [config.autoRotate, config.interval, config.tips.length, config.shuffleMode])
+  }, [config.autoRotate, config.interval, config.tips.length, config.shuffleMode, reshuffleIndices])
 
   const next = useCallback(() => {
     setCurrentIndex((prev) => {
       const nextIdx = (prev + 1) % config.tips.length
       if (nextIdx === 0 && config.shuffleMode) {
-        const indices = Array.from({ length: config.tips.length }, (_, i) => i)
-        setShuffledIndices(shuffleArray(indices))
+        reshuffleIndices()
       }
       return nextIdx
     })
-  }, [config.tips.length, config.shuffleMode])
+  }, [config.tips.length, config.shuffleMode, reshuffleIndices])
 
   const previous = useCallback(() => {
     setCurrentIndex((prev) => (prev - 1 + config.tips.length) % config.tips.length)
