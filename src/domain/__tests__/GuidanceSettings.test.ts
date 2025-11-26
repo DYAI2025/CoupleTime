@@ -1,9 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import {
-  GuidanceSettings,
-  DEFAULT_GUIDANCE_SETTINGS,
-  createGuidanceSettings,
-} from '../GuidanceSettings'
+import { createGuidanceSettings } from '../GuidanceSettings'
 
 describe('GuidanceSettings', () => {
   it('should create default guidance settings', () => {
