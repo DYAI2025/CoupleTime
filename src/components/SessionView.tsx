@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession, useSessionViewModel } from '../contexts/SessionContext'
 import type { SessionMode } from '../domain/SessionMode'
 import { TimerDisplay } from './TimerDisplay'
@@ -8,6 +8,9 @@ import { ControlButtons, StartButton } from './ControlButtons'
 import { ModeSelector } from './ModeSelector'
 import { TipDisplay } from './TipDisplay'
 import { SettingsButton } from './Settings'
+import { GuidancePanel } from './GuidancePanel'
+import { GuidanceSettings, DEFAULT_GUIDANCE_SETTINGS } from '../domain/GuidanceSettings'
+import { PersistenceService } from '../services/PersistenceService'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 
@@ -100,6 +103,30 @@ function ModeSelectionView({
  */
 function ActiveSessionView() {
   const viewModel = useSessionViewModel()
+  const session = useSession()
+
+  // Guidance settings state
+  const [guidanceSettings, setGuidanceSettings] = useState<GuidanceSettings>(
+    DEFAULT_GUIDANCE_SETTINGS
+  )
+
+  // Load guidance settings on mount
+  useEffect(() => {
+    const settings = PersistenceService.loadGuidanceSettings()
+    setGuidanceSettings(settings)
+  }, [])
+
+  // Handle settings changes with persistence
+  const handleGuidanceSettingsChange = useCallback((partial: Partial<GuidanceSettings>) => {
+    setGuidanceSettings(prev => {
+      const updated = { ...prev, ...partial }
+      PersistenceService.saveGuidanceSettings(updated)
+      return updated
+    })
+  }, [])
+
+  // Get tips from session context
+  const currentPhaseTips = session.tips || []
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -116,8 +143,8 @@ function ActiveSessionView() {
         <SessionProgressBar />
       </header>
 
-      {/* Main content */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 py-8 gap-8">
+      {/* Main content - with bottom padding to avoid overlap with fixed guidance panel */}
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-8 gap-8 pb-[360px]">
         {/* Phase indicator */}
         <PhaseIndicator />
 
@@ -139,6 +166,13 @@ function ActiveSessionView() {
           <ControlButtons size="lg" />
         </div>
       </footer>
+
+      {/* Guidance Panel - Fixed at bottom */}
+      <GuidancePanel
+        settings={guidanceSettings}
+        onSettingsChange={handleGuidanceSettingsChange}
+        currentPhaseTips={currentPhaseTips}
+      />
     </div>
   )
 }
