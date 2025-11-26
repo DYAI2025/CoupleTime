@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 
 interface QuickTipsViewProps {
   showAllTips?: boolean
-  autoRotateInterval?: number
 }
 
 /**
@@ -13,17 +12,14 @@ interface QuickTipsViewProps {
  */
 export function QuickTipsView({
   showAllTips = false,
-  autoRotateInterval = 30,
 }: QuickTipsViewProps) {
   const { t } = useTranslation()
-  const { tips, randomTip, viewModel } = useSession()
+  const { tips, randomTip } = useSession()
   const [currentTipIndex, setCurrentTipIndex] = useState(0)
 
   // Filter tips based on showAllTips setting
   const displayTips = showAllTips ? tips : [randomTip].filter(Boolean) as string[]
 
-  // Auto-rotate tips if enabled
-  // Note: This would use useEffect in a real implementation
 
   if (displayTips.length === 0) {
     return null

@@ -176,6 +176,7 @@ export function createMockPersistenceService(): PersistenceServiceProtocol & {
 } {
   let modes: SessionMode[] = []
   let settings: UserSettings = { ...DEFAULT_SETTINGS }
+  let guidanceSettings = { ...DEFAULT_GUIDANCE_SETTINGS }
 
   return {
     loadCustomModes: () => [...modes],
@@ -207,15 +208,16 @@ export function createMockPersistenceService(): PersistenceServiceProtocol & {
     },
 
     // Guidance Settings
-    loadGuidanceSettings: () => ({ ...DEFAULT_GUIDANCE_SETTINGS }),
+    loadGuidanceSettings: () => ({ ...guidanceSettings }),
     saveGuidanceSettings: (newSettings) => {
-      // For mock purposes, we don't store it, but could if needed
+      guidanceSettings = { ...newSettings }
     },
 
     // Test helpers
     clear: () => {
       modes = []
       settings = { ...DEFAULT_SETTINGS }
+      guidanceSettings = { ...DEFAULT_GUIDANCE_SETTINGS }
     },
     getModes: () => modes,
     getStoredSettings: () => settings,

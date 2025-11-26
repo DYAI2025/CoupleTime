@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next'
 
 interface GuidancePanelProps {
   showAllTips?: boolean
-  autoRotateInterval?: number
   guidanceMode?: 'quick' | 'deep-dive'
 }
 
@@ -16,7 +15,6 @@ interface GuidancePanelProps {
  */
 export function GuidancePanel({
   showAllTips = false,
-  autoRotateInterval = 30,
   guidanceMode: initialMode = 'quick',
 }: GuidancePanelProps) {
   const { t } = useTranslation()
@@ -77,9 +75,8 @@ export function GuidancePanel({
         aria-labelledby={currentMode === 'quick' ? 'quick-tips-tab' : 'deep-dive-tab'}
       >
         {currentMode === 'quick' ? (
-          <QuickTipsView 
-            showAllTips={showAllTips} 
-            autoRotateInterval={autoRotateInterval} 
+          <QuickTipsView
+            showAllTips={showAllTips}
           />
         ) : (
           <DeepDiveView showAllTips={showAllTips} />

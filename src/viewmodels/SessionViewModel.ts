@@ -2,6 +2,7 @@ import { SessionState, SessionStatus, getCurrentPhase, getPhaseProgress, getSess
 import { PhaseType, getPhaseDisplayName, getPhaseColor } from '../domain/PhaseType'
 import { Speaker, getSpeakerForPhase, getSpeakerDisplayName } from '../domain/Speaker'
 import { formatDuration } from '../domain/PhaseConfig'
+import { shouldShowTips } from '../services/GuidanceService'
 
 /**
  * UI-ready view model for session display
@@ -48,6 +49,9 @@ export interface SessionViewModel {
   canPause: boolean
   canResume: boolean
   canStop: boolean
+
+  // Guidance info
+  showGuidanceTips: boolean
 }
 
 /**
@@ -103,6 +107,9 @@ export function createSessionViewModel(state: SessionState): SessionViewModel {
     canPause: state.status === SessionStatus.Running,
     canResume: state.status === SessionStatus.Paused,
     canStop: state.status === SessionStatus.Running || state.status === SessionStatus.Paused,
+
+    // Guidance info
+    showGuidanceTips: state.mode && currentPhase ? shouldShowTips(currentPhase.type, state.mode.guidanceLevel) : false,
   }
 }
 
@@ -182,5 +189,8 @@ export function createIdleViewModel(): SessionViewModel {
     canPause: false,
     canResume: false,
     canStop: false,
+
+    // Guidance info
+    showGuidanceTips: false,
   }
 }

@@ -257,6 +257,11 @@ export class SessionEngine {
    */
   private async playPhaseStartAudio(phaseType: PhaseType): Promise<void> {
     switch (phaseType) {
+      case PhaseType.SlotA:
+      case PhaseType.SlotB:
+        // Play start gong for speaking slots - important for marking the transition from prep to speaking
+        await this.audioService.play(AudioEvent.SlotStart)
+        break
       case PhaseType.ClosingA:
         await this.audioService.play(AudioEvent.ClosingStart)
         break
