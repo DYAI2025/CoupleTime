@@ -66,27 +66,132 @@
     "goToTip": "Go to tip {{number}}"
   },
   "guidance": {
-    "prep": {
-      "tip1": "Take a moment to arrive and settle in.",
-      "tip2": "Take a few deep breaths together.",
-      "tip3": "Put away electronic devices.",
-      "tip4": "Create an undisturbed space.",
-      "tip5": "Open yourself to what may come."
+    "quick": {
+      "prep": [
+        "Take a moment to arrive and settle in.",
+        "Take a few deep breaths together.",
+        "Put away electronic devices.",
+        "Create an undisturbed space.",
+        "Open yourself to what may come."
+      ],
+      "transition": [
+        "Take time to process what you heard.",
+        "What touched you the most?",
+        "Stay present and attentive.",
+        "Prepare for the next exchange.",
+        "Feel the connection between you."
+      ],
+      "cooldown": [
+        "Let the conversation resonate.",
+        "Avoid further discussion now.",
+        "Enjoy the shared silence.",
+        "Honor the exchange that took place.",
+        "Stay connected, even without words."
+      ]
     },
-    "transition": {
-      "tip1": "Take time to process what you heard.",
-      "tip2": "What touched you the most?",
-      "tip3": "Stay present and attentive.",
-      "tip4": "Prepare for the next exchange.",
-      "tip5": "Feel the connection between you."
-    },
-    "cooldown": {
-      "tip1": "Let the conversation resonate.",
-      "tip2": "Avoid further discussion now.",
-      "tip3": "Enjoy the shared silence.",
-      "tip4": "Honor the exchange that took place.",
-      "tip5": "Stay connected, even without words."
+    "deepDive": {
+      "beforeSession": {
+        "title": "Phase 1: Preparation",
+        "cards": [
+          {
+            "title": "Schedule Agreement",
+            "content": "Set a fixed weekly time (e.g., 90 min) and a start time.",
+            "icon": "calendar"
+          },
+          {
+            "title": "Create Disturbance-Free Space",
+            "content": "Ensure a quiet environment without distractions or visitors.",
+            "icon": "door-closed"
+          },
+          {
+            "title": "Establish Clear Rules",
+            "content": "Agree on a fixed speaking time (e.g., 15 min) and strict listening protocol.",
+            "icon": "clipboard-check"
+          },
+          {
+            "title": "Ritual Foundation",
+            "content": "Make the session a fixed, non-negotiable ritual that isn't skipped.",
+            "icon": "handshake"
+          }
+        ]
+      },
+      "duringListening": {
+        "title": "Phase 2: During Listening",
+        "cards": [
+          {
+            "title": "Radical Empathy",
+            "content": "Your only task is to listen with full attention, without your own agenda.",
+            "icon": "heart"
+          },
+          {
+            "title": "Strict Taboos",
+            "content": "Absolute prohibition: No interrupting, judging, advising, or non-verbal rejection (e.g., eye-rolling).",
+            "icon": "ban"
+          },
+          {
+            "title": "Embrace Silence",
+            "content": "When your partner pauses to think, remain still even if the silence feels long.",
+            "icon": "volume-x"
+          },
+          {
+            "title": "Speaker/Listener Roles",
+            "content": "The speaker says 'I think/feel...', the listener only listens attentively without judgment.",
+            "icon": "users"
+          }
+        ]
+      },
+      "emergency": {
+        "title": "Phase 3: Emergency Situations",
+        "cards": [
+          {
+            "title": "Call Time-Out",
+            "content": "Stop the conversation as soon as you or your partner feel emotionally overwhelmed.",
+            "icon": "clock"
+          },
+          {
+            "title": "Calm Down Physically",
+            "content": "Use the pause for calming activities (e.g., reading, walking), not to brood.",
+            "icon": "activity"
+          },
+          {
+            "title": "Resume Conversation",
+            "content": "Resume the dialogue within 24 hours to avoid the conflict from escalating.",
+            "icon": "play-circle"
+          }
+        ]
+      },
+      "coreRules": {
+        "title": "Core Conversation Principles",
+        "speaker": {
+          "title": "Speaker Guidelines",
+          "icon": "mic",
+          "rules": [
+            "Say 'I think...' or 'I feel...' (first-person)",
+            "Avoid accusations",
+            "Absolute taboos: No interrupting, judging, advising, dismissive reactions"
+          ]
+        },
+        "listener": {
+          "title": "Listener Guidelines",
+          "icon": "headphones",
+          "rules": [
+            "Listen attentively and without judgment",
+            "Maintain eye contact",
+            "Absolute taboos: No interrupting, commenting, judging, or non-verbal dismissal"
+          ]
+        }
+      }
     }
+  },
+  "guidancePanel": {
+    "title": "Guidance",
+    "quickTips": "Quick Tips",
+    "deepDive": "Deep Dive",
+    "hidePanel": "Hide Panel",
+    "showPanel": "Show Guidance",
+    "autoRotate": "Auto-rotate tips",
+    "previousTip": "Previous tip",
+    "nextTip": "Next tip"
   },
   "common": {
     "minutes": "min",
@@ -130,6 +235,13 @@
     "darkModeDesc": "Reduce eye strain in low light",
     "language": "Language",
     "sound": "Sound",
-    "soundDesc": "Singing bowl sounds for phase transitions"
+    "soundDesc": "Singing bowl sounds for phase transitions",
+    "guidance": "Guidance",
+    "defaultMode": "Default Mode",
+    "showAllTips": "Show All Tips",
+    "showAllTipsDesc": "Shuffle through all tips before repeating",
+    "enableInMaintain": "Enable in Maintain Mode",
+    "enableInMaintainDesc": "Show guidance panel in Maintain sessions",
+    "autoRotate": "Auto-rotate Interval"
   }
 }

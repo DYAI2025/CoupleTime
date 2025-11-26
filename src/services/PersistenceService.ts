@@ -173,6 +173,7 @@ export function createMockPersistenceService(): PersistenceServiceProtocol & {
   clear: () => void
   getModes: () => SessionMode[]
   getStoredSettings: () => UserSettings
+  getStoredGuidanceSettings: () => GuidanceSettings
 } {
   let modes: SessionMode[] = []
   let settings: UserSettings = { ...DEFAULT_SETTINGS }
@@ -221,5 +222,6 @@ export function createMockPersistenceService(): PersistenceServiceProtocol & {
     },
     getModes: () => modes,
     getStoredSettings: () => settings,
+    getStoredGuidanceSettings: () => guidanceSettings,
   }
 }
