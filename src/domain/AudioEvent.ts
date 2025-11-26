@@ -9,6 +9,9 @@ export enum AudioEvent {
   /** Rising tone - speaking slot ended */
   SlotEnd = 'slotEnd',
 
+  /** Rising tone - speaking slot starting (after prep or transition) */
+  SlotStart = 'slotStart',
+
   /** Clear tone - transition phase ended */
   TransitionEnd = 'transitionEnd',
 
@@ -26,6 +29,7 @@ export enum AudioEvent {
 export const AUDIO_EVENT_FILES: Record<AudioEvent, string> = {
   [AudioEvent.SessionStart]: 'bowl_deep_single',
   [AudioEvent.SlotEnd]: 'bowl_rising',
+  [AudioEvent.SlotStart]: 'bowl_rising',
   [AudioEvent.TransitionEnd]: 'bowl_clear',
   [AudioEvent.ClosingStart]: 'bowl_double',
   [AudioEvent.CooldownStart]: 'bowl_fade',

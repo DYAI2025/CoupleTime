@@ -39,6 +39,17 @@ const BOWL_CONFIGS: Record<AudioEvent, BowlConfig> = {
     strikes: 1,
     strikeDelay: 0,
   },
+  // Rising tone - slot start (after prep or transition)
+  [AudioEvent.SlotStart]: {
+    baseFrequency: 330, // Similar to SlotEnd but used specifically for start
+    harmonics: [1, 2.5, 3, 5],
+    attackTime: 0.01,
+    decayTime: 0.2,
+    sustainLevel: 0.5,
+    releaseTime: 3,
+    strikes: 1,
+    strikeDelay: 0,
+  },
   // Clear tone - transition end
   [AudioEvent.TransitionEnd]: {
     baseFrequency: 440,

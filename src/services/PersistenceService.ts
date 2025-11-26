@@ -3,7 +3,7 @@ import { GuidanceSettings, DEFAULT_GUIDANCE_SETTINGS } from '../domain/GuidanceS
 
 const STORAGE_KEY = 'couples-timer-custom-modes'
 const SETTINGS_KEY = 'couples-timer-settings'
-const GUIDANCE_SETTINGS_KEY = 'guidanceSettings'
+const GUIDANCE_SETTINGS_KEY = 'couples-timer-guidance-settings'
 
 /**
  * User settings stored in localStorage
@@ -139,14 +139,18 @@ class PersistenceServiceImpl implements PersistenceServiceProtocol {
   // Guidance Settings
 
   loadGuidanceSettings(): GuidanceSettings {
-    const stored = localStorage.getItem(GUIDANCE_SETTINGS_KEY)
-    if (!stored) return DEFAULT_GUIDANCE_SETTINGS
-
     try {
+      const stored = localStorage.getItem(GUIDANCE_SETTINGS_KEY)
+      if (!stored) return { ...DEFAULT_GUIDANCE_SETTINGS }
+
       const parsed = JSON.parse(stored)
-      return { ...DEFAULT_GUIDANCE_SETTINGS, ...parsed }
+      return {
+        ...DEFAULT_GUIDANCE_SETTINGS,
+        ...parsed,
+      }
     } catch {
-      return DEFAULT_GUIDANCE_SETTINGS
+      console.warn('Failed to load guidance settings from localStorage')
+      return { ...DEFAULT_GUIDANCE_SETTINGS }
     }
   }
 
@@ -173,7 +177,7 @@ export function createMockPersistenceService(): PersistenceServiceProtocol & {
 } {
   let modes: SessionMode[] = []
   let settings: UserSettings = { ...DEFAULT_SETTINGS }
-  let guidanceSettings: GuidanceSettings = { ...DEFAULT_GUIDANCE_SETTINGS }
+  let guidanceSettings = { ...DEFAULT_GUIDANCE_SETTINGS }
 
   return {
     loadCustomModes: () => [...modes],
@@ -204,6 +208,7 @@ export function createMockPersistenceService(): PersistenceServiceProtocol & {
       settings[key] = value
     },
 
+    // Guidance Settings
     loadGuidanceSettings: () => ({ ...guidanceSettings }),
     saveGuidanceSettings: (newSettings) => {
       guidanceSettings = { ...newSettings }

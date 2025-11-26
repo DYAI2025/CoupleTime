@@ -1,102 +1,87 @@
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
+import { useSession } from '../contexts/SessionContext'
 import { QuickTipsView } from './QuickTipsView'
 import { DeepDiveView } from './DeepDiveView'
-import { GuidanceSettings, GuidanceMode } from '../domain/GuidanceSettings'
+import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 
-export interface GuidancePanelProps {
-  /** Settings from persistence */
-  settings: GuidanceSettings
-
-  /** Callback when settings change (for persistence) */
-  onSettingsChange: (settings: Partial<GuidanceSettings>) => void
-
-  /** Current session data */
-  currentPhaseTips?: string[]
+interface GuidancePanelProps {
+  showAllTips?: boolean
+  guidanceMode?: 'quick' | 'deep-dive'
 }
 
 /**
- * Main guidance panel that orchestrates QuickTipsView and DeepDiveView
- * with mode switching between them.
- *
- * Displays at bottom of screen with 360px height, white background.
+ * Guidance panel with mode toggle and content display
  */
 export function GuidancePanel({
-  settings,
-  onSettingsChange,
-  currentPhaseTips = [],
+  showAllTips = false,
+  guidanceMode: initialMode = 'quick',
 }: GuidancePanelProps) {
+  const { t } = useTranslation()
+  const { viewModel } = useSession()
+  const [currentMode, setCurrentMode] = useState<'quick' | 'deep-dive'>(initialMode)
 
-  const handleModeSwitch = (mode: GuidanceMode) => {
-    onSettingsChange({ guidanceMode: mode })
+  // Don't show if no guidance is available for this phase
+  if (!viewModel.showGuidanceTips) {
+    return null
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 h-[360px] bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 shadow-lg z-40">
-      <div className="h-full flex flex-col">
-        {/* Mode Toggle Header */}
-        <div className="flex-shrink-0 border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 px-6 py-3">
-          <div className="flex items-center justify-center gap-2">
-            <button
-              onClick={() => handleModeSwitch('quick')}
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                settings.guidanceMode === 'quick'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'
-              }`}
-              aria-label="Quick Tips"
-            >
-              Quick Tips
-            </button>
-            <button
-              onClick={() => handleModeSwitch('deep-dive')}
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                settings.guidanceMode === 'deep-dive'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'
-              }`}
-              aria-label="Deep Dive"
-            >
-              Deep Dive
-            </button>
-          </div>
-        </div>
-
-        {/* Content Area */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="h-full py-6">
-            <AnimatePresence mode="wait">
-              {settings.guidanceMode === 'quick' ? (
-                <motion.div
-                  key="quick-tips"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.2 }}
-                  className="h-full flex items-center justify-center"
-                >
-                  <QuickTipsView
-                    tips={currentPhaseTips}
-                    autoRotate={settings.showAllTips}
-                    interval={settings.autoRotateInterval}
-                    shuffleMode={settings.showAllTips}
-                  />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="deep-dive"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.2 }}
-                  className="h-full"
-                >
-                  <DeepDiveView />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="w-full max-w-4xl mx-auto p-6"
+    >
+      {/* Mode Toggle */}
+      <div className="flex justify-center mb-6">
+        <div className="inline-flex items-center p-1 bg-gray-100 dark:bg-gray-700 rounded-lg" role="tablist">
+          <button
+            onClick={() => setCurrentMode('quick')}
+            className={`
+              px-4 py-2 rounded-md text-sm font-medium transition-colors
+              ${currentMode === 'quick'
+                ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm'
+                : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100'
+              }
+            `}
+            role="tab"
+            aria-selected={currentMode === 'quick'}
+            aria-controls="quick-tips-content"
+          >
+            {t('guidance.quickTips', 'Quick Tips')}
+          </button>
+          <button
+            onClick={() => setCurrentMode('deep-dive')}
+            className={`
+              px-4 py-2 rounded-md text-sm font-medium transition-colors
+              ${currentMode === 'deep-dive'
+                ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm'
+                : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100'
+              }
+            `}
+            role="tab"
+            aria-selected={currentMode === 'deep-dive'}
+            aria-controls="deep-dive-content"
+          >
+            {t('guidance.deepDive', 'Deep Dive')}
+          </button>
         </div>
       </div>
-    </div>
+
+      {/* Content Area */}
+      <div 
+        id={currentMode === 'quick' ? 'quick-tips-content' : 'deep-dive-content'} 
+        role="tabpanel"
+        aria-labelledby={currentMode === 'quick' ? 'quick-tips-tab' : 'deep-dive-tab'}
+      >
+        {currentMode === 'quick' ? (
+          <QuickTipsView
+            showAllTips={showAllTips}
+          />
+        ) : (
+          <DeepDiveView showAllTips={showAllTips} />
+        )}
+      </div>
+    </motion.div>
   )
 }
