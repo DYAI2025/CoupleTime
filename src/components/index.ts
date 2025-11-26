@@ -19,6 +19,9 @@ export { TipDisplay, RandomTipDisplay, TipOverlay } from './TipDisplay'
 // Quick tips view
 export { QuickTipsView } from './QuickTipsView'
 
+// Deep dive view
+export { DeepDiveView } from './DeepDiveView'
+
 // Session view
 export { SessionView, SessionViewCompact } from './SessionView'
 
