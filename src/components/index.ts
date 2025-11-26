@@ -22,6 +22,9 @@ export { QuickTipsView } from './QuickTipsView'
 // Deep dive view
 export { DeepDiveView } from './DeepDiveView'
 
+// Guidance panel
+export { GuidancePanel } from './GuidancePanel'
+
 // Session view
 export { SessionView, SessionViewCompact } from './SessionView'
 
