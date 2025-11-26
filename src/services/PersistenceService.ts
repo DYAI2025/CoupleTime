@@ -1,7 +1,9 @@
 import { SessionMode } from '../domain/SessionMode'
+import { GuidanceSettings, DEFAULT_GUIDANCE_SETTINGS } from '../domain/GuidanceSettings'
 
 const STORAGE_KEY = 'couples-timer-custom-modes'
 const SETTINGS_KEY = 'couples-timer-settings'
+const GUIDANCE_SETTINGS_KEY = 'guidanceSettings'
 
 /**
  * User settings stored in localStorage
@@ -33,6 +35,10 @@ export interface PersistenceServiceProtocol {
   loadSettings(): UserSettings
   saveSettings(settings: UserSettings): void
   updateSetting<K extends keyof UserSettings>(key: K, value: UserSettings[K]): void
+
+  // Guidance Settings
+  loadGuidanceSettings(): GuidanceSettings
+  saveGuidanceSettings(settings: GuidanceSettings): void
 }
 
 class PersistenceServiceImpl implements PersistenceServiceProtocol {
@@ -128,6 +134,24 @@ class PersistenceServiceImpl implements PersistenceServiceProtocol {
     const settings = this.loadSettings()
     settings[key] = value
     this.saveSettings(settings)
+  }
+
+  // Guidance Settings
+
+  loadGuidanceSettings(): GuidanceSettings {
+    const stored = localStorage.getItem(GUIDANCE_SETTINGS_KEY)
+    if (!stored) return DEFAULT_GUIDANCE_SETTINGS
+
+    try {
+      const parsed = JSON.parse(stored)
+      return { ...DEFAULT_GUIDANCE_SETTINGS, ...parsed }
+    } catch {
+      return DEFAULT_GUIDANCE_SETTINGS
+    }
+  }
+
+  saveGuidanceSettings(settings: GuidanceSettings): void {
+    localStorage.setItem(GUIDANCE_SETTINGS_KEY, JSON.stringify(settings))
   }
 }
 

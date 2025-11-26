@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { createMockPersistenceService } from '../PersistenceService'
+import { createMockPersistenceService, PersistenceService } from '../PersistenceService'
 import { createCustomMode } from '../../domain/SessionMode'
 import { createPhaseConfig } from '../../domain/PhaseConfig'
 import { PhaseType } from '../../domain/PhaseType'
 import { GuidanceLevel } from '../../domain/GuidanceLevel'
+import { GuidanceSettings, DEFAULT_GUIDANCE_SETTINGS } from '../../domain/GuidanceSettings'
 
 describe('PersistenceService', () => {
   describe('MockPersistenceService', () => {
@@ -194,6 +195,29 @@ describe('PersistenceService', () => {
       // Both operations should be < 50ms
       expect(saveDuration).toBeLessThan(50)
       expect(loadDuration).toBeLessThan(50)
+    })
+  })
+
+  describe('PersistenceService - Guidance Settings', () => {
+    beforeEach(() => {
+      localStorage.clear()
+    })
+
+    it('should load default guidance settings when none stored', () => {
+      const settings = PersistenceService.loadGuidanceSettings()
+      expect(settings).toEqual(DEFAULT_GUIDANCE_SETTINGS)
+    })
+
+    it('should save and load guidance settings', () => {
+      const customSettings: GuidanceSettings = {
+        showAllTips: true,
+        guidanceMode: 'deep-dive',
+        enableInMaintain: true,
+        autoRotateInterval: 30,
+      }
+      PersistenceService.saveGuidanceSettings(customSettings)
+      const loaded = PersistenceService.loadGuidanceSettings()
+      expect(loaded).toEqual(customSettings)
     })
   })
 })
