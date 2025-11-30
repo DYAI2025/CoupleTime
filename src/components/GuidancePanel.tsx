@@ -4,8 +4,12 @@ import { QuickTipsView } from './QuickTipsView'
 import { DeepDiveView } from './DeepDiveView'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
+import type { GuidanceSettings } from '../domain/GuidanceSettings'
 
 interface GuidancePanelProps {
+  settings?: GuidanceSettings
+  onSettingsChange?: (partial: Partial<GuidanceSettings>) => void
+  currentPhaseTips?: string[]
   showAllTips?: boolean
   guidanceMode?: 'quick' | 'deep-dive'
 }
@@ -14,11 +18,16 @@ interface GuidancePanelProps {
  * Guidance panel with mode toggle and content display
  */
 export function GuidancePanel({
-  showAllTips = false,
-  guidanceMode: initialMode = 'quick',
+  settings,
+  onSettingsChange,
+  currentPhaseTips = [],
+  showAllTips,
+  guidanceMode,
 }: GuidancePanelProps) {
   const { t } = useTranslation()
   const { viewModel } = useSession()
+  const resolvedShowAllTips = showAllTips ?? settings?.showAllTips ?? false
+  const initialMode = guidanceMode ?? settings?.guidanceMode ?? 'quick'
   const [currentMode, setCurrentMode] = useState<'quick' | 'deep-dive'>(initialMode)
 
   // Don't show if no guidance is available for this phase
@@ -36,7 +45,10 @@ export function GuidancePanel({
       <div className="flex justify-center mb-6">
         <div className="inline-flex items-center p-1 bg-gray-100 dark:bg-gray-700 rounded-lg" role="tablist">
           <button
-            onClick={() => setCurrentMode('quick')}
+            onClick={() => {
+              setCurrentMode('quick')
+              onSettingsChange?.({ guidanceMode: 'quick' })
+            }}
             className={`
               px-4 py-2 rounded-md text-sm font-medium transition-colors
               ${currentMode === 'quick'
@@ -51,7 +63,10 @@ export function GuidancePanel({
             {t('guidance.quickTips', 'Quick Tips')}
           </button>
           <button
-            onClick={() => setCurrentMode('deep-dive')}
+            onClick={() => {
+              setCurrentMode('deep-dive')
+              onSettingsChange?.({ guidanceMode: 'deep-dive' })
+            }}
             className={`
               px-4 py-2 rounded-md text-sm font-medium transition-colors
               ${currentMode === 'deep-dive'
@@ -76,10 +91,14 @@ export function GuidancePanel({
       >
         {currentMode === 'quick' ? (
           <QuickTipsView
-            showAllTips={showAllTips}
+            showAllTips={resolvedShowAllTips}
+            tips={currentPhaseTips.length ? currentPhaseTips : undefined}
           />
         ) : (
-          <DeepDiveView showAllTips={showAllTips} />
+          <DeepDiveView
+            showAllTips={resolvedShowAllTips}
+            tips={currentPhaseTips.length ? currentPhaseTips : undefined}
+          />
         )}
       </div>
     </motion.div>
