@@ -9,6 +9,7 @@ import { ModeSelector } from './ModeSelector'
 import { TipDisplay } from './TipDisplay'
 import { SettingsButton } from './Settings'
 import { GuidancePanel } from './GuidancePanel'
+import { OnboardingModal } from './onboarding/OnboardingModal'
 import { GuidanceSettings, DEFAULT_GUIDANCE_SETTINGS } from '../domain/GuidanceSettings'
 import { PersistenceService } from '../services/PersistenceService'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -51,9 +52,24 @@ function ModeSelectionView({
   onSelectMode: (mode: SessionMode | null) => void
 }) {
   const { t } = useTranslation()
+  const [showOnboarding, setShowOnboarding] = useState(false)
+
+  const handleOnboardingComplete = (mode?: SessionMode) => {
+    setShowOnboarding(false)
+    if (mode) {
+      onSelectMode(mode)
+    }
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Onboarding Modal */}
+      <OnboardingModal
+        isOpen={showOnboarding}
+        onClose={() => setShowOnboarding(false)}
+        onComplete={handleOnboardingComplete}
+      />
+
       {/* Header */}
       <header className="px-4 py-6">
         <div className="flex items-start justify-between">
@@ -80,8 +96,28 @@ function ModeSelectionView({
         />
       </main>
 
-      {/* Start button */}
-      <footer className="px-4 py-6">
+      {/* Footer with tour button and start button */}
+      <footer className="px-4 py-6 space-y-4">
+        {/* Take the tour button */}
+        <button
+          onClick={() => setShowOnboarding(true)}
+          className="
+            w-full px-4 py-3 rounded-xl
+            bg-gray-100 dark:bg-gray-800
+            text-gray-700 dark:text-gray-300
+            font-medium
+            hover:bg-gray-200 dark:hover:bg-gray-700
+            transition-colors
+            flex items-center justify-center gap-2
+          "
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {t('onboarding.takeTour', 'Take the tour')}
+        </button>
+
+        {/* Start session button */}
         <AnimatePresence>
           {selectedMode && (
             <motion.div

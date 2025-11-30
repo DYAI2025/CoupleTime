@@ -1,15 +1,14 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { PhaseTimeline } from '../PhaseTimeline'
-import type { PhaseType } from '../../../domain/PhaseType'
 
 describe('PhaseTimeline', () => {
   it('renders phase blocks with correct proportions', () => {
     const phases = [
-      { type: 'prep' as PhaseType, durationMinutes: 5, speaker: null },
-      { type: 'slotA' as PhaseType, durationMinutes: 10, speaker: 'A' as const },
-      { type: 'transition' as PhaseType, durationMinutes: 1, speaker: null },
-      { type: 'slotB' as PhaseType, durationMinutes: 10, speaker: 'B' as const },
+      { type: 'prep', durationMinutes: 5 },
+      { type: 'slotA', durationMinutes: 10 },
+      { type: 'transition', durationMinutes: 1 },
+      { type: 'slotB', durationMinutes: 10 },
     ]
 
     render(<PhaseTimeline phases={phases} totalDuration={26} />)
@@ -23,7 +22,7 @@ describe('PhaseTimeline', () => {
 
   it('displays phase duration labels', () => {
     const phases = [
-      { type: 'prep' as PhaseType, durationMinutes: 5, speaker: null },
+      { type: 'prep', durationMinutes: 5 },
     ]
 
     render(<PhaseTimeline phases={phases} totalDuration={5} />)

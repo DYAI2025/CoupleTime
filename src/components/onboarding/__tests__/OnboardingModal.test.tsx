@@ -5,7 +5,7 @@ import { OnboardingModal } from '../OnboardingModal'
 // Mock i18n
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string, fallback: string) => fallback,
+    t: (_key: string, fallback: string) => fallback,
     i18n: { language: 'en' },
   }),
 }))

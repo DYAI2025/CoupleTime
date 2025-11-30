@@ -1,8 +1,15 @@
 import { motion } from 'framer-motion'
-import type { PhaseConfig } from '../../domain/PhaseConfig'
+
+/**
+ * Simplified phase display type for onboarding visualization
+ */
+export interface DisplayPhase {
+  type: string
+  durationMinutes: number
+}
 
 interface PhaseTimelineProps {
-  phases: PhaseConfig[]
+  phases: DisplayPhase[]
   totalDuration: number
 }
 

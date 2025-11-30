@@ -1,8 +1,7 @@
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { PhaseTimeline } from '../PhaseTimeline'
+import { PhaseTimeline, DisplayPhase } from '../PhaseTimeline'
 import type { SlideProps } from '../OnboardingSlider'
-import type { PhaseConfig } from '../../../domain/PhaseConfig'
 
 interface ModeInfo {
   titleKey: string
@@ -12,7 +11,7 @@ interface ModeInfo {
   duration: string
   rounds: string
   frequency?: string
-  phases: PhaseConfig[]
+  phases: DisplayPhase[]
   totalDuration: number
   color: string
 }
@@ -88,19 +87,19 @@ function ModeBreakdownSlide({ mode }: { mode: ModeInfo }) {
 }
 
 // Maintain mode phases (simplified for display - in minutes)
-const maintainPhases: PhaseConfig[] = [
-  { type: 'prep', durationMinutes: 2, speaker: null },
-  { type: 'slotA', durationMinutes: 15, speaker: 'A' },
-  { type: 'slotB', durationMinutes: 15, speaker: 'B' },
-  { type: 'transition', durationMinutes: 1, speaker: null },
-  { type: 'slotA', durationMinutes: 15, speaker: 'A' },
-  { type: 'slotB', durationMinutes: 15, speaker: 'B' },
-  { type: 'transition', durationMinutes: 1, speaker: null },
-  { type: 'slotA', durationMinutes: 15, speaker: 'A' },
-  { type: 'slotB', durationMinutes: 15, speaker: 'B' },
-  { type: 'closingA', durationMinutes: 3, speaker: 'A' },
-  { type: 'closingB', durationMinutes: 3, speaker: 'B' },
-  { type: 'cooldown', durationMinutes: 10, speaker: null },
+const maintainPhases: DisplayPhase[] = [
+  { type: 'prep', durationMinutes: 2 },
+  { type: 'slotA', durationMinutes: 15 },
+  { type: 'slotB', durationMinutes: 15 },
+  { type: 'transition', durationMinutes: 1 },
+  { type: 'slotA', durationMinutes: 15 },
+  { type: 'slotB', durationMinutes: 15 },
+  { type: 'transition', durationMinutes: 1 },
+  { type: 'slotA', durationMinutes: 15 },
+  { type: 'slotB', durationMinutes: 15 },
+  { type: 'closingA', durationMinutes: 3 },
+  { type: 'closingB', durationMinutes: 3 },
+  { type: 'cooldown', durationMinutes: 10 },
 ]
 
 export function MaintainModeSlide(_props: SlideProps) {
@@ -123,19 +122,19 @@ export function MaintainModeSlide(_props: SlideProps) {
 }
 
 // Commitment mode phases (simplified for display - in minutes)
-const commitmentPhases: PhaseConfig[] = [
-  { type: 'prep', durationMinutes: 2, speaker: null },
-  { type: 'slotA', durationMinutes: 10, speaker: 'A' },
-  { type: 'slotB', durationMinutes: 10, speaker: 'B' },
-  { type: 'transition', durationMinutes: 1, speaker: null },
-  { type: 'slotA', durationMinutes: 10, speaker: 'A' },
-  { type: 'slotB', durationMinutes: 10, speaker: 'B' },
-  { type: 'transition', durationMinutes: 1, speaker: null },
-  { type: 'slotA', durationMinutes: 10, speaker: 'A' },
-  { type: 'slotB', durationMinutes: 10, speaker: 'B' },
-  { type: 'closingA', durationMinutes: 2, speaker: 'A' },
-  { type: 'closingB', durationMinutes: 2, speaker: 'B' },
-  { type: 'cooldown', durationMinutes: 10, speaker: null },
+const commitmentPhases: DisplayPhase[] = [
+  { type: 'prep', durationMinutes: 2 },
+  { type: 'slotA', durationMinutes: 10 },
+  { type: 'slotB', durationMinutes: 10 },
+  { type: 'transition', durationMinutes: 1 },
+  { type: 'slotA', durationMinutes: 10 },
+  { type: 'slotB', durationMinutes: 10 },
+  { type: 'transition', durationMinutes: 1 },
+  { type: 'slotA', durationMinutes: 10 },
+  { type: 'slotB', durationMinutes: 10 },
+  { type: 'closingA', durationMinutes: 2 },
+  { type: 'closingB', durationMinutes: 2 },
+  { type: 'cooldown', durationMinutes: 10 },
 ]
 
 export function CommitmentModeSlide(_props: SlideProps) {
@@ -158,16 +157,16 @@ export function CommitmentModeSlide(_props: SlideProps) {
 }
 
 // Listening mode phases (simplified for display - in minutes)
-const listeningPhases: PhaseConfig[] = [
-  { type: 'prep', durationMinutes: 1.5, speaker: null },
-  { type: 'slotA', durationMinutes: 10, speaker: 'A' },
-  { type: 'slotB', durationMinutes: 10, speaker: 'B' },
-  { type: 'transition', durationMinutes: 1.5, speaker: null },
-  { type: 'slotA', durationMinutes: 10, speaker: 'A' },
-  { type: 'slotB', durationMinutes: 10, speaker: 'B' },
-  { type: 'closingA', durationMinutes: 2, speaker: 'A' },
-  { type: 'closingB', durationMinutes: 2, speaker: 'B' },
-  { type: 'cooldown', durationMinutes: 10, speaker: null },
+const listeningPhases: DisplayPhase[] = [
+  { type: 'prep', durationMinutes: 1.5 },
+  { type: 'slotA', durationMinutes: 10 },
+  { type: 'slotB', durationMinutes: 10 },
+  { type: 'transition', durationMinutes: 1.5 },
+  { type: 'slotA', durationMinutes: 10 },
+  { type: 'slotB', durationMinutes: 10 },
+  { type: 'closingA', durationMinutes: 2 },
+  { type: 'closingB', durationMinutes: 2 },
+  { type: 'cooldown', durationMinutes: 10 },
 ]
 
 export function ListeningModeSlide(_props: SlideProps) {
