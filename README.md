@@ -287,7 +287,7 @@ src/
 ├── services/            # Browser APIs & Side Effects
 │   ├── AudioService.ts     # Web Audio API Integration
 │   ├── TimerService.ts     # Drift-korrigierter Timer
-│   ├── GuidanceService.ts  # Tip-Logik pro Phase
+│   ├── GuidanceService.ts  # Tipp-Logik pro Phase
 │   └── PersistenceService.ts  # LocalStorage CRUD
 ├── viewModel/           # React Context & Hooks (Domain ↔ UI Bridge)
 │   ├── useSession.ts       # Session-State Management
