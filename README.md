@@ -119,7 +119,7 @@ Für fortgeschrittene Nutzer, die eigene Zeitstrukturen entwickeln möchten.
 
 ### Erstnutzung
 
-1. **App öffnen** – Navigate zu [couples-timer.app] (oder lokal via `npm run dev`)
+1. **App öffnen** – Navigate zu [couples-timer.app](https://couples-timer.app) (oder lokal via `npm run dev`)
 2. **Onboarding durchlaufen** – Einführung in die Methode und App-Nutzung
 3. **Sprache wählen** – Deutsch oder Englisch
 4. **Partnerprofile anlegen** – Namen für beide Partner eingeben (z. B. "Anna & Max")
