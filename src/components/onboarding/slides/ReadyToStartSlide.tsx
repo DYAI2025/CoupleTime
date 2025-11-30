@@ -95,9 +95,7 @@ export function ReadyToStartSlide({ onModeSelect }: SlideProps) {
                 />
                 <div>
                   <div className="font-semibold text-gray-900 dark:text-gray-100">
-                    {option.mode.id === 'listening' && 'Listening'}
-                    {option.mode.id === 'maintain' && 'Maintain'}
-                    {option.mode.id === 'commitment' && 'Commitment'}
+                    {t(option.mode.name, option.mode.id)}
                   </div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">
                     {option.duration}
