@@ -410,7 +410,7 @@ Contributions sind willkommen! Bitte beachte:
 
 ### Moeller-Methode
 - Michael Lukas Moeller: *"Die Wahrheit beginnt zu zweit"*
-- [Wikipedia: Zwiegespräch](https://de.wikipedia.org/wiki/Zwiegespr%C3%A4ch)
+- [Wikipedia: Zwiegespräch](https://de.wikipedia.org/wiki/Zwiegespräch)
 
 ### Technische Docs
 - [React 19 Docs](https://react.dev)
