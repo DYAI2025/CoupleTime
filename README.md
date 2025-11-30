@@ -121,7 +121,7 @@ Für fortgeschrittene Nutzer, die eigene Zeitstrukturen entwickeln möchten.
 
 1. **App öffnen** – Navigate zu [couples-timer.app] (oder lokal via `npm run dev`)
 2. **Onboarding durchlaufen** – Einführung in Methode und App-Nutzung
-3. **Sprache wählen** – Deutsch oder English
+3. **Sprache wählen** – Deutsch oder Englisch
 4. **Partnerprofile anlegen** – Namen für beide Partner eingeben (z. B. "Anna & Max")
 
 ### Session starten
