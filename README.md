@@ -178,7 +178,7 @@ Für fortgeschrittene Nutzer, die eigene Zeitstrukturen entwickeln möchten.
 
 ### Kernfunktionen
 - ✅ **4 wissenschaftlich fundierte Preset-Modi** (Maintain, Commitment, Listening, Custom)
-- ✅ **Präziser Timer** (Genauigkeit: ±1 Sekunde per 30 Minuten)
+- ✅ **Präziser Timer** (Genauigkeit: ±1 Sekunde pro 30 Minuten)
 - ✅ **Audio-Signale** (Klangschalen via Web Audio API)
 - ✅ **Guidance-System** (3 Stufen: minimal, moderate, high)
 - ✅ **Zweisprachig** (Deutsch/English mit i18next)
