@@ -51,29 +51,6 @@ function SettingsPanel({ onClose }: { onClose: () => void }) {
     PersistenceService.saveGuidanceSettings(guidanceSettings)
   }, [guidanceSettings])
 
-  // Guidance settings state
-  const [guidanceSettings, setGuidanceSettings] = useState<GuidanceSettings>(
-    DEFAULT_GUIDANCE_SETTINGS
-  )
-
-  // Load guidance settings on mount
-  useEffect(() => {
-    const settings = PersistenceService.loadGuidanceSettings()
-    setGuidanceSettings(settings)
-  }, [])
-
-  // Handle guidance settings changes
-  const updateGuidanceSetting = useCallback(
-    <K extends keyof GuidanceSettings>(key: K, value: GuidanceSettings[K]) => {
-      setGuidanceSettings((prev) => {
-        const updated = { ...prev, [key]: value }
-        PersistenceService.saveGuidanceSettings(updated)
-        return updated
-      })
-    },
-    []
-  )
-
   // Apply dark mode
   useEffect(() => {
     if (isDark) {
