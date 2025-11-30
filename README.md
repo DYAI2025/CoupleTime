@@ -306,7 +306,7 @@ src/
 ├── i18n/                # Übersetzungen
 │   ├── de/translation.json
 │   └── en/translation.json
-└── public/audio/        # Singing Bowl Sounds (6 WAV-Dateien)
+└── public/audio/        # Singing Bowl Sounds (6 WAV-Dateien, müssen ggf. selbst hinzugefügt werden – siehe Anleitung)
 ```
 
 ### Domain-Driven Design
