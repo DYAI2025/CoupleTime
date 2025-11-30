@@ -30,13 +30,7 @@ export const DEFAULT_GUIDANCE_SETTINGS: GuidanceSettings = {
  * Useful for tests and creating settings objects programmatically
  */
 export function createGuidanceSettings(partial?: Partial<GuidanceSettings>): GuidanceSettings {
-  const defaults: GuidanceSettings = {
-    enableInMaintain: false,
-    showAllTips: false,
-    autoRotateInterval: 20,
-    guidanceMode: 'quick',
-  }
-  return { ...defaults, ...partial }
+  return { ...DEFAULT_GUIDANCE_SETTINGS, ...partial }
 }
 
 /**
