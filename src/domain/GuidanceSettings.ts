@@ -26,6 +26,14 @@ export const DEFAULT_GUIDANCE_SETTINGS: GuidanceSettings = {
 }
 
 /**
+ * Create guidance settings with optional overrides
+ * Useful for tests and creating settings objects programmatically
+ */
+export function createGuidanceSettings(partial?: Partial<GuidanceSettings>): GuidanceSettings {
+  return { ...DEFAULT_GUIDANCE_SETTINGS, ...partial }
+}
+
+/**
  * Validate guidance settings
  */
 export function isValidGuidanceSettings(settings: any): settings is GuidanceSettings {

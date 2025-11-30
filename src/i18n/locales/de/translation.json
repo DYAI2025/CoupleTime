@@ -243,5 +243,90 @@
     "enableInMaintain": "Im Pflege-Modus aktivieren",
     "enableInMaintainDesc": "Anleitungs-Panel in Pflege-Sitzungen anzeigen",
     "autoRotate": "Automatischer Tipp-Wechsel"
+  },
+  "onboarding": {
+    "takeTour": "Tour starten",
+    "skip": "Tour überspringen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "finish": "Sitzung starten",
+    "intro": {
+      "title": "Willkommen beim Zwiegespräch Timer",
+      "subtitle": "Dein Begleiter für strukturierte Paargespräche",
+      "description": "Diese App hilft dir, die Zwiegespräch-Methode zu praktizieren - eine strukturierte Gesprächstechnik, die Raum für tiefe Verbindung und Verständnis zwischen Partnern schafft."
+    },
+    "moeller": {
+      "title": "Die Zwiegespräch-Methode",
+      "description": "Das Zwiegespräch wurde vom Psychologen Michael Lukas Moeller entwickelt und hat tausenden Paaren geholfen, ihre Verbindung durch regelmäßige, bewusste Gespräche zu vertiefen.",
+      "principle1": {
+        "title": "Gleiche Redezeit",
+        "desc": "Jeder Partner bekommt die gleiche ungestörte Zeit, um sich auszudrücken."
+      },
+      "principle2": {
+        "title": "Keine Unterbrechungen",
+        "desc": "Der zuhörende Partner bleibt still und schenkt volle Aufmerksamkeit, ohne zu reagieren."
+      },
+      "principle3": {
+        "title": "Aktives Zuhören",
+        "desc": "Konzentriere dich ganz aufs Verstehen, nicht auf das Formulieren deiner Antwort."
+      }
+    },
+    "adaptations": {
+      "title": "Unsere Anpassungen",
+      "description": "Wir haben die klassische Methode mit Funktionen erweitert, die das Erlebnis vertiefen und emotionale Verbindung unterstützen.",
+      "transition": {
+        "title": "1-minütige stille Übergangsphase",
+        "desc": "Nach jedem Redebeitrag hilft ein Moment der Stille, das Gehörte zu verarbeiten und sich auf das Nächste vorzubereiten."
+      },
+      "regulation": {
+        "title": "Emotionale Regulation",
+        "desc": "Die Pause verhindert reaktive Antworten und gibt Raum, damit Emotionen sich natürlich beruhigen können."
+      },
+      "audio": {
+        "title": "Sanfte Klangschalen-Signale",
+        "desc": "Dezente Audio-Signale markieren Phasenwechsel, sodass du präsent bleiben kannst, ohne auf die Uhr zu schauen."
+      }
+    },
+    "mode": {
+      "minutes": "Minuten",
+      "rounds": "Runden",
+      "frequency": "Häufigkeit",
+      "timeline": "Sitzungsablauf",
+      "maintain": {
+        "title": "Pflege-Modus",
+        "desc": "Wöchentliches Beziehungspflege-Gespräch - für eine starke Verbindung"
+      },
+      "commitment": {
+        "title": "Verbindlichkeits-Modus",
+        "desc": "Stabilisierung in Krisenphasen - häufigere, fokussierte Sitzungen"
+      },
+      "listening": {
+        "title": "Zuhör-Modus",
+        "desc": "Einsteiger-freundlicher Modus mit mehr Anleitung - perfekt für den Start"
+      }
+    },
+    "custom": {
+      "title": "Eigener Modus",
+      "description": "Für fortgeschrittene Nutzer, die volle Kontrolle über ihre Gesprächsstruktur wünschen. Sobald du mit der Methode vertraut bist, erstelle deine perfekte Sitzung.",
+      "feature1": {
+        "title": "Phasendauer anpassen",
+        "desc": "Lege genau fest, wie lange jeder Redebeitrag und Übergang dauert."
+      },
+      "feature2": {
+        "title": "Anzahl der Runden wählen",
+        "desc": "Füge Runden hinzu oder entferne sie, je nach verfügbarer Zeit."
+      },
+      "feature3": {
+        "title": "Konfiguration speichern",
+        "desc": "Erstelle und speichere mehrere eigene Modi für verschiedene Situationen."
+      },
+      "tip": "Tipp: Starte mit einem Voreinstellungs-Modus, um den Rhythmus zu lernen, bevor du anpasst."
+    },
+    "ready": {
+      "title": "Wähle deinen Modus",
+      "subtitle": "Wir empfehlen, für dein erstes Gespräch mit dem Zuhör-Modus zu beginnen.",
+      "recommended": "Empfohlen",
+      "note": "Wähle einen Modus und klicke dann auf \"Sitzung starten\" um dein erstes Gespräch zu beginnen."
+    }
   }
 }

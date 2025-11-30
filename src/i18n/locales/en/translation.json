@@ -243,5 +243,90 @@
     "enableInMaintain": "Enable in Maintain Mode",
     "enableInMaintainDesc": "Show guidance panel in Maintain sessions",
     "autoRotate": "Auto-rotate Interval"
+  },
+  "onboarding": {
+    "takeTour": "Take the tour",
+    "skip": "Skip tour",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Start Session",
+    "intro": {
+      "title": "Welcome to Couples Timer",
+      "subtitle": "Your guide to structured partner conversations",
+      "description": "This tool helps you practice the Zwiegespräch method - a structured conversation technique that creates space for deep connection and understanding between partners."
+    },
+    "moeller": {
+      "title": "The Zwiegespräch Method",
+      "description": "Developed by psychologist Michael Lukas Moeller, the Zwiegespräch is a structured dialogue method that has helped thousands of couples deepen their connection through regular, intentional conversations.",
+      "principle1": {
+        "title": "Equal speaking time",
+        "desc": "Each partner gets the same amount of uninterrupted time to express themselves."
+      },
+      "principle2": {
+        "title": "No interruptions",
+        "desc": "The listening partner remains silent, giving full attention without responding."
+      },
+      "principle3": {
+        "title": "Active listening",
+        "desc": "Focus entirely on understanding, not on formulating your response."
+      }
+    },
+    "adaptations": {
+      "title": "Our Adaptations",
+      "description": "We've enhanced the classic method with features designed to deepen the experience and support emotional connection.",
+      "transition": {
+        "title": "1-minute silent transition",
+        "desc": "After each speaking turn, a moment of silence helps process what was shared and prepare for what comes next."
+      },
+      "regulation": {
+        "title": "Emotional regulation",
+        "desc": "The pause prevents reactive responses and gives space for emotions to settle naturally."
+      },
+      "audio": {
+        "title": "Gentle singing bowl cues",
+        "desc": "Subtle audio signals mark phase transitions, so you can stay present without watching the clock."
+      }
+    },
+    "mode": {
+      "minutes": "minutes",
+      "rounds": "rounds",
+      "frequency": "frequency",
+      "timeline": "Session Timeline",
+      "maintain": {
+        "title": "Maintain Mode",
+        "desc": "Weekly relationship maintenance conversation - keep connection strong"
+      },
+      "commitment": {
+        "title": "Commitment Mode",
+        "desc": "Stabilization during crisis phases - more frequent, focused sessions"
+      },
+      "listening": {
+        "title": "Listening Mode",
+        "desc": "Beginner-friendly mode with more guidance - perfect for starting out"
+      }
+    },
+    "custom": {
+      "title": "Custom Mode",
+      "description": "For advanced users who want full control over their conversation structure. Once you're familiar with the method, create your own perfect session.",
+      "feature1": {
+        "title": "Adjust phase durations",
+        "desc": "Set exactly how long each speaking turn and transition lasts."
+      },
+      "feature2": {
+        "title": "Choose number of rounds",
+        "desc": "Add or remove rounds to match your available time."
+      },
+      "feature3": {
+        "title": "Save your configuration",
+        "desc": "Create and save multiple custom modes for different situations."
+      },
+      "tip": "Tip: Start with a preset mode to learn the rhythm before customizing."
+    },
+    "ready": {
+      "title": "Choose Your Mode",
+      "subtitle": "We recommend starting with Listening Mode for your first conversation.",
+      "recommended": "Recommended",
+      "note": "Select a mode, then click \"Start Session\" to begin your first conversation."
+    }
   }
 }
