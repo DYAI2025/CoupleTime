@@ -423,7 +423,7 @@ Contributions sind willkommen! Bitte beachte:
 
 ## 📄 Lizenz
 
-Dieses Projekt ist Open Source und unter der **MIT License** lizenziert. Siehe [LICENSE](LICENSE) für Details.
+Dieses Projekt ist Open Source und unter der **MIT License** lizenziert. Siehe [MIT License](https://opensource.org/licenses/MIT) für Details.
 
 ---
 
