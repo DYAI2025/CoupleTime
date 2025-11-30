@@ -181,7 +181,7 @@ Für fortgeschrittene Nutzer, die eigene Zeitstrukturen entwickeln möchten.
 - ✅ **Präziser Timer** (Genauigkeit: ±1 Sekunde pro 30 Minuten)
 - ✅ **Audio-Signale** (Klangschalen via Web Audio API)
 - ✅ **Guidance-System** (3 Stufen: minimal, moderate, high)
-- ✅ **Zweisprachig** (Deutsch/English mit i18next)
+- ✅ **Zweisprachig** (Deutsch/Englisch mit i18next)
 - ✅ **Onboarding** für Erstnutzer
 - ✅ **Partnernamen** individuell anpassbar
 
