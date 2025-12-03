@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 interface QuickTipsViewProps {
   showAllTips?: boolean
+  tips?: string[]
 }
 
 /**
@@ -12,13 +13,17 @@ interface QuickTipsViewProps {
  */
 export function QuickTipsView({
   showAllTips = false,
+  tips,
 }: QuickTipsViewProps) {
   const { t } = useTranslation()
-  const { tips, randomTip } = useSession()
+  const { tips: sessionTips, randomTip } = useSession()
+  const availableTips = tips ?? sessionTips ?? []
   const [currentTipIndex, setCurrentTipIndex] = useState(0)
 
   // Filter tips based on showAllTips setting
-  const displayTips = showAllTips ? tips : [randomTip].filter(Boolean) as string[]
+  const displayTips = showAllTips
+    ? availableTips
+    : [randomTip ?? availableTips[0]].filter(Boolean) as string[]
 
 
   if (displayTips.length === 0) {

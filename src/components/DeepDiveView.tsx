@@ -4,17 +4,21 @@ import { useTranslation } from 'react-i18next'
 
 interface DeepDiveViewProps {
   showAllTips?: boolean
+  tips?: string[]
 }
 
 /**
  * Deep Dive view showing all tips in card format
  */
-export function DeepDiveView({ showAllTips = false }: DeepDiveViewProps) {
+export function DeepDiveView({ showAllTips = false, tips }: DeepDiveViewProps) {
   const { t } = useTranslation()
-  const { tips, randomTip } = useSession()
+  const { tips: sessionTips, randomTip } = useSession()
+  const availableTips = tips ?? sessionTips ?? []
 
   // Filter tips based on showAllTips setting
-  const displayTips = showAllTips ? tips : [randomTip].filter(Boolean) as string[]
+  const displayTips = showAllTips
+    ? availableTips
+    : [randomTip ?? availableTips[0]].filter(Boolean) as string[]
 
   if (displayTips.length === 0) {
     return (
