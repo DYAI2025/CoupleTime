@@ -57,13 +57,23 @@ export interface SessionViewModel {
 /**
  * Transform SessionState into SessionViewModel
  */
-export function createSessionViewModel(state: SessionState): SessionViewModel {
+export function createSessionViewModel(state: SessionState, participantConfig?: { nameA: string; nameB: string }): SessionViewModel {
   const currentPhase = getCurrentPhase(state)
   const phaseType = currentPhase?.type ?? null
   const speaker = phaseType ? getSpeakerForPhase(phaseType) : Speaker.None
 
   const phaseProgress = getPhaseProgress(state)
   const sessionProgress = getSessionProgress(state)
+
+  // Determine speaker display name based on participant config
+  let speakerDisplayName = getSpeakerDisplayName(speaker);
+  if (participantConfig) {
+    if (speaker === Speaker.A) {
+      speakerDisplayName = participantConfig.nameA;
+    } else if (speaker === Speaker.B) {
+      speakerDisplayName = participantConfig.nameB;
+    }
+  }
 
   return {
     // Status
@@ -88,7 +98,7 @@ export function createSessionViewModel(state: SessionState): SessionViewModel {
 
     // Speaker info
     speaker,
-    speakerDisplayName: getSpeakerDisplayName(speaker),
+    speakerDisplayName,
     isSpeakerA: speaker === Speaker.A,
     isSpeakerB: speaker === Speaker.B,
 

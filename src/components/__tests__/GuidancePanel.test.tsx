@@ -282,6 +282,7 @@ describe('GuidancePanel', () => {
         <GuidancePanel
           settings={settings}
           onSettingsChange={mockOnSettingsChange}
+          currentPhaseTips={[]}
         />
       )
 

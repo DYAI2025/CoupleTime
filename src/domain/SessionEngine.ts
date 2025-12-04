@@ -101,6 +101,10 @@ export class SessionEngine {
     await this.audioService.enable()
     await this.audioService.play(AudioEvent.SessionStart)
 
+    // Play audio for the first phase start if it's a speaking phase
+    // This ensures we have the start gong at the beginning of the first speaking phase
+    this.playPhaseStartAudio(firstPhase.type)
+
     // Start timer
     const timerCallback: TimerCallback = {
       onTick: (elapsedSeconds) => this.handleTick(elapsedSeconds),

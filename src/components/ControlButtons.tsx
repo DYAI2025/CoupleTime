@@ -1,4 +1,4 @@
-import { useSessionViewModel, useSessionActions } from '../contexts/SessionContext'
+import { useSessionViewModel, useSession } from '../contexts/SessionContext'
 import type { SessionMode } from '../domain/SessionMode'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
@@ -70,25 +70,25 @@ export function ControlButtons({
 }: ControlButtonsProps) {
   const { t } = useTranslation()
   const viewModel = useSessionViewModel()
-  const { start, pause, resume, stop } = useSessionActions()
+  const session = useSession()
 
   const handlePlayPause = async () => {
     if (viewModel.canStart) {
       if (selectedMode) {
-        await start(selectedMode)
+        await session.start(selectedMode, session.participantConfig)
       } else if (onSelectMode) {
         onSelectMode()
       }
     } else if (viewModel.canPause) {
-      pause()
+      session.pause()
     } else if (viewModel.canResume) {
-      resume()
+      session.resume()
     }
   }
 
   const handleStop = () => {
     if (viewModel.canStop) {
-      stop()
+      session.stop()
     }
   }
 
@@ -177,7 +177,7 @@ export function ControlButtons({
 export function ControlButtonsMinimal() {
   const { t } = useTranslation()
   const viewModel = useSessionViewModel()
-  const { pause, resume, stop } = useSessionActions()
+  const session = useSession()
 
   if (viewModel.isIdle || viewModel.isFinished) {
     return null
@@ -186,7 +186,7 @@ export function ControlButtonsMinimal() {
   return (
     <div className="flex items-center gap-2">
       <button
-        onClick={viewModel.canPause ? pause : resume}
+        onClick={viewModel.canPause ? session.pause : session.resume}
         className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         aria-label={viewModel.canPause ? t('controls.pause', 'Pause') : t('controls.resume', 'Resume')}
       >
@@ -197,7 +197,7 @@ export function ControlButtonsMinimal() {
         )}
       </button>
       <button
-        onClick={stop}
+        onClick={session.stop}
         className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         aria-label={t('controls.stop', 'Stop')}
       >
@@ -220,10 +220,10 @@ export function StartButton({
   fullWidth?: boolean
 }) {
   const { t } = useTranslation()
-  const { start } = useSessionActions()
+  const session = useSession()
 
   const handleStart = async () => {
-    await start(mode)
+    await session.start(mode, session.participantConfig)
   }
 
   return (

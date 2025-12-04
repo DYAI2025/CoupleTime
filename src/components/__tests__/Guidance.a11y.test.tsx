@@ -136,7 +136,7 @@ describe('Guidance Components - Accessibility Tests', () => {
 
   describe('DeepDiveView Accessibility', () => {
     it('uses semantic HTML with proper heading hierarchy', () => {
-      render(<DeepDiveView />)
+      render(<DeepDiveView tips={[]} showAllTips={false} />)
 
       // Section titles should be h2
       const sectionHeadings = screen.getAllByRole('heading', { level: 2 })
@@ -145,7 +145,7 @@ describe('Guidance Components - Accessibility Tests', () => {
     })
 
     it('card titles use proper heading elements', () => {
-      render(<DeepDiveView />)
+      render(<DeepDiveView tips={[]} showAllTips={false} />)
 
       // Card titles should be h3
       const cardHeadings = screen.getAllByRole('heading', { level: 3 })
@@ -154,7 +154,7 @@ describe('Guidance Components - Accessibility Tests', () => {
     })
 
     it('cards have readable structure', () => {
-      render(<DeepDiveView />)
+      render(<DeepDiveView tips={[]} showAllTips={false} />)
 
       // Check first card has all elements
       expect(screen.getByText('Schedule Agreement')).toBeInTheDocument()
@@ -162,7 +162,7 @@ describe('Guidance Components - Accessibility Tests', () => {
     })
 
     it('icons have proper visual representation', () => {
-      const { container } = render(<DeepDiveView />)
+      const { container } = render(<DeepDiveView tips={[]} showAllTips={false} />)
 
       // Icons should be SVG elements
       const svgs = container.querySelectorAll('svg')
@@ -170,7 +170,7 @@ describe('Guidance Components - Accessibility Tests', () => {
     })
 
     it('content is structured for easy navigation', () => {
-      render(<DeepDiveView />)
+      render(<DeepDiveView tips={[]} showAllTips={false} />)
 
       // Should have multiple sections
       const sections = screen.getAllByRole('heading', { level: 2 })
@@ -311,7 +311,7 @@ describe('Guidance Components - Accessibility Tests', () => {
     })
 
     it('DeepDiveView cards have visible text', () => {
-      render(<DeepDiveView />)
+      render(<DeepDiveView tips={[]} showAllTips={false} />)
 
       const cardTitle = screen.getByText('Schedule Agreement')
       const cardContent = screen.getByText('Plan together')

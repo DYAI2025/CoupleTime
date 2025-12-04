@@ -1,7 +1,8 @@
 {
   "app": {
     "title": "Couples Timer",
-    "subtitle": "Structured conversations for couples"
+    "subtitle": "Structured conversations for couples",
+    "tagline": "Create space for meaningful connection"
   },
   "modes": {
     "presets": "Preset Modes",
@@ -50,6 +51,13 @@
       "mode": "Mode",
       "duration": "Duration",
       "newSession": "Start New Session"
+    },
+    "setup": {
+      "title": "Session Setup",
+      "nameA": "Partner A Name",
+      "nameB": "Partner B Name",
+      "colorA": "Partner A Color",
+      "colorB": "Partner B Color"
     }
   },
   "controls": {
@@ -200,7 +208,13 @@
     "cancel": "Cancel",
     "save": "Save",
     "delete": "Delete",
-    "edit": "Edit"
+    "edit": "Edit",
+    "reset": "Reset",
+    "selectColor": "Select",
+    "color": "color",
+    "background": "Background Settings",
+    "primaryColor": "Primary Color",
+    "back": "Back"
   },
   "builder": {
     "createMode": "Create Custom Mode",
@@ -243,6 +257,46 @@
     "enableInMaintain": "Enable in Maintain Mode",
     "enableInMaintainDesc": "Show guidance panel in Maintain sessions",
     "autoRotate": "Auto-rotate Interval"
+  },
+  "tipsPage": {
+    "title": "Valuable Tips",
+    "beforeSession": {
+      "title": "Before the Session",
+      "item1": "Schedule a fixed weekly time (e.g., 90 min) and set a specific start time",
+      "item2": "Create a quiet, disturbance-free environment without distractions",
+      "item3": "Agree on a fixed speaking time (e.g., 15 min) and strict listening protocol",
+      "item4": "Make the session a fixed, non-negotiable ritual"
+    },
+    "duringSession": {
+      "title": "During the Session",
+      "item1": "Your only task as listener is to listen with full attention, without your own agenda",
+      "item2": "Absolute prohibition: No interrupting, judging, advising, or non-verbal rejection",
+      "item3": "When your partner pauses to think, remain still even if the silence feels long",
+      "item4": "As speaker, use \"I feel/think\" expressions and avoid accusations"
+    },
+    "whenTriggered": {
+      "title": "When I Feel Triggered",
+      "item1": "Call time-out as soon as you or your partner feel emotionally overwhelmed",
+      "item2": "Use the pause for calming activities, not to brood",
+      "item3": "Resume the dialogue within 24 hours to prevent escalation",
+      "item4": "Focus on understanding rather than defending"
+    },
+    "basicRules": {
+      "title": "Basic Conversation Rules",
+      "speaker": "Speaker Guidelines",
+      "listener": "Listener Guidelines",
+      "speakerRule1": "Use \"I feel/think\" expressions",
+      "speakerRule2": "Avoid accusations",
+      "speakerRule3": "No interrupting, judging, or giving advice",
+      "listenerRule1": "Listen attentively without judgment",
+      "listenerRule2": "Maintain eye contact",
+      "listenerRule3": "No interrupting, commenting, or dismissing"
+    }
+  },
+  "focusMode": {
+    "enter": "Focus mode",
+    "exit": "Exit focus mode",
+    "unsupported": "Focus mode unsupported"
   },
   "onboarding": {
     "takeTour": "Take the tour",

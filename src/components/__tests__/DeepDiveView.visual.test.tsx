@@ -15,7 +15,7 @@ describe('DeepDiveView - Visual Integration', () => {
 
     const { container } = render(
       <I18nextProvider i18n={i18n}>
-        <DeepDiveView />
+        <DeepDiveView tips={[]} showAllTips={false} />
       </I18nextProvider>
     )
 
@@ -29,7 +29,7 @@ describe('DeepDiveView - Visual Integration', () => {
 
     const { container } = render(
       <I18nextProvider i18n={i18n}>
-        <DeepDiveView />
+        <DeepDiveView tips={[]} showAllTips={false} />
       </I18nextProvider>
     )
 
@@ -42,7 +42,7 @@ describe('DeepDiveView - Visual Integration', () => {
 
     const { container } = render(
       <I18nextProvider i18n={i18n}>
-        <DeepDiveView />
+        <DeepDiveView tips={[]} showAllTips={false} />
       </I18nextProvider>
     )
 

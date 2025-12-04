@@ -62,7 +62,7 @@ describe('DeepDiveView', () => {
       return key
     })
 
-    render(<DeepDiveView />)
+    render(<DeepDiveView tips={[]} showAllTips={false} />)
 
     expect(screen.getByText('Phase 1: Preparation')).toBeInTheDocument()
     expect(screen.getByText('Phase 2: During Listening')).toBeInTheDocument()
@@ -92,7 +92,7 @@ describe('DeepDiveView', () => {
       return key
     })
 
-    render(<DeepDiveView />)
+    render(<DeepDiveView tips={[]} showAllTips={false} />)
 
     expect(screen.getByText('Custom Before Title')).toBeInTheDocument()
     expect(screen.getByText('Custom During Title')).toBeInTheDocument()
@@ -139,7 +139,7 @@ describe('DeepDiveView', () => {
       return key
     })
 
-    render(<DeepDiveView />)
+    render(<DeepDiveView tips={[]} showAllTips={false} />)
 
     expect(screen.getByText('Card 1')).toBeInTheDocument()
     expect(screen.getByText('Content 1')).toBeInTheDocument()
@@ -178,7 +178,7 @@ describe('DeepDiveView', () => {
       return key
     })
 
-    const { container } = render(<DeepDiveView />)
+    const { container } = render(<DeepDiveView tips={[]} showAllTips={false} />)
 
     // Check title and content
     expect(screen.getByText('Schedule Agreement')).toBeInTheDocument()
@@ -218,7 +218,7 @@ describe('DeepDiveView', () => {
       return key
     })
 
-    const { container } = render(<DeepDiveView />)
+    const { container } = render(<DeepDiveView tips={[]} showAllTips={false} />)
 
     // Check that sections are rendered with headings
     const headings = container.querySelectorAll('h2, h3')
@@ -264,7 +264,7 @@ describe('DeepDiveView', () => {
       return key
     })
 
-    const { container } = render(<DeepDiveView />)
+    const { container } = render(<DeepDiveView tips={[]} showAllTips={false} />)
 
     // Check that SVG icons are rendered for each card
     const svgs = container.querySelectorAll('svg')
@@ -294,7 +294,7 @@ describe('DeepDiveView', () => {
       return key
     })
 
-    const { container } = render(<DeepDiveView />)
+    const { container } = render(<DeepDiveView tips={[]} showAllTips={false} />)
 
     // Should still render section titles
     expect(screen.getByText('Phase 1: Preparation')).toBeInTheDocument()

@@ -1,7 +1,8 @@
 {
   "app": {
     "title": "Zwiegespräch Timer",
-    "subtitle": "Strukturierte Gespräche für Paare"
+    "subtitle": "Strukturierte Gespräche für Paare",
+    "tagline": "Schafft Raum für bedeutsame Verbindung"
   },
   "modes": {
     "presets": "Voreinstellungen",
@@ -50,6 +51,13 @@
       "mode": "Modus",
       "duration": "Dauer",
       "newSession": "Neue Sitzung starten"
+    },
+    "setup": {
+      "title": "Sitzungseinrichtung",
+      "nameA": "Name von Partner A",
+      "nameB": "Name von Partner B",
+      "colorA": "Farbe von Partner A",
+      "colorB": "Farbe von Partner B"
     }
   },
   "controls": {
@@ -200,7 +208,13 @@
     "cancel": "Abbrechen",
     "save": "Speichern",
     "delete": "Löschen",
-    "edit": "Bearbeiten"
+    "edit": "Bearbeiten",
+    "reset": "Zurücksetzen",
+    "selectColor": "Auswählen",
+    "color": "Farbe",
+    "background": "Hintergrund-Einstellungen",
+    "primaryColor": "Primärfarbe",
+    "back": "Zurück"
   },
   "builder": {
     "createMode": "Eigenen Modus erstellen",
@@ -244,6 +258,46 @@
     "enableInMaintainDesc": "Anleitungs-Panel in Pflege-Sitzungen anzeigen",
     "autoRotate": "Automatischer Tipp-Wechsel"
   },
+  "tipsPage": {
+    "title": "Wertvolle Tipps",
+    "beforeSession": {
+      "title": "Vor der Sitzung",
+      "item1": "Vereinbart einen festen wöchentlichen Termin (z.B. 90 Min.) und setzt eine konkrete Startzeit",
+      "item2": "Schafft einen ruhigen, störungsfreien Raum ohne Ablenkungen",
+      "item3": "Vereinbart eine feste Sprechzeit (z.B. 15 Min.) und ein striktes Zuhör-Protokoll",
+      "item4": "Macht die Sitzung zu einem festen, unverhandelbaren Ritual"
+    },
+    "duringSession": {
+      "title": "Während der Sitzung",
+      "item1": "Eure einzige Aufgabe als Zuhörer ist es, mit voller Aufmerksamkeit zuzuhören, ohne eigene Agenda",
+      "item2": "Absolutes Verbot: Kein Unterbrechen, Beurteilen, Raten oder non-verbale Ablehnung",
+      "item3": "Wenn euer Partner pausiert um nachzudenken, bleibt still, auch wenn die Stille lang erscheint",
+      "item4": "Als Sprecher verwendet \"Ich fühle/denke\"-Ausdrücke und vermeidet Anschuldigungen"
+    },
+    "whenTriggered": {
+      "title": "Wenn ich ausgelöst fühle",
+      "item1": "Ruft eine Auszeit, sobald ihr oder euer Partner euch emotional überwältigt fühlt",
+      "item2": "Nutzt die Pause für beruhigende Aktivitäten, nicht zum Grübeln",
+      "item3": "Setzt den Dialog innerhalb von 24 Stunden fort, um eine Eskalation zu vermeiden",
+      "item4": "Konzentriert euch auf Verständnis statt Verteidigung"
+    },
+    "basicRules": {
+      "title": "Grundlegende Gesprächsregeln",
+      "speaker": "Sprecher-Richtlinien",
+      "listener": "Zuhörer-Richtlinien",
+      "speakerRule1": "Verwendet \"Ich fühle/denke\"-Ausdrücke",
+      "speakerRule2": "Vermeidet Anschuldigungen",
+      "speakerRule3": "Kein Unterbrechen, Beurteilen oder Ratschläge geben",
+      "listenerRule1": "Hört aufmerksam und ohne zu urteilen zu",
+      "listenerRule2": "Haltet Blickkontakt",
+      "listenerRule3": "Kein Unterbrechen, Kommentieren oder Ablehnen"
+    }
+  },
+  "focusMode": {
+    "enter": "Fokus-Modus",
+    "exit": "Fokus-Modus verlassen",
+    "unsupported": "Fokus-Modus nicht unterstützt"
+  },
   "onboarding": {
     "takeTour": "Tour starten",
     "skip": "Tour überspringen",
@@ -280,7 +334,7 @@
       },
       "regulation": {
         "title": "Emotionale Regulation",
-        "desc": "Die Pause verhindert reaktive Antworten und gibt Raum, damit Emotionen sich natürlich beruhigen können."
+        "desc": "Die Pause verhindert reaktive Antworten und gibt Raum, damit Emotionen sich natürlich beruhen können."
       },
       "audio": {
         "title": "Sanfte Klangschalen-Signale",

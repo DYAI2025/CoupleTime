@@ -1,24 +1,24 @@
 /**
- * Configuration for guidance display settings
+ * Configuration for guidance settings
+ * Controls tip behavior during sessions
  */
 export interface GuidanceSettings {
-  /** Enable guidance tips in Maintain mode (otherwise disabled) */
-  enableInMaintain: boolean
-
-  /** Show all available tips during the session */
-  showAllTips: boolean
-
-  /** Auto-rotate interval in seconds (10-60) */
-  autoRotateInterval: number
-
-  /** Guidance mode (quick tips or deep dive) */
-  guidanceMode: 'quick' | 'deep-dive'
+  autoRotation: boolean;
+  interval: number; // in seconds
+  showAll: boolean;
+  enableInMaintain: boolean;
+  showAllTips: boolean;
+  autoRotateInterval: number;
+  guidanceMode: 'quick' | 'deep-dive';
 }
 
 /**
  * Default guidance settings
  */
 export const DEFAULT_GUIDANCE_SETTINGS: GuidanceSettings = {
+  autoRotation: true,
+  interval: 25, // seconds
+  showAll: false,
   enableInMaintain: true,
   showAllTips: false,
   autoRotateInterval: 30,
@@ -39,6 +39,11 @@ export function createGuidanceSettings(partial?: Partial<GuidanceSettings>): Gui
 export function isValidGuidanceSettings(settings: any): settings is GuidanceSettings {
   return (
     typeof settings === 'object' &&
+    typeof settings.autoRotation === 'boolean' &&
+    typeof settings.interval === 'number' &&
+    settings.interval >= 10 &&
+    settings.interval <= 60 &&
+    typeof settings.showAll === 'boolean' &&
     typeof settings.enableInMaintain === 'boolean' &&
     typeof settings.showAllTips === 'boolean' &&
     typeof settings.autoRotateInterval === 'number' &&

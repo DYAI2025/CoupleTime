@@ -1,5 +1,5 @@
-import { useState } from 'react'
 import { useSession } from '../contexts/SessionContext'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 
@@ -24,7 +24,6 @@ export function QuickTipsView({
   const displayTips = showAllTips
     ? availableTips
     : [randomTip ?? availableTips[0]].filter(Boolean) as string[]
-
 
   if (displayTips.length === 0) {
     return null

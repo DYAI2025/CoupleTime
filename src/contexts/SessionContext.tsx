@@ -8,6 +8,8 @@ import { AudioService, AudioServiceProtocol } from '../services/AudioService'
 import { TimerService, TimerServiceProtocol } from '../services/TimerService'
 import { GuidanceService, GuidanceServiceProtocol } from '../services/GuidanceService'
 import { PersistenceService, PersistenceServiceProtocol } from '../services/PersistenceService'
+import { ParticipantConfig, createDefaultParticipantConfig } from '../domain/ParticipantConfig'
+import { participantPersistenceService } from '../services/ParticipantPersistenceService'
 
 /**
  * Session context value
@@ -19,11 +21,15 @@ interface SessionContextValue {
   // Raw state (for advanced use)
   state: SessionState
 
+  // Participant configuration
+  participantConfig: ParticipantConfig
+
   // Actions
-  start: (mode: SessionMode) => Promise<boolean>
+  start: (mode: SessionMode, participantConfig?: ParticipantConfig) => Promise<boolean>
   pause: () => void
   resume: () => void
   stop: () => void
+  updateParticipantConfig: (config: ParticipantConfig) => void
 
   // Presets
   presets: SessionMode[]
@@ -75,6 +81,11 @@ export function SessionProvider({
   // Session state
   const [state, setState] = useState<SessionState>(createInitialState)
 
+  // Participant configuration
+  const [participantConfig, setParticipantConfig] = useState<ParticipantConfig>(() =>
+    participantPersistenceService.loadConfig()
+  )
+
   // Custom modes from persistence
   const [customModes, setCustomModes] = useState<SessionMode[]>(() =>
     persistenceService.loadCustomModes()
@@ -87,8 +98,9 @@ export function SessionProvider({
   }, [engine])
 
   // Actions
-  const start = useCallback(async (mode: SessionMode): Promise<boolean> => {
-    const success = await engine.start(mode)
+  const start = useCallback(async (mode: SessionMode, participantConfig?: ParticipantConfig): Promise<boolean> => {
+    const config = participantConfig || participantPersistenceService.loadConfig()
+    const success = await engine.start(mode, config)
     if (success) {
       persistenceService.updateSetting('lastUsedModeId', mode.id)
     }
@@ -106,6 +118,11 @@ export function SessionProvider({
   const stop = useCallback(() => {
     engine.stop()
   }, [engine])
+
+  const updateParticipantConfig = useCallback((config: ParticipantConfig) => {
+    participantPersistenceService.saveConfig(config)
+    setParticipantConfig(config)
+  }, [])
 
   // Custom mode management
   const addCustomMode = useCallback((mode: SessionMode) => {
@@ -131,7 +148,7 @@ export function SessionProvider({
   ], [])
 
   // View model
-  const viewModel = useMemo(() => createSessionViewModel(state), [state])
+  const viewModel = useMemo(() => createSessionViewModel(state, participantConfig), [state, participantConfig])
 
   // Tips
   const tips = useMemo(() => engine.getTips(), [state]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -140,10 +157,12 @@ export function SessionProvider({
   const value: SessionContextValue = {
     viewModel,
     state,
+    participantConfig,
     start,
     pause,
     resume,
     stop,
+    updateParticipantConfig,
     presets,
     customModes,
     addCustomMode,

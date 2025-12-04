@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useSession, useSessionViewModel } from '../contexts/SessionContext'
 import type { SessionMode } from '../domain/SessionMode'
 import { TimerDisplay } from './TimerDisplay'
@@ -7,8 +7,8 @@ import { ProgressBar, SessionProgressBar } from './ProgressBar'
 import { ControlButtons, StartButton } from './ControlButtons'
 import { ModeSelector } from './ModeSelector'
 import { TipDisplay } from './TipDisplay'
-import { SettingsButton } from './Settings'
-import { GuidancePanel } from './GuidancePanel'
+import { EnhancedSettingsButton } from './EnhancedSettings'
+import GuidancePanel from './GuidancePanel'
 import { OnboardingModal } from './onboarding/OnboardingModal'
 import { GuidanceSettings, DEFAULT_GUIDANCE_SETTINGS } from '../domain/GuidanceSettings'
 import { PersistenceService } from '../services/PersistenceService'
@@ -79,11 +79,11 @@ function ModeSelectionView({
               {t('app.title', 'Couples Timer')}
             </h1>
             <p className="mt-2 text-gray-600 dark:text-gray-400">
-              {t('app.subtitle', 'Structured conversation for couples')}
+              {t('app.tagline', 'Create space for meaningful connection')}
             </p>
           </div>
           <div className="flex-1 flex justify-end">
-            <SettingsButton />
+            <EnhancedSettingsButton />
           </div>
         </div>
       </header>
@@ -152,14 +152,6 @@ function ActiveSessionView() {
     setGuidanceSettings(settings)
   }, [])
 
-  // Handle settings changes with persistence
-  const handleGuidanceSettingsChange = useCallback((partial: Partial<GuidanceSettings>) => {
-    setGuidanceSettings(prev => {
-      const updated = { ...prev, ...partial }
-      PersistenceService.saveGuidanceSettings(updated)
-      return updated
-    })
-  }, [])
 
   // Get tips from session context
   const currentPhaseTips = session.tips || []
@@ -206,7 +198,6 @@ function ActiveSessionView() {
       {/* Guidance Panel - Fixed at bottom */}
       <GuidancePanel
         settings={guidanceSettings}
-        onSettingsChange={handleGuidanceSettingsChange}
         currentPhaseTips={currentPhaseTips}
       />
     </div>
