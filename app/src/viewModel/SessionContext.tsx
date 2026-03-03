@@ -5,26 +5,49 @@ import {
 import type { SessionMode } from '@/domain/SessionMode'
 import { getTotalDuration } from '@/domain/SessionMode'
 import type { PhaseConfig } from '@/domain/PhaseConfig'
-import { SessionEngine, type SessionState } from '@/domain/SessionEngine'
-import { getStreakService } from '@/services/StreakService'
+import { SessionEngine, type SessionState, loadSavedSessionState } from '@/domain/SessionEngine'
 import { getTimerService } from '@/services/TimerService'
 import { getAudioService } from '@/services/AudioService'
+import { getStreakService } from '@/services/StreakService'
+import { getParticipantService, type ParticipantConfig } from '@/services/ParticipantService'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function fmtTime(seconds: number): string {
   const s = Math.max(0, Math.round(seconds))
   const m = Math.floor(s / 60)
-  const sec = s % 60
-  return `${m}:${sec.toString().padStart(2, '0')}`
+  return `${m}:${(s % 60).toString().padStart(2, '0')}`
 }
 
-function phaseProgress(remaining: number, totalDuration: number): number {
-  if (totalDuration <= 0) return 0
-  return Math.min(1, Math.max(0, (totalDuration - remaining) / totalDuration))
+// ── Phase instruction maps (with {nameA}/{nameB} placeholders) ────────────────
+
+const INSTRUCTION_MAP: Record<string, string> = {
+  prep:       'Bitte ankommen',
+  slotA:      '{nameA} spricht',
+  slotB:      '{nameB} spricht',
+  transition: 'Kurze Pause',
+  closingA:   '{nameA} – Abschluss',
+  closingB:   '{nameB} – Abschluss',
+  cooldown:   'Stille – kein Nachgespräch',
 }
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+const SUBTITLE_MAP: Record<string, string> = {
+  prep:       'Atmet tief durch und kommt zur Ruhe.',
+  slotA:      '{nameB}: Bitte still zuhören, nicht unterbrechen.',
+  slotB:      '{nameA}: Bitte still zuhören, nicht unterbrechen.',
+  transition: 'Verarbeitet das Gehörte in Stille.',
+  closingA:   '{nameB}: Bitte still zuhören.',
+  closingB:   '{nameA}: Bitte still zuhören.',
+  cooldown:   'Lasst das Gespräch wirken. Keine Diskussion jetzt.',
+}
+
+function substitute(template: string, names: ParticipantConfig): string {
+  return template
+    .replace(/\{nameA\}/g, names.nameA)
+    .replace(/\{nameB\}/g, names.nameB)
+}
+
+// ── Context type ──────────────────────────────────────────────────────────────
 
 export interface SessionContextValue {
   // State
@@ -33,27 +56,33 @@ export interface SessionContextValue {
   isPaused: boolean
   isFinished: boolean
   selectedMode: SessionMode | null
+  hasSavedSession: boolean
 
-  // Current phase
+  // Participant
+  nameA: string
+  nameB: string
+  transitionSec: number
+  setParticipant: (nameA: string, nameB: string) => void
+  setTransitionSec: (sec: number) => void
+
+  // Phase
   currentPhase: PhaseConfig | null
   currentPhaseIndex: number
   totalPhases: number
   remainingTimeFormatted: string
   remainingSeconds: number
-  progressFraction: number      // 0–1, current phase
-  sessionProgressFraction: number // 0–1, whole session
+  progressFraction: number
+  sessionProgressFraction: number
 
-  // Speaker / role
-  speaker: 'A' | 'B' | null    // null = no speaker (prep/transition/cooldown)
-  speakerName: string           // "Partner A" etc.
-  phaseInstruction: string      // big action text shown on screen
-  phaseSubtitle: string         // secondary instruction
+  // Speaker / instruction
+  speaker: 'A' | 'B' | null
+  speakerName: string
+  phaseInstruction: string
+  phaseSubtitle: string
+  phaseFocusText: string    // custom focus text from PhaseConfig
 
-  // Next phase preview
+  // Preview
   nextPhase: PhaseConfig | null
-
-  // Tips
-  tips: string[]
 
   // Actions
   selectMode: (mode: SessionMode) => void
@@ -61,6 +90,8 @@ export interface SessionContextValue {
   pause: () => void
   resume: () => void
   stop: () => void
+  restoreSavedSession: () => void
+  discardSavedSession: () => void
 }
 
 // ── Context ───────────────────────────────────────────────────────────────────
@@ -69,49 +100,46 @@ const SessionContext = createContext<SessionContextValue | null>(null)
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const engineRef = useRef<SessionEngine | null>(null)
-
   const [selectedMode, setSelectedMode] = useState<SessionMode | null>(null)
+  const [hasSavedSession, setHasSavedSession] = useState(false)
   const [engineState, setEngineState] = useState<SessionState>({
-    status: 'idle',
-    mode: null,
-    currentPhaseIndex: 0,
-    remainingTime: 0,
-    elapsedSessionTime: 0,
-    startedAt: null,
-    pausedAt: null,
-    totalPausedTime: 0,
+    status: 'idle', mode: null, currentPhaseIndex: 0,
+    remainingTime: 0, elapsedSessionTime: 0,
+    startedAt: null, pausedAt: null, totalPausedTime: 0,
   })
+  const [participant, setParticipantState] = useState<ParticipantConfig>(
+    () => getParticipantService().get()
+  )
 
-  // Create engine once
+  // Create engine + check for saved session
   useEffect(() => {
     const engine = new SessionEngine(getTimerService(), getAudioService())
     engineRef.current = engine
 
     const unsub = engine.subscribe(({ state }) => {
       setEngineState(state)
-
-      // Record streak when session finishes
+      if (state.mode) setSelectedMode(state.mode)
       if (state.status === 'finished' && state.mode) {
         getStreakService().recordCompletedSession(
-          state.mode.id,
-          state.mode.name,
-          getTotalDuration(state.mode),
+          state.mode.id, state.mode.name, getTotalDuration(state.mode)
         )
       }
     })
 
-    return () => {
-      unsub()
-      engine.stop()
-    }
+    // Check for saved session (reload recovery)
+    const saved = loadSavedSessionState()
+    if (saved) setHasSavedSession(true)
+
+    return () => { unsub(); engine.stop() }
   }, [])
 
   // ── Actions ─────────────────────────────────────────────────────────────────
 
-  const selectMode = useCallback((mode: SessionMode) => setSelectedMode(mode), [])
+  const selectMode = useCallback((m: SessionMode) => setSelectedMode(m), [])
 
   const start = useCallback(async (mode: SessionMode) => {
     setSelectedMode(mode)
+    setHasSavedSession(false)
     await engineRef.current?.start(mode)
   }, [])
 
@@ -120,6 +148,29 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const stop   = useCallback(() => {
     engineRef.current?.stop()
     setSelectedMode(null)
+    setHasSavedSession(false)
+  }, [])
+
+  const restoreSavedSession = useCallback(() => {
+    const saved = loadSavedSessionState()
+    if (!saved) return
+    engineRef.current?.restoreFromState(saved)
+    setHasSavedSession(false)
+  }, [])
+
+  const discardSavedSession = useCallback(() => {
+    try { localStorage.removeItem('ct.v1.session-state') } catch { /* */ }
+    setHasSavedSession(false)
+  }, [])
+
+  const setParticipant = useCallback((a: string, b: string) => {
+    getParticipantService().setNames(a, b)
+    setParticipantState(getParticipantService().get())
+  }, [])
+
+  const setTransitionSec = useCallback((sec: number) => {
+    getParticipantService().setTransitionSec(sec)
+    setParticipantState(getParticipantService().get())
   }, [])
 
   // ── Derived values ───────────────────────────────────────────────────────────
@@ -133,73 +184,37 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const remaining = engineState.remainingTime
   const phaseDuration = currentPhase?.duration ?? 0
-  const progress = phaseProgress(remaining, phaseDuration)
+  const progress = phaseDuration > 0 ? Math.min(1, Math.max(0, (phaseDuration - remaining) / phaseDuration)) : 0
 
-  // Session-wide progress
   const totalDuration = phases.reduce((s, p) => s + p.duration, 0)
   const sessionProgress = totalDuration > 0
-    ? Math.min(1, engineState.elapsedSessionTime / totalDuration)
-    : 0
+    ? Math.min(1, engineState.elapsedSessionTime / totalDuration) : 0
 
-  // Speaker
-  type SpeakerType = 'A' | 'B' | null
-  const speakerMap: Record<string, SpeakerType> = {
-    slotA: 'A', closingA: 'A',
-    slotB: 'B', closingB: 'B',
-  }
-  const speaker: SpeakerType = currentPhase ? (speakerMap[currentPhase.type] ?? null) : null
-  const speakerName = speaker === 'A' ? 'Partner A' : speaker === 'B' ? 'Partner B' : ''
+  const speakerMap: Record<string, 'A' | 'B'> = { slotA: 'A', closingA: 'A', slotB: 'B', closingB: 'B' }
+  const speaker = currentPhase ? (speakerMap[currentPhase.type] ?? null) : null
+  const speakerName = speaker === 'A' ? participant.nameA : speaker === 'B' ? participant.nameB : ''
 
-  // Big instruction text for the session screen
-  const phaseInstructionMap: Record<string, string> = {
-    prep:      'Bitte ankommen',
-    slotA:     'Partner A spricht',
-    slotB:     'Partner B spricht',
-    transition:'Kurze Pause',
-    closingA:  'Partner A – Abschluss',
-    closingB:  'Partner B – Abschluss',
-    cooldown:  'Stille – kein Nachgespräch',
-  }
-  const phaseSubtitleMap: Record<string, string> = {
-    prep:      'Atmet tief durch und kommt zur Ruhe.',
-    slotA:     'Partner B: Bitte still zuhören.',
-    slotB:     'Partner A: Bitte still zuhören.',
-    transition:'Verarbeitet das Gehörte in Stille.',
-    closingA:  'Partner B: Bitte still zuhören.',
-    closingB:  'Partner A: Bitte still zuhören.',
-    cooldown:  'Lasst das Gespräch wirken. Keine Diskussion jetzt.',
-  }
-  const phaseInstruction = currentPhase ? (phaseInstructionMap[currentPhase.type] ?? '') : ''
-  const phaseSubtitle    = currentPhase ? (phaseSubtitleMap[currentPhase.type]    ?? '') : ''
-
-  // Tips (guidance)
-  const tipsMap: Record<string, string[]> = {
-    prep: [
-      'Atmet ein paar Mal tief durch.',
-      'Legt Smartphones und Ablenkungen zur Seite.',
-      'Öffnet euch für das, was kommen mag.',
-    ],
-    transition: [
-      'Verarbeitet das Gehörte in Stille.',
-      'Was hat euch besonders berührt?',
-      'Bleibt präsent und aufmerksam.',
-    ],
-    cooldown: [
-      'Lasst das Gespräch nachwirken.',
-      'Vermeidet jetzt weitere Diskussionen.',
-      'Genießt die gemeinsame Stille.',
-    ],
-  }
-  const tips = currentPhase ? (tipsMap[currentPhase.type] ?? []) : []
+  const phaseType = currentPhase?.type ?? ''
+  const phaseInstruction = substitute(INSTRUCTION_MAP[phaseType] ?? '', participant)
+  const phaseSubtitle    = substitute(SUBTITLE_MAP[phaseType]    ?? '', participant)
+  // Custom focusText from PhaseConfig takes priority, substitute names too
+  const phaseFocusText   = substitute(currentPhase?.focusText ?? '', participant)
 
   // ── Value ────────────────────────────────────────────────────────────────────
 
   const value: SessionContextValue = {
     status: engineState.status,
-    isRunning: engineState.status === 'running',
-    isPaused: engineState.status === 'paused',
+    isRunning:  engineState.status === 'running',
+    isPaused:   engineState.status === 'paused',
     isFinished: engineState.status === 'finished',
     selectedMode: selectedMode ?? mode,
+    hasSavedSession,
+
+    nameA: participant.nameA,
+    nameB: participant.nameB,
+    transitionSec: participant.transitionSec,
+    setParticipant,
+    setTransitionSec,
 
     currentPhase,
     currentPhaseIndex: idx,
@@ -213,15 +228,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     speakerName,
     phaseInstruction,
     phaseSubtitle,
-
+    phaseFocusText,
     nextPhase,
-    tips,
 
     selectMode,
     start,
     pause,
     resume,
     stop,
+    restoreSavedSession,
+    discardSavedSession,
   }
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>

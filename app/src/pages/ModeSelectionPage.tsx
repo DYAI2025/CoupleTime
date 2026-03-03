@@ -13,7 +13,6 @@ interface Props {
 export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
   const { t } = useTranslation();
   const {
-    presetModes,
     customModes,
     selectedMode,
     selectMode,
@@ -184,6 +183,33 @@ export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
           </div>
         </section>
 
+        {/* ── QUICK RITUALE ──────────────────────────────────────────────── */}
+        <section className="mb-8">
+          <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-4">
+            Schnell starten
+          </h3>
+          <div className="grid sm:grid-cols-3 gap-3">
+            {([
+              { id: 'tiny-check-in',     emoji: '☕', color: 'from-sky-50 to-blue-100',   border: 'border-blue-200',  title: 'Tiny Check-in',    desc: '3 min pro Person', time: '~7 min' },
+              { id: 'conflict-cooldown', emoji: '🌬️', color: 'from-amber-50 to-orange-100', border: 'border-amber-200', title: 'Conflict Cooldown', desc: 'Pause bei Streit',  time: '~10 min' },
+              { id: 'screen-free-tea',   emoji: '🍵', color: 'from-emerald-50 to-green-100', border: 'border-emerald-200', title: 'Screen-free Tea',  desc: 'Einfach zusammen', time: '15 min' },
+            ] as const).map(r => (
+              <button
+                key={r.id}
+                onClick={() => { window.location.href = `/#/setup?preset=${r.id}` }}
+                className={`text-left rounded-2xl border ${r.border} bg-gradient-to-br ${r.color} p-4 hover:shadow-md transition-all active:scale-95 cursor-pointer`}
+              >
+                <div className="text-2xl mb-2">{r.emoji}</div>
+                <div className="font-semibold text-slate-800 text-sm">{r.title}</div>
+                <div className="text-xs text-slate-500 mt-0.5">{r.desc}</div>
+                <div className="inline-flex items-center gap-1 mt-2 px-2 py-0.5 rounded-full bg-white/60 text-xs text-slate-500 font-medium">
+                  <Play className="w-2.5 h-2.5" /> {r.time}
+                </div>
+              </button>
+            ))}
+          </div>
+        </section>
+
         {/* ── STREAK DASHBOARD ────────────────────────────────────────────── */}
         <section className="mb-8">
           <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-3">
@@ -192,26 +218,38 @@ export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
           <StreakDashboard refreshTrigger={streakRefresh} />
         </section>
 
-        {/* ── TIMER TOOL ──────────────────────────────────────────────────── */}
+        {/* ── VOLLSTÄNDIGE FORMATE ─────────────────────────────────────────── */}
         <section className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider">
-              {t("modeSelection.presets", "Gesprächs-Modi")}
+              Vollständige Zwiegespräch-Formate
             </h3>
           </div>
-          <div className="grid gap-4">
-            {presetModes.map((mode, index) => (
-              <div
-                key={mode.id}
-                className="animate-slide-in-left"
-                style={{ animationDelay: `${index * 0.05}s` }}
+          <div className="grid gap-3">
+            {([
+              { id: 'einsteiger-60', emoji: '🌱', title: 'Einsteiger 60 min', desc: '2 Runden × 10 min – ideal zum Starten', time: '~60 min', color: 'from-green-50 to-emerald-100', border: 'border-emerald-200' },
+              { id: 'commitment-65', emoji: '💪', title: 'Commitment 65 min', desc: '3 Runden × 10 min – für regelmäßige Paare', time: '~65 min', color: 'from-blue-50 to-sky-100', border: 'border-blue-200' },
+              { id: 'klassisch-90',  emoji: '🎯', title: 'Klassisch 90 min',  desc: '3 Runden × 15 min nach Moeller', time: '~90 min', color: 'from-violet-50 to-purple-100', border: 'border-violet-200' },
+            ] as const).map(p => (
+              <button
+                key={p.id}
+                onClick={() => { window.location.href = `/#/setup?preset=${p.id}` }}
+                className={`w-full text-left rounded-2xl border ${p.border} bg-gradient-to-r ${p.color} px-5 py-4 hover:shadow-md transition-all active:scale-[0.99] flex items-center justify-between`}
               >
-                <ModeCard
-                  mode={mode}
-                  isSelected={selectedMode?.id === mode.id}
-                  onClick={() => selectMode(mode)}
-                />
-              </div>
+                <div className="flex items-center gap-4">
+                  <div className="text-2xl">{p.emoji}</div>
+                  <div>
+                    <div className="font-semibold text-slate-800">{p.title}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{p.desc}</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xs text-slate-400">{p.time}</span>
+                  <div className="w-8 h-8 rounded-full bg-white/70 flex items-center justify-center shadow-sm">
+                    <Play className="w-3.5 h-3.5 text-slate-600" />
+                  </div>
+                </div>
+              </button>
             ))}
           </div>
         </section>

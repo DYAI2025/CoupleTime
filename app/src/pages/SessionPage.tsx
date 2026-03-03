@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import { useSession } from '@/viewModel/SessionContext'
 import { SessionCompletedView } from '@/components/SessionCompletedView'
-import { Square, Pause, Play } from 'lucide-react'
+import { Square, Pause, Play, Maximize2, Minimize2 } from 'lucide-react'
+import { useState } from 'react'
 
 // ── Phase-Farben ──────────────────────────────────────────────────────────────
-
 const PHASE_BG: Record<string, string> = {
   prep:       'from-slate-50  to-slate-100',
   slotA:      'from-blue-50   to-blue-100',
@@ -14,7 +14,6 @@ const PHASE_BG: Record<string, string> = {
   closingB:   'from-rose-50   to-rose-100',
   cooldown:   'from-emerald-50 to-emerald-100',
 }
-
 const PHASE_ACCENT: Record<string, string> = {
   prep:       'text-slate-600',
   slotA:      'text-blue-700',
@@ -24,7 +23,6 @@ const PHASE_ACCENT: Record<string, string> = {
   closingB:   'text-rose-700',
   cooldown:   'text-emerald-700',
 }
-
 const PHASE_RING: Record<string, string> = {
   prep:       '#64748b',
   slotA:      '#2563eb',
@@ -34,7 +32,6 @@ const PHASE_RING: Record<string, string> = {
   closingB:   '#e11d48',
   cooldown:   '#059669',
 }
-
 const PHASE_BADGE_BG: Record<string, string> = {
   prep:       'bg-slate-100  text-slate-700',
   slotA:      'bg-blue-100   text-blue-800',
@@ -44,45 +41,39 @@ const PHASE_BADGE_BG: Record<string, string> = {
   closingB:   'bg-rose-100   text-rose-800',
   cooldown:   'bg-emerald-100 text-emerald-800',
 }
+const PHASE_LABELS: Record<string, string> = {
+  prep:       'Vorbereitung',
+  slotA:      'spricht',
+  slotB:      'spricht',
+  transition: 'Übergang',
+  closingA:   'Abschluss',
+  closingB:   'Abschluss',
+  cooldown:   'Ausklang',
+}
 
-// ── Circular SVG ring timer ───────────────────────────────────────────────────
-
-function RingTimer({
-  progress, time, color, isPaused,
-}: { progress: number; time: string; color: string; isPaused: boolean }) {
-  const size = 260
-  const sw = 10
-  const r = (size - sw) / 2
+// ── SVG Ring Timer ────────────────────────────────────────────────────────────
+function RingTimer({ progress, time, color, isPaused }: {
+  progress: number; time: string; color: string; isPaused: boolean
+}) {
+  const size = 260; const sw = 10; const r = (size - sw) / 2
   const circ = 2 * Math.PI * r
   const offset = circ * (1 - progress)
 
   return (
     <div className="relative flex items-center justify-center">
-      {/* Glow */}
-      <div
-        className="absolute rounded-full opacity-20 blur-xl"
-        style={{ width: size + 40, height: size + 40, backgroundColor: color }}
-      />
+      <div className="absolute rounded-full opacity-20 blur-xl"
+        style={{ width: size + 40, height: size + 40, backgroundColor: color }} />
       <svg width={size} height={size} className="-rotate-90">
         <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#e2e8f0" strokeWidth={sw} />
-        <circle
-          cx={size/2} cy={size/2} r={r} fill="none"
+        <circle cx={size/2} cy={size/2} r={r} fill="none"
           stroke={color} strokeWidth={sw} strokeLinecap="round"
-          strokeDasharray={circ}
-          strokeDashoffset={offset}
-          style={{ transition: 'stroke-dashoffset 0.4s ease-out', filter: 'drop-shadow(0 0 6px rgba(0,0,0,0.15))' }}
+          strokeDasharray={circ} strokeDashoffset={offset}
+          style={{ transition:'stroke-dashoffset 0.4s ease-out', filter:'drop-shadow(0 0 6px rgba(0,0,0,0.15))' }}
         />
       </svg>
       <div className="absolute flex flex-col items-center justify-center">
-        <span
-          className="font-mono tabular-nums leading-none"
-          style={{
-            fontSize: 64,
-            fontWeight: 300,
-            color: isPaused ? '#94a3b8' : '#1e293b',
-            transition: 'color 0.3s',
-          }}
-        >
+        <span className="font-mono tabular-nums leading-none"
+          style={{ fontSize:64, fontWeight:300, color: isPaused ? '#94a3b8' : '#1e293b', transition:'color 0.3s' }}>
           {time}
         </span>
         {isPaused && (
@@ -95,33 +86,22 @@ function RingTimer({
   )
 }
 
-// ── Phase-Fortschritts-Leiste (alle Phasen als Segmente) ─────────────────────
-
-function PhaseStrip({
-  phases, currentIndex, progress,
-}: {
-  phases: Array<{ type: string }>
-  currentIndex: number
-  progress: number
+// ── Phase-Strip ───────────────────────────────────────────────────────────────
+function PhaseStrip({ phases, currentIndex, progress }: {
+  phases: Array<{ type: string }>; currentIndex: number; progress: number
 }) {
   if (phases.length === 0) return null
   return (
     <div className="w-full max-w-sm">
-      <div className="flex gap-0.5 h-2 rounded-full overflow-hidden bg-slate-200">
+      <div className="flex gap-0.5 h-2 rounded-full overflow-hidden">
         {phases.map((p, i) => {
-          const done = i < currentIndex
-          const curr = i === currentIndex
+          const done = i < currentIndex; const curr = i === currentIndex
           const w = done ? 100 : curr ? progress * 100 : 0
-          const col = PHASE_RING[p.type] || '#94a3b8'
           return (
-            <div key={i} className="flex-1 overflow-hidden" style={{ background: '#e2e8f0' }}>
-              <div
-                style={{
-                  width: `${w}%`, height: '100%',
-                  background: col,
-                  transition: 'width 0.4s ease-out',
-                }}
-              />
+            <div key={i} className="flex-1 overflow-hidden" style={{ background:'#e2e8f0' }}>
+              <div style={{ width:`${w}%`, height:'100%',
+                background: PHASE_RING[p.type] || '#94a3b8',
+                transition:'width 0.4s ease-out' }} />
             </div>
           )
         })}
@@ -134,61 +114,75 @@ function PhaseStrip({
   )
 }
 
-// ── "Nächste Phase" Preview ───────────────────────────────────────────────────
-
-const PHASE_LABELS: Record<string, string> = {
-  prep:       'Vorbereitung',
-  slotA:      'Partner A spricht',
-  slotB:      'Partner B spricht',
-  transition: 'Übergang',
-  closingA:   'Abschluss A',
-  closingB:   'Abschluss B',
-  cooldown:   'Ausklang',
-}
-
-function NextPhaseHint({ type, duration }: { type: string; duration: number }) {
-  const mins = Math.round(duration / 60)
+// ── Restore Banner ────────────────────────────────────────────────────────────
+function RestoreBanner({ onRestore, onDiscard }: { onRestore: () => void; onDiscard: () => void }) {
   return (
-    <div className="flex items-center gap-2 text-xs text-slate-400">
-      <span>Danach:</span>
-      <span className={`px-2 py-0.5 rounded-full font-medium ${PHASE_BADGE_BG[type] ?? 'bg-slate-100 text-slate-600'}`}>
-        {PHASE_LABELS[type] ?? type}
-      </span>
-      <span>{mins} min</span>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl p-6 mx-4 max-w-sm shadow-2xl text-center">
+        <div className="text-3xl mb-3">⏸</div>
+        <h2 className="text-lg font-bold text-slate-800 mb-2">Session fortsetzen?</h2>
+        <p className="text-sm text-slate-500 mb-5">
+          Eine unterbrochene Session wurde gefunden. Möchtest du weitermachen?
+        </p>
+        <div className="flex gap-3">
+          <button onClick={onDiscard}
+            className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-50">
+            Verwerfen
+          </button>
+          <button onClick={onRestore}
+            className="flex-1 px-4 py-2.5 rounded-xl bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700">
+            Fortsetzen
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
 
 // ── Hauptseite ────────────────────────────────────────────────────────────────
-
 export default function SessionPage() {
   const {
-    status, isPaused, isFinished,
-    selectedMode, currentPhase, currentPhaseIndex,
-    totalPhases, remainingTimeFormatted, progressFraction,
-    sessionProgressFraction, speaker, speakerName,
-    phaseInstruction, phaseSubtitle, nextPhase,
-    tips, start, pause, resume, stop,
+    status, isPaused, isFinished, selectedMode,
+    currentPhase, currentPhaseIndex, totalPhases,
+    remainingTimeFormatted, progressFraction, sessionProgressFraction,
+    speaker, speakerName, phaseInstruction, phaseSubtitle, phaseFocusText,
+    nextPhase, start, pause, resume, stop,
+    hasSavedSession, restoreSavedSession, discardSavedSession,
+    nameA, nameB,
   } = useSession()
 
-  // Redirect if no mode
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
+  // Auto-start if a mode was selected
   useEffect(() => {
-    if (!selectedMode && status === 'idle') {
+    if (selectedMode && status === 'idle' && !hasSavedSession) {
+      start(selectedMode)
+    } else if (!selectedMode && status === 'idle' && !hasSavedSession) {
       window.location.href = '/#/'
     }
-  }, [selectedMode, status])
-
-  // Auto-start
-  useEffect(() => {
-    if (selectedMode && status === 'idle') {
-      start(selectedMode)
-    }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Track fullscreen changes
+  useEffect(() => {
+    const onChange = () => setIsFullscreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', onChange)
+    return () => document.removeEventListener('fullscreenchange', onChange)
+  }, [])
+
+  const toggleFullscreen = useCallback(() => {
+    const el = wrapRef.current
+    if (!el) return
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {})
+    } else {
+      el.requestFullscreen?.().catch(() => {})
+    }
+  }, [])
 
   const handleStop = () => { stop(); window.location.href = '/#/' }
   const handlePauseResume = () => isPaused ? resume() : pause()
 
-  // Session abgeschlossen
   if (isFinished) return <SessionCompletedView onDone={() => { stop(); window.location.href = '/#/' }} />
 
   const phType = currentPhase?.type ?? 'prep'
@@ -198,140 +192,139 @@ export default function SessionPage() {
   const badgeCls = PHASE_BADGE_BG[phType] ?? 'bg-slate-100 text-slate-600'
   const phases = selectedMode?.phases ?? []
 
+  // Phase-Badge label with real names
+  const phaseBadgeLabel = (() => {
+    const base = PHASE_LABELS[phType] ?? phType
+    if (phType === 'slotA' || phType === 'closingA') return `${nameA} ${base}`
+    if (phType === 'slotB' || phType === 'closingB') return `${nameB} ${base}`
+    return base
+  })()
+
+  // What to show as the main instruction (custom focusText beats auto-instruction)
+  const mainInstruction = phaseFocusText || phaseInstruction
+  const subtitle = phaseSubtitle
+
   return (
-    <main
-      className={`min-h-screen flex flex-col bg-gradient-to-b ${bgGrad}`}
-      style={{ transition: 'background 0.7s ease' }}
-    >
-      {/* ── TOP BAR ── */}
-      <header className="flex items-center justify-between px-5 py-4">
-        <div className="text-sm font-medium text-slate-500">
-          {selectedMode?.name
-            ? selectedMode.name.replace('mode.', '').replace('.name', '')
-            : 'Sitzung'}
-        </div>
-        {/* Session-Gesamtfortschritt */}
-        <div className="flex-1 mx-4 h-1.5 bg-slate-200 rounded-full overflow-hidden">
-          <div
-            className="h-full rounded-full bg-slate-400 transition-all duration-500"
-            style={{ width: `${Math.round(sessionProgressFraction * 100)}%` }}
-          />
-        </div>
-        <div className="text-xs text-slate-400">
-          {Math.round(sessionProgressFraction * 100)}%
-        </div>
-      </header>
+    <>
+      {hasSavedSession && (
+        <RestoreBanner onRestore={restoreSavedSession} onDiscard={discardSavedSession} />
+      )}
 
-      {/* ── PHASE BADGE ── */}
-      <div className="flex justify-center pt-2 pb-1">
-        <div className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide ${badgeCls}`}
-          style={{ transition: 'all 0.4s' }}>
-          {PHASE_LABELS[phType] ?? phType} · Phase {currentPhaseIndex + 1}/{totalPhases}
+      <main
+        ref={wrapRef}
+        className={`min-h-screen flex flex-col bg-gradient-to-b ${bgGrad}`}
+        style={{ transition: 'background 0.7s ease' }}
+      >
+        {/* ── TOP BAR ── */}
+        <header className="flex items-center justify-between px-5 py-4">
+          <div className="text-sm font-medium text-slate-500 truncate max-w-[140px]">
+            {selectedMode?.name ?? 'Session'}
+          </div>
+          <div className="flex-1 mx-4 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+            <div className="h-full rounded-full bg-slate-400 transition-all duration-500"
+              style={{ width: `${Math.round(sessionProgressFraction * 100)}%` }} />
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-slate-400">
+              {Math.round(sessionProgressFraction * 100)}%
+            </span>
+            <button
+              onClick={toggleFullscreen}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-white/50"
+              aria-label={isFullscreen ? 'Vollbild beenden' : 'Vollbild'}
+            >
+              {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            </button>
+          </div>
+        </header>
+
+        {/* ── PHASE BADGE ── */}
+        <div className="flex justify-center pt-2 pb-1">
+          <div className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide ${badgeCls}`}
+            style={{ transition: 'all 0.4s' }}>
+            {phaseBadgeLabel} · Phase {currentPhaseIndex + 1}/{totalPhases}
+          </div>
         </div>
-      </div>
 
-      {/* ── HAUPTINHALT ── */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 gap-6">
+        {/* ── HAUPTINHALT ── */}
+        <div className="flex-1 flex flex-col items-center justify-center px-6 gap-5">
 
-        {/* BIG INSTRUCTION TEXT */}
-        <div className="text-center space-y-2 max-w-sm">
-          <h2
-            className={`font-bold leading-tight ${accentCls}`}
-            style={{ fontSize: 'clamp(1.6rem, 6vw, 2.4rem)', transition: 'color 0.4s' }}
-          >
-            {phaseInstruction}
-          </h2>
-          {phaseSubtitle && (
-            <p className="text-slate-500 text-sm leading-relaxed">
-              {phaseSubtitle}
-            </p>
+          {/* MAIN INSTRUCTION */}
+          <div className="text-center space-y-2 max-w-sm">
+            <h2 className={`font-bold leading-tight ${accentCls}`}
+              style={{ fontSize: 'clamp(1.5rem, 6vw, 2.2rem)', transition: 'color 0.4s' }}>
+              {mainInstruction}
+            </h2>
+            {subtitle && (
+              <p className="text-slate-500 text-sm leading-relaxed">{subtitle}</p>
+            )}
+          </div>
+
+          {/* SPEAKER BADGE */}
+          {speaker && (
+            <div className="px-6 py-2.5 rounded-full text-base font-bold tracking-wide shadow-sm"
+              style={{
+                backgroundColor: speaker === 'A' ? 'rgba(37,99,235,0.12)' : 'rgba(225,29,72,0.12)',
+                color: speaker === 'A' ? '#1d4ed8' : '#be123c',
+                transition: 'all 0.4s',
+              }}>
+              🎙 {speakerName}
+            </div>
+          )}
+
+          {/* RING TIMER */}
+          <div className={isPaused ? 'opacity-60' : 'opacity-100'} style={{ transition: 'opacity 0.5s' }}>
+            <RingTimer
+              progress={progressFraction}
+              time={remainingTimeFormatted}
+              color={color}
+              isPaused={isPaused}
+            />
+          </div>
+
+          {/* PHASE STRIP */}
+          <PhaseStrip phases={phases} currentIndex={currentPhaseIndex} progress={progressFraction} />
+
+          {/* NEXT PHASE PREVIEW */}
+          {nextPhase && (
+            <div className="flex items-center gap-2 text-xs text-slate-400">
+              <span>Danach:</span>
+              <span className={`px-2 py-0.5 rounded-full font-medium ${PHASE_BADGE_BG[nextPhase.type] ?? 'bg-slate-100'}`}>
+                {PHASE_LABELS[nextPhase.type] ?? nextPhase.type}
+              </span>
+              <span>{Math.round(nextPhase.duration / 60)} min</span>
+            </div>
           )}
         </div>
 
-        {/* SPEAKER BADGE */}
-        {speaker && (
-          <div
-            className="px-6 py-2.5 rounded-full text-base font-bold tracking-wide shadow-sm"
-            style={{
-              backgroundColor: speaker === 'A' ? 'rgba(37,99,235,0.12)' : 'rgba(225,29,72,0.12)',
-              color: speaker === 'A' ? '#1d4ed8' : '#be123c',
-              transition: 'all 0.4s',
-            }}
-          >
-            🎙 {speakerName}
+        {/* ── CONTROLS ── */}
+        <footer className="flex items-center justify-center gap-5 pb-12 pt-6">
+          <button onClick={handleStop}
+            className="w-14 h-14 rounded-full border-2 border-slate-300 bg-white/80 text-slate-500
+              hover:border-red-400 hover:text-red-500 hover:bg-red-50
+              flex items-center justify-center shadow-sm transition-all"
+            aria-label="Session beenden">
+            <Square className="w-5 h-5 fill-current" />
+          </button>
+
+          <button onClick={handlePauseResume}
+            className={`w-16 h-16 rounded-full flex items-center justify-center shadow-md transition-all
+              ${isPaused
+                ? 'bg-sky-500 hover:bg-sky-600 text-white border-2 border-sky-500'
+                : 'border-2 border-slate-300 bg-white/80 text-slate-500 hover:border-sky-400 hover:text-sky-600'
+              }`}
+            aria-label={isPaused ? 'Fortsetzen' : 'Pause'}>
+            {isPaused ? <Play className="w-6 h-6 ml-0.5" /> : <Pause className="w-6 h-6" />}
+          </button>
+        </footer>
+
+        {/* PAUSE OVERLAY */}
+        {isPaused && (
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute inset-0 bg-slate-900/5 backdrop-blur-[1px]" />
           </div>
         )}
-
-        {/* RING TIMER */}
-        <div className={isPaused ? 'opacity-60' : 'opacity-100'} style={{ transition: 'opacity 0.5s' }}>
-          <RingTimer
-            progress={progressFraction}
-            time={remainingTimeFormatted}
-            color={color}
-            isPaused={isPaused}
-          />
-        </div>
-
-        {/* PHASE PROGRESS STRIP */}
-        <PhaseStrip
-          phases={phases}
-          currentIndex={currentPhaseIndex}
-          progress={progressFraction}
-        />
-
-        {/* NEXT PHASE HINT */}
-        {nextPhase && (
-          <NextPhaseHint type={nextPhase.type} duration={nextPhase.duration} />
-        )}
-
-        {/* TIPS */}
-        {tips.length > 0 && !isPaused && (
-          <div className="max-w-xs bg-white/60 backdrop-blur-sm rounded-2xl px-5 py-3 text-center border border-white/80">
-            <p className="text-xs text-slate-400 font-medium mb-1">Tipp</p>
-            <p className="text-sm text-slate-600 leading-relaxed">{tips[0]}</p>
-          </div>
-        )}
-      </div>
-
-      {/* ── CONTROLS ── */}
-      <footer className="flex items-center justify-center gap-5 pb-12 pt-6">
-        {/* Stop */}
-        <button
-          onClick={handleStop}
-          className="w-14 h-14 rounded-full border-2 border-slate-300 bg-white/80 text-slate-500
-            hover:border-red-400 hover:text-red-500 hover:bg-red-50
-            flex items-center justify-center shadow-sm transition-all"
-          aria-label="Session beenden"
-        >
-          <Square className="w-5 h-5 fill-current" />
-        </button>
-
-        {/* Pause / Resume */}
-        <button
-          onClick={handlePauseResume}
-          className={`w-16 h-16 rounded-full flex items-center justify-center shadow-md transition-all
-            ${isPaused
-              ? 'bg-sky-500 hover:bg-sky-600 text-white border-2 border-sky-500'
-              : 'border-2 border-slate-300 bg-white/80 text-slate-500 hover:border-sky-400 hover:text-sky-600 hover:bg-sky-50'
-            }`}
-          aria-label={isPaused ? 'Fortsetzen' : 'Pause'}
-        >
-          {isPaused
-            ? <Play className="w-6 h-6 ml-0.5" />
-            : <Pause className="w-6 h-6" />
-          }
-        </button>
-      </footer>
-
-      {/* ── PAUSE OVERLAY ── */}
-      {isPaused && (
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center animate-fade-in">
-          <div className="absolute inset-0 bg-slate-900/5 backdrop-blur-[1px]" />
-          <span className="relative text-slate-500 text-sm font-bold tracking-[0.3em] uppercase">
-            Pause
-          </span>
-        </div>
-      )}
-    </main>
+      </main>
+    </>
   )
 }
