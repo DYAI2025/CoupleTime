@@ -1,9 +1,9 @@
-name: Deploy to Hostinger
+name: Build & Deploy to VPS
 
 on:
   push:
     branches: [main]
-  workflow_dispatch: # Manuell auslösbar
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -28,18 +28,20 @@ jobs:
         working-directory: app
         run: npm run build
 
-      - name: Deploy via rsync (SSH)
+      - name: Deploy via rsync to VPS
         uses: burnett01/rsync-deployments@7.0.1
         with:
           switches: -avzr --delete --exclude='.DS_Store'
           path: app/dist/
-          remote_path: /home/${{ secrets.HOSTINGER_SSH_USER }}/public_html/
-          remote_host: ${{ secrets.HOSTINGER_SSH_HOST }}
-          remote_port: 65002
-          remote_user: ${{ secrets.HOSTINGER_SSH_USER }}
-          remote_key: ${{ secrets.HOSTINGER_SSH_KEY }}
+          remote_path: /var/www/coupletimer.site/
+          remote_host: ${{ secrets.VPS_HOST }}
+          remote_port: 22
+          remote_user: root
+          remote_key: ${{ secrets.VPS_SSH_KEY }}
 
-      - name: Verify deployment
+      - name: Verify
         run: |
-          echo "✅ Deployed to https://coupletimer.site"
-          echo "📢 ads.txt: https://coupletimer.site/ads.txt"
+          sleep 3
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://coupletimer.site/)
+          echo "coupletimer.site → HTTP $STATUS"
+          [ "$STATUS" = "200" ] && echo "✅ Live" || echo "⚠️ Check site"
