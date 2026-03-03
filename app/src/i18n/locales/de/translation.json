@@ -1,0 +1,116 @@
+{
+  "app": {
+    "title": "Zwiegespräch",
+    "subtitle": "Partnerschaftlicher Dialog"
+  },
+  "modeSelection": {
+    "welcome": "Willkommen",
+    "description": "Wählt einen Modus für euer Zwiegespräch. Die App führt euch durch die Phasen.",
+    "presets": "Voreingestellte Modi",
+    "custom": "Eigene Modi",
+    "create": "Erstellen",
+    "createFirst": "Ersten erstellen",
+    "noCustom": "Noch keine eigenen Modi",
+    "start": "Session starten",
+    "selectFirst": "Modus auswählen"
+  },
+  "mode": {
+    "preset": "Voreingestellt",
+    "custom": "Benutzerdefiniert",
+    "locked": "Gesperrt",
+    "edit": "Bearbeiten",
+    "rounds": "Runden",
+    "maintain": {
+      "name": "Maintain",
+      "description": "Regelmäßiger Check-in für Alltagsthemen"
+    },
+    "commitment": {
+      "name": "Commitment",
+      "description": "Tiefere Unterhaltung für wichtige Anliegen"
+    },
+    "listening": {
+      "name": "Listening",
+      "description": "Fokus auf aktives Zuhören und Verstehen"
+    },
+    "custom": {
+      "name": "Custom",
+      "description": "Eigene konfigurierte Sequenz"
+    }
+  },
+  "phase": {
+    "prep": "Vorbereitung",
+    "slotA": "Sprechzeit A",
+    "slotB": "Sprechzeit B",
+    "transition": "Übergang",
+    "closingA": "Abschluss A",
+    "closingB": "Abschluss B",
+    "cooldown": "Cooldown",
+    "unknown": "Unbekannt"
+  },
+  "speaker": {
+    "a": "Partner A",
+    "b": "Partner B"
+  },
+  "session": {
+    "aria": {
+      "mainLabel": "Aktive Session",
+      "speakerBadge": "Sprecher {{speaker}}"
+    },
+    "controls": {
+      "stop": "Session beenden",
+      "pause": "Pause",
+      "resume": "Fortsetzen"
+    },
+    "status": {
+      "paused": "Pausiert"
+    }
+  },
+  "guidance": {
+    "title": "Tipp",
+    "dismiss": "Schließen",
+    "goToTip": "Zu Tipp {{number}}",
+    "prep": {
+      "breathe": "Atme tief ein und zentriere dich vor dem Start.",
+      "center": "Finde eine bequeme Position und entspanne die Schultern.",
+      "intention": "Setze eine positive Absicht für dieses Gespräch."
+    },
+    "transition": {
+      "handover": "Gib den Gesprächsraum sanft an deinen Partner weiter.",
+      "listen": "Jetzt ist es Zeit, mit voller Aufmerksamkeit zuzuhören.",
+      "pause": "Mache eine kurze Pause, bevor die nächste Person spricht."
+    },
+    "cooldown": {
+      "silence": "Umarme die Stille. Es besteht kein Bedarf, sie mit Worten zu füllen.",
+      "reflect": "Nimm dir Zeit, über das Gehörte nachzudenken.",
+      "gratitude": "Drücke Dankbarkeit für die Offenheit deines Partners aus.",
+      "gentle": "Seid sanft mit euch selbst, während ihr zurückkehrt."
+    }
+  },
+  "cooldown": {
+    "title": "Cooldown",
+    "noDiscussion": "Kein Nachgespräch",
+    "remaining": "Verbleibende Zeit",
+    "gratitude": "Danke fürs Zuhören",
+    "reflect": "Nehmt euch Zeit zum Nachdenken"
+  },
+  "builder": {
+    "back": "Zurück",
+    "newMode": "Neuer Modus",
+    "editMode": "Modus bearbeiten",
+    "modeName": "Name des Modus",
+    "modeNamePlaceholder": "z.B. Unser Weekly",
+    "phases": "Phasen",
+    "noPhases": "Noch keine Phasen",
+    "addFirstPhase": "Erste Phase hinzufügen",
+    "addPhase": "Phase hinzufügen",
+    "add": "Hinzufügen",
+    "removePhase": "Phase entfernen",
+    "selectPhaseType": "Phasentyp wählen",
+    "save": "Speichern",
+    "missingSlotA": "Slot A fehlt",
+    "missingSlotB": "Slot B fehlt"
+  },
+  "settings": {
+    "title": "Einstellungen"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "Zwiegespräch Timer",
+  "short_name": "Zwiegespräch",
+  "description": "Strukturierter Paar-Kommunikations-Timer für bewusstes Gespräch",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0ea5e9",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "health", "productivity"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Maintain starten",
+      "url": "/#/",
+      "description": "Schnell-Start: Maintain-Modus"
+    }
+  ]
+}

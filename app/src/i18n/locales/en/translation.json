@@ -1,0 +1,116 @@
+{
+  "app": {
+    "title": "Couples Timer",
+    "subtitle": "Partnership Dialogue"
+  },
+  "modeSelection": {
+    "welcome": "Welcome",
+    "description": "Choose a mode for your dialogue. The app will guide you through the phases.",
+    "presets": "Preset Modes",
+    "custom": "Custom Modes",
+    "create": "Create",
+    "createFirst": "Create First",
+    "noCustom": "No custom modes yet",
+    "start": "Start Session",
+    "selectFirst": "Select a Mode"
+  },
+  "mode": {
+    "preset": "Preset",
+    "custom": "Custom",
+    "locked": "Locked",
+    "edit": "Edit",
+    "rounds": "rounds",
+    "maintain": {
+      "name": "Maintain",
+      "description": "Regular check-in for everyday topics"
+    },
+    "commitment": {
+      "name": "Commitment",
+      "description": "Deeper conversation for important matters"
+    },
+    "listening": {
+      "name": "Listening",
+      "description": "Focus on active listening and understanding"
+    },
+    "custom": {
+      "name": "Custom",
+      "description": "Your own configured sequence"
+    }
+  },
+  "phase": {
+    "prep": "Preparation",
+    "slotA": "Speaking Time A",
+    "slotB": "Speaking Time B",
+    "transition": "Transition",
+    "closingA": "Closing A",
+    "closingB": "Closing B",
+    "cooldown": "Cooldown",
+    "unknown": "Unknown"
+  },
+  "speaker": {
+    "a": "Partner A",
+    "b": "Partner B"
+  },
+  "session": {
+    "aria": {
+      "mainLabel": "Active Session",
+      "speakerBadge": "Speaker {{speaker}}"
+    },
+    "controls": {
+      "stop": "End Session",
+      "pause": "Pause",
+      "resume": "Resume"
+    },
+    "status": {
+      "paused": "Paused"
+    }
+  },
+  "guidance": {
+    "title": "Tip",
+    "dismiss": "Close",
+    "goToTip": "Go to tip {{number}}",
+    "prep": {
+      "breathe": "Take a deep breath and center yourself before starting.",
+      "center": "Find a comfortable position and relax your shoulders.",
+      "intention": "Set a positive intention for this conversation."
+    },
+    "transition": {
+      "handover": "Gently hand over the speaking space to your partner.",
+      "listen": "Now it's time to listen with your full attention.",
+      "pause": "Take a brief pause before the next person speaks."
+    },
+    "cooldown": {
+      "silence": "Embrace the silence. No need to fill it with words.",
+      "reflect": "Take time to reflect on what was shared.",
+      "gratitude": "Express gratitude for your partner's openness.",
+      "gentle": "Be gentle with yourselves as you transition back."
+    }
+  },
+  "cooldown": {
+    "title": "Cooldown",
+    "noDiscussion": "No follow-up discussion",
+    "remaining": "Remaining time",
+    "gratitude": "Thank you for listening",
+    "reflect": "Take time to reflect"
+  },
+  "builder": {
+    "back": "Back",
+    "newMode": "New Mode",
+    "editMode": "Edit Mode",
+    "modeName": "Mode Name",
+    "modeNamePlaceholder": "e.g., Our Weekly",
+    "phases": "Phases",
+    "noPhases": "No phases yet",
+    "addFirstPhase": "Add First Phase",
+    "addPhase": "Add Phase",
+    "add": "Add",
+    "removePhase": "Remove Phase",
+    "selectPhaseType": "Select Phase Type",
+    "save": "Save",
+    "missingSlotA": "Slot A missing",
+    "missingSlotB": "Slot B missing"
+  },
+  "settings": {
+    "title": "Settings"
+  }
+}
