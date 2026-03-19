@@ -349,7 +349,9 @@ export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
               Datenschutz
             </button>
             <span>·</span>
-            <span>© 2026 coupletimer.site</span>
+            <button type="button" onClick={() => (window.location.href = "/#/impressum")} className="hover:text-slate-600 transition-colors">
+              Impressum
+            </button>
           </div>
           <p className="text-slate-300 text-[10px]">
             Basierend auf der Zwiegespräch-Methode nach Michael Lukas Moeller

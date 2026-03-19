@@ -79,7 +79,12 @@ export default function PrivacyPage() {
           <section>
             <h3 className="font-semibold text-slate-700 mb-2">5. Cookies</h3>
             <p className="text-slate-600 text-sm">
-              Die App selbst setzt keine Cookies. Google AdSense kann Cookies von Drittanbietern setzen. Mit der Nutzung der Website stimmen Sie dem Einsatz dieser Cookies zu. Sie können Cookies in den Einstellungen Ihres Browsers jederzeit deaktivieren.
+              Die App selbst setzt keine Cookies. Google AdSense kann Cookies von
+              Drittanbietern setzen. Beim ersten Besuch werden Sie über einen
+              Cookie-Banner um Ihre Einwilligung gebeten. Werbecookies werden erst
+              nach Ihrer ausdrücklichen Zustimmung geladen. Sie können Ihre
+              Einwilligung jederzeit widerrufen, indem Sie Ihre Browser-Daten für
+              diese Website löschen.
             </p>
           </section>
 
@@ -97,6 +102,20 @@ export default function PrivacyPage() {
             </p>
           </section>
 
+        </div>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 pb-8">
+        <div className="border-t border-slate-200 pt-6 flex justify-center gap-6 text-sm text-slate-400">
+          <button type="button" onClick={() => (window.location.href = "/#/")}
+            className="hover:text-slate-600 transition-colors">
+            Zur App
+          </button>
+          <span>·</span>
+          <button type="button" onClick={() => (window.location.href = "/#/impressum")}
+            className="hover:text-slate-600 transition-colors">
+            Impressum
+          </button>
         </div>
       </div>
     </main>

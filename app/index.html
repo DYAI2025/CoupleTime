@@ -43,9 +43,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-    <!-- Google AdSense -->
+    <!-- Google Consent Mode v2 — default denied until user consents -->
     <meta name="google-adsense-account" content="ca-pub-1712273263687132">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1712273263687132" crossorigin="anonymous"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'analytics_storage': 'denied'
+      });
+    </script>
 
     <!-- Structured Data (Schema.org) -->
     <script type="application/ld+json">
@@ -68,6 +77,31 @@
     </script>
   </head>
   <body>
+    <noscript>
+      <div style="max-width:640px;margin:40px auto;padding:24px;font-family:'Inter',system-ui,sans-serif;color:#334155;line-height:1.6">
+        <h1 style="font-size:1.5rem;margin-bottom:12px">Zwiegespräch Timer – Bewusst miteinander reden</h1>
+        <p>
+          Der kostenlose Zwiegespräch Timer für Paare. Führt strukturierte Paargespräche
+          nach der Methode von Michael Lukas Moeller – dem einflussreichsten deutschen
+          Paartherapeuten des 20. Jahrhunderts. Die App stellt gleiche Redezeiten sicher,
+          verhindert Unterbrechungen und begleitet euch mit sanften Klangschalen durch
+          jede Gesprächsphase.
+        </p>
+        <p>
+          Drei vordefinierte Modi (Maintain, Commitment, Listening) sowie ein eigener
+          Sequenz-Builder für individuelle Gesprächsformate. Kostenlos, ohne Anmeldung,
+          alle Daten bleiben lokal auf eurem Gerät.
+        </p>
+        <p style="margin-top:16px;font-size:0.875rem;color:#94a3b8">
+          Bitte aktivieren Sie JavaScript, um die App zu nutzen.
+        </p>
+        <nav style="margin-top:16px;font-size:0.875rem">
+          <a href="https://coupletimer.site/#/about" style="color:#0284c7">Über die Methode</a> ·
+          <a href="https://coupletimer.site/#/privacy" style="color:#0284c7">Datenschutz</a> ·
+          <a href="https://coupletimer.site/#/impressum" style="color:#0284c7">Impressum</a>
+        </nav>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

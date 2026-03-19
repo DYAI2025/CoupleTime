@@ -199,6 +199,11 @@ export default function AboutPage() {
             Datenschutz
           </button>
           <span>·</span>
+          <button type="button" onClick={() => (window.location.href = "/#/impressum")}
+            className="hover:text-slate-600 transition-colors">
+            Impressum
+          </button>
+          <span>·</span>
           <span>© 2026 coupletimer.site</span>
         </div>
       </div>
