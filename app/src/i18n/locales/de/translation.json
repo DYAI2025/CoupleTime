@@ -94,21 +94,39 @@
     "reflect": "Nehmt euch Zeit zum Nachdenken"
   },
   "builder": {
-    "back": "Zurück",
-    "newMode": "Neuer Modus",
-    "editMode": "Modus bearbeiten",
-    "modeName": "Name des Modus",
-    "modeNamePlaceholder": "z.B. Unser Weekly",
-    "phases": "Phasen",
-    "noPhases": "Noch keine Phasen",
-    "addFirstPhase": "Erste Phase hinzufügen",
-    "addPhase": "Phase hinzufügen",
-    "add": "Hinzufügen",
-    "removePhase": "Phase entfernen",
-    "selectPhaseType": "Phasentyp wählen",
-    "save": "Speichern",
-    "missingSlotA": "Slot A fehlt",
-    "missingSlotB": "Slot B fehlt"
+    "title": "Session erstellen",
+    "editTitle": "Session bearbeiten",
+    "palette": {
+      "speaker": "Sprecher",
+      "transition": "Übergang",
+      "preparation": "Vorbereitung",
+      "cooldown": "Cooldown",
+      "custom": "Custom"
+    },
+    "timeline": {
+      "empty": "Ziehe einen Slot hierher oder klicke",
+      "total": "Gesamt",
+      "minDuration": "Mind. 30 Sekunden pro Slot"
+    },
+    "popup": {
+      "name": "Name (optional)",
+      "speaker": "Sprecher",
+      "sound": "Ton am Ende",
+      "category": "Kategorie",
+      "description": "Beschreibung",
+      "color": "Farbe",
+      "confirm": "Hinzufügen",
+      "cancel": "Abbrechen"
+    },
+    "save": "Speichern & Erstellen",
+    "update": "Änderungen speichern",
+    "namePrompt": "Name der Session",
+    "namePlaceholder": "Session_01",
+    "needsSpeaker": "Mindestens ein Sprecher-Slot erforderlich",
+    "duration": {
+      "minutes": "Min",
+      "seconds": "Sek"
+    }
   },
   "settings": {
     "title": "Einstellungen"

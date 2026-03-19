@@ -94,21 +94,39 @@
     "reflect": "Take time to reflect"
   },
   "builder": {
-    "back": "Back",
-    "newMode": "New Mode",
-    "editMode": "Edit Mode",
-    "modeName": "Mode Name",
-    "modeNamePlaceholder": "e.g., Our Weekly",
-    "phases": "Phases",
-    "noPhases": "No phases yet",
-    "addFirstPhase": "Add First Phase",
-    "addPhase": "Add Phase",
-    "add": "Add",
-    "removePhase": "Remove Phase",
-    "selectPhaseType": "Select Phase Type",
-    "save": "Save",
-    "missingSlotA": "Slot A missing",
-    "missingSlotB": "Slot B missing"
+    "title": "Create Session",
+    "editTitle": "Edit Session",
+    "palette": {
+      "speaker": "Speaker",
+      "transition": "Transition",
+      "preparation": "Preparation",
+      "cooldown": "Cooldown",
+      "custom": "Custom"
+    },
+    "timeline": {
+      "empty": "Drag a slot here or click",
+      "total": "Total",
+      "minDuration": "Min. 30 seconds per slot"
+    },
+    "popup": {
+      "name": "Name (optional)",
+      "speaker": "Speaker",
+      "sound": "End sound",
+      "category": "Category",
+      "description": "Description",
+      "color": "Color",
+      "confirm": "Add",
+      "cancel": "Cancel"
+    },
+    "save": "Save & Create",
+    "update": "Save Changes",
+    "namePrompt": "Session name",
+    "namePlaceholder": "Session_01",
+    "needsSpeaker": "At least one speaker slot required",
+    "duration": {
+      "minutes": "Min",
+      "seconds": "Sec"
+    }
   },
   "settings": {
     "title": "Settings"

@@ -5,6 +5,7 @@ import { StreakDashboard } from "@/components/StreakDashboard";
 import { AdBanner } from "@/components/AdBanner";
 import { Button } from "@/components/ui/button";
 import { Plus, Play, Heart, Info, MessageCircle, Clock, Users, CheckCircle } from "lucide-react";
+import { LanguageToggle } from "@/components/LanguageToggle";
 
 interface Props {
   streakRefresh?: number;
@@ -69,6 +70,7 @@ export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
             >
               <Info className="w-4 h-4 text-slate-400" />
             </button>
+            <LanguageToggle />
           </nav>
         </div>
       </header>

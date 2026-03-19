@@ -1,18 +1,22 @@
 import { ChevronLeft, Heart, Clock, Shield, Zap, BookOpen, MessageCircle, Star, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AdBanner } from "@/components/AdBanner";
+import { LanguageToggle } from "@/components/LanguageToggle";
 
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       <header className="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
-          <Button type="button" variant="ghost" size="sm"
-            onClick={() => (window.location.href = "/#/")} className="text-slate-500">
-            <ChevronLeft className="w-5 h-5 mr-1" />
-            Zur App
-          </Button>
-          <h1 className="text-lg font-semibold text-slate-800">Die Zwiegespräch-Methode</h1>
+        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button type="button" variant="ghost" size="sm"
+              onClick={() => (window.location.href = "/#/")} className="text-slate-500">
+              <ChevronLeft className="w-5 h-5 mr-1" />
+              Zur App
+            </Button>
+            <h1 className="text-lg font-semibold text-slate-800">Die Zwiegespräch-Methode</h1>
+          </div>
+          <LanguageToggle />
         </div>
       </header>
 

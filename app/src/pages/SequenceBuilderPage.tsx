@@ -1,423 +1,310 @@
 /**
- * SequenceBuilderPage – vollständiger Custom-Session-Builder.
- * Jede Phase hat: Typ, Name, Dauer (mm:ss), FocusText, Sound.
- * Baut eine SessionMode und startet sie direkt.
+ * SequenceBuilderPage – Drag-and-drop session builder.
+ * Palette (5 slot types) → Timeline (vertical slot cards) → Save.
  */
-import { useState, useMemo } from 'react'
-import { useSession } from '@/viewModel/SessionContext'
-import type { PhaseConfig, SoundType } from '@/domain/PhaseConfig'
-import { createPhaseConfig, formatDurationShort } from '@/domain/PhaseConfig'
-import type { PhaseType } from '@/domain/PhaseType'
-import { createCustomModeTemplate } from '@/domain/SessionMode'
-import type { SessionMode } from '@/domain/SessionMode'
-import { SOUND_LABELS, getAudioService } from '@/services/AudioService'
-import { ChevronLeft, Play, Plus, Trash2, ArrowUp, ArrowDown, Volume2 } from 'lucide-react'
+import { useState, useMemo } from "react";
+import { Reorder, AnimatePresence, motion } from "framer-motion";
+import { ChevronLeft, Mic, ArrowRightLeft, Leaf, Wind, Pencil, Plus, Save } from "lucide-react";
+import { useTranslation } from "@/hooks/useTranslation";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { SlotConfigPopup, type BuilderSlotType, type SlotConfigResult } from "@/components/builder/SlotConfigPopup";
+import { SlotCard, type PlacedSlot } from "@/components/builder/SlotCard";
+import { createPhaseConfig, formatDurationShort } from "@/domain/PhaseConfig";
+import type { PhaseType } from "@/domain/PhaseType";
+import type { SoundType } from "@/domain/PhaseConfig";
+import { createSessionMode } from "@/domain/SessionMode";
+import type { SessionMode } from "@/domain/SessionMode";
+import { getPersistenceService } from "@/services/PersistenceService";
+import { getParticipantService } from "@/services/ParticipantService";
 
-// ── Farb-Mapping ──────────────────────────────────────────────────────────────
-const TYPE_COLORS: Record<string, string> = {
-  slotA:      '#3b82f6',
-  slotB:      '#e11d48',
-  transition: '#f59e0b',
-  prep:       '#94a3b8',
-  closingA:   '#60a5fa',
-  closingB:   '#fb7185',
-  cooldown:   '#10b981',
-}
-const TYPE_LABELS: Record<string, string> = {
-  slotA:      'A spricht',
-  slotB:      'B spricht',
-  transition: 'Übergang',
-  prep:       'Vorbereitung',
-  closingA:   'Abschluss A',
-  closingB:   'Abschluss B',
-  cooldown:   'Ausklang',
-}
-const QUICK_TEMPLATES: Array<{ type: PhaseType; label: string; defaultMin: number; defaultSec: number }> = [
-  { type: 'slotA',      label: 'A spricht',  defaultMin: 5, defaultSec: 0 },
-  { type: 'slotB',      label: 'B spricht',  defaultMin: 5, defaultSec: 0 },
-  { type: 'transition', label: 'Übergang',   defaultMin: 1, defaultSec: 0 },
-  { type: 'prep',       label: 'Vorbereitung', defaultMin: 1, defaultSec: 0 },
-  { type: 'cooldown',   label: 'Ausklang',   defaultMin: 5, defaultSec: 0 },
-]
+// ── Palette config ──
+const PALETTE: Array<{ type: BuilderSlotType; icon: typeof Mic; color: string; defaultMin: number }> = [
+  { type: "speaker",     icon: Mic,            color: "#3b82f6", defaultMin: 5 },
+  { type: "transition",  icon: ArrowRightLeft, color: "#f59e0b", defaultMin: 1 },
+  { type: "preparation", icon: Leaf,           color: "#10b981", defaultMin: 2 },
+  { type: "cooldown",    icon: Wind,           color: "#64748b", defaultMin: 5 },
+  { type: "custom",      icon: Pencil,         color: "#8b5cf6", defaultMin: 3 },
+];
 
-// ── EditablePhase ─────────────────────────────────────────────────────────────
-interface EditablePhase {
-  id: string
-  type: PhaseType
-  label: string       // custom display label
-  minutes: number
-  seconds: number
-  focusText: string
-  soundType: SoundType
-}
-
-function toPhaseConfig(e: EditablePhase): PhaseConfig {
-  return createPhaseConfig(
-    e.id, e.type, e.minutes * 60 + e.seconds,
-    undefined,
-    { label: e.label || undefined, focusText: e.focusText || undefined, soundType: e.soundType }
-  )
-}
-
-function newPhase(type: PhaseType, minutes = 5, seconds = 0): EditablePhase {
-  return {
-    id: `p-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-    type, label: '', minutes, seconds,
-    focusText: '', soundType: 'SINGING_BOWL',
+function builderSlotToPhaseType(slotType: BuilderSlotType, speakerKey?: "A" | "B"): PhaseType {
+  switch (slotType) {
+    case "speaker":     return speakerKey === "B" ? "slotB" : "slotA";
+    case "transition":  return "transition";
+    case "preparation": return "prep";
+    case "cooldown":    return "cooldown";
+    case "custom":      return "prep";
   }
 }
 
-// ── PhaseCard ─────────────────────────────────────────────────────────────────
-function PhaseCard({
-  phase, index, total, nameA, nameB,
-  onChange, onDelete, onMoveUp, onMoveDown,
-}: {
-  phase: EditablePhase; index: number; total: number
-  nameA: string; nameB: string
-  onChange: (p: EditablePhase) => void
-  onDelete: () => void
-  onMoveUp: () => void
-  onMoveDown: () => void
-}) {
-  const color = TYPE_COLORS[phase.type] ?? '#64748b'
-  const dur = phase.minutes * 60 + phase.seconds
-
-  const previewSound = async (s: SoundType) => {
-    const audio = getAudioService()
-    await audio.enable()
-    await audio.playSound(s)
-  }
-
-  return (
-    <div className="rounded-2xl border bg-white overflow-hidden shadow-sm"
-      style={{ borderLeft: `4px solid ${color}` }}>
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-100">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-slate-400">{index + 1}</span>
-          <span className="text-sm font-semibold" style={{ color }}>
-            {TYPE_LABELS[phase.type] ?? phase.type}
-          </span>
-          <span className="text-xs text-slate-400 ml-2">
-            {formatDurationShort(dur)}
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <button onClick={onMoveUp}   disabled={index === 0}
-            className="p-1 rounded text-slate-400 hover:text-slate-600 disabled:opacity-20">
-            <ArrowUp className="w-4 h-4" />
-          </button>
-          <button onClick={onMoveDown} disabled={index === total - 1}
-            className="p-1 rounded text-slate-400 hover:text-slate-600 disabled:opacity-20">
-            <ArrowDown className="w-4 h-4" />
-          </button>
-          <button onClick={onDelete}
-            className="p-1 rounded text-red-300 hover:text-red-500">
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* Body */}
-      <div className="px-4 py-3 space-y-3">
-        {/* Type selector */}
-        <div>
-          <label className="block text-xs text-slate-400 mb-1.5">Phase-Typ</label>
-          <div className="flex flex-wrap gap-1.5">
-            {(Object.keys(TYPE_LABELS) as PhaseType[]).map(t => (
-              <button key={t}
-                onClick={() => onChange({ ...phase, type: t })}
-                className="px-2.5 py-1 rounded-lg text-xs font-medium transition-all"
-                style={{
-                  background: phase.type === t ? TYPE_COLORS[t] : 'transparent',
-                  color: phase.type === t ? '#fff' : TYPE_COLORS[t],
-                  border: `1.5px solid ${TYPE_COLORS[t]}`,
-                }}>
-                {TYPE_LABELS[t]}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Duration */}
-        <div>
-          <label className="block text-xs text-slate-400 mb-1.5">Dauer</label>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1">
-              <input type="number" min={0} max={60} value={phase.minutes}
-                onChange={e => onChange({ ...phase, minutes: Math.max(0, Math.min(60, +e.target.value || 0)) })}
-                className="w-16 px-2 py-1.5 rounded-lg border border-slate-200 text-center text-sm
-                  focus:outline-none focus:ring-2 focus:ring-blue-300"
-              />
-              <span className="text-xs text-slate-400">min</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <input type="number" min={0} max={59} step={5} value={phase.seconds}
-                onChange={e => onChange({ ...phase, seconds: Math.max(0, Math.min(59, +e.target.value || 0)) })}
-                className="w-16 px-2 py-1.5 rounded-lg border border-slate-200 text-center text-sm
-                  focus:outline-none focus:ring-2 focus:ring-blue-300"
-              />
-              <span className="text-xs text-slate-400">sec</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Custom label */}
-        <div>
-          <label className="block text-xs text-slate-400 mb-1.5">
-            Eigener Name <span className="text-slate-300">(optional)</span>
-          </label>
-          <input type="text" value={phase.label} maxLength={60}
-            placeholder={TYPE_LABELS[phase.type]}
-            onChange={e => onChange({ ...phase, label: e.target.value })}
-            className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-sm
-              focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder:text-slate-300"
-          />
-        </div>
-
-        {/* Focus text */}
-        <div>
-          <label className="block text-xs text-slate-400 mb-1.5">
-            Anweisung auf dem Bildschirm <span className="text-slate-300">(optional, {'{nameA}'}/{'{nameB}'})</span>
-          </label>
-          <textarea value={phase.focusText} maxLength={300}
-            rows={2}
-            placeholder={`z.B. "${phase.type === 'slotA' ? nameA : phase.type === 'slotB' ? nameB : 'Bitte'} spricht über sich – nicht über den anderen."`}
-            onChange={e => onChange({ ...phase, focusText: e.target.value })}
-            className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-sm resize-none
-              focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder:text-slate-300"
-          />
-          <div className="text-right text-xs text-slate-300 mt-0.5">{phase.focusText.length}/300</div>
-        </div>
-
-        {/* Sound */}
-        <div>
-          <div className="flex items-center gap-1 mb-1.5">
-            <Volume2 className="w-3 h-3 text-slate-400" />
-            <label className="text-xs text-slate-400">Ton am Phasen-Ende</label>
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {(Object.keys(SOUND_LABELS) as SoundType[]).map(s => (
-              <button key={s}
-                onClick={() => { onChange({ ...phase, soundType: s }); previewSound(s) }}
-                className="px-2.5 py-1 rounded-lg text-xs transition-all"
-                style={{
-                  background: phase.soundType === s ? '#3b82f6' : 'transparent',
-                  color: phase.soundType === s ? '#fff' : '#64748b',
-                  border: '1.5px solid ' + (phase.soundType === s ? '#3b82f6' : '#e2e8f0'),
-                }}>
-                {SOUND_LABELS[s]}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ── Timeline ──────────────────────────────────────────────────────────────────
-function TimelineBar({ phases }: { phases: EditablePhase[] }) {
-  const total = phases.reduce((s, p) => s + p.minutes * 60 + p.seconds, 0)
-  if (total === 0) return null
-  return (
-    <div className="flex h-6 rounded-lg overflow-hidden border border-slate-200">
-      {phases.map(p => {
-        const dur = p.minutes * 60 + p.seconds
-        const pct = (dur / total) * 100
-        if (pct < 0.5) return null
-        return (
-          <div key={p.id} title={`${TYPE_LABELS[p.type]} – ${formatDurationShort(dur)}`}
-            style={{ width: `${pct}%`, background: TYPE_COLORS[p.type] ?? '#94a3b8', minWidth: 4 }}
-            className="flex items-center justify-center overflow-hidden">
-            {pct > 8 && <span className="text-white text-[10px] font-semibold px-1">{formatDurationShort(dur)}</span>}
-          </div>
-        )
-      })}
-    </div>
-  )
-}
-
-// ── Hauptseite ────────────────────────────────────────────────────────────────
 export default function SequenceBuilderPage() {
-  const { start, nameA, nameB } = useSession()
+  const { t } = useTranslation();
+  const participants = getParticipantService().get();
+  const nameA = participants.nameA;
+  const nameB = participants.nameB;
 
-  const [sessionName, setSessionName] = useState('Eigene Sitzung')
-  const [phases, setPhases] = useState<EditablePhase[]>(() => {
-    const t = createCustomModeTemplate()
-    return t.phases.map(p => ({
-      id: p.id, type: p.type as PhaseType,
-      label: p.label ?? '',
-      minutes: Math.floor(p.duration / 60),
-      seconds: p.duration % 60,
-      focusText: p.focusText ?? '',
-      soundType: (p.soundType as SoundType) ?? 'SINGING_BOWL',
-    }))
-  })
-  const [showAddForm, setShowAddForm] = useState(false)
-  const [errors, setErrors] = useState<string[]>([])
+  // Parse state from URL (edit mode)
+  const parsed = useMemo(() => {
+    const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
+    const stateParam = params.get("state");
+    if (!stateParam) return null;
+    try { return JSON.parse(decodeURIComponent(stateParam)); }
+    catch { return null; }
+  }, []);
 
-  const totalSec = phases.reduce((s, p) => s + p.minutes * 60 + p.seconds, 0)
+  const editMode = parsed && !parsed.isNew;
+  const existingMode: SessionMode | null = parsed?.mode ?? null;
 
-  const updatePhase = (idx: number, p: EditablePhase) => {
-    setPhases(prev => { const n = [...prev]; n[idx] = p; return n })
-  }
-  const deletePhase = (idx: number) => setPhases(prev => prev.filter((_, i) => i !== idx))
-  const moveUp = (idx: number) => {
-    if (idx === 0) return
-    setPhases(prev => { const n = [...prev]; [n[idx-1], n[idx]] = [n[idx], n[idx-1]]; return n })
-  }
-  const moveDown = (idx: number) => {
-    if (idx === phases.length - 1) return
-    setPhases(prev => { const n = [...prev]; [n[idx], n[idx+1]] = [n[idx+1], n[idx]]; return n })
-  }
+  // Convert existing mode phases to PlacedSlots for edit mode
+  const initialSlots: PlacedSlot[] = useMemo(() => {
+    if (!existingMode) return [];
+    return existingMode.phases.map((p) => {
+      const slotType: BuilderSlotType =
+        p.type === "slotA" || p.type === "slotB" ? "speaker" :
+        p.type === "transition" ? "transition" :
+        p.type === "prep" ? "preparation" :
+        p.type === "cooldown" ? "cooldown" : "custom";
+      return {
+        id: p.id,
+        slotType,
+        phaseType: p.type,
+        label: p.label || "",
+        speakerKey: p.type === "slotA" ? "A" as const : p.type === "slotB" ? "B" as const : undefined,
+        soundType: p.soundType || "SINGING_BOWL",
+        minutes: Math.floor(p.duration / 60),
+        seconds: p.duration % 60,
+        color: undefined,
+        description: p.focusText || "",
+      };
+    });
+  }, [existingMode]);
 
-  const addQuick = (t: typeof QUICK_TEMPLATES[0]) => {
-    setPhases(prev => [...prev, newPhase(t.type, t.defaultMin, t.defaultSec)])
-  }
+  const [slots, setSlots] = useState<PlacedSlot[]>(initialSlots);
+  const [popupType, setPopupType] = useState<BuilderSlotType | null>(null);
+  const [showNamePrompt, setShowNamePrompt] = useState(false);
+  const [sessionName, setSessionName] = useState(existingMode?.name || "");
 
-  const validate = (): boolean => {
-    const errs: string[] = []
-    if (!phases.some(p => p.type === 'slotA')) errs.push('Mindestens eine "A spricht"-Phase erforderlich.')
-    if (!phases.some(p => p.type === 'slotB')) errs.push('Mindestens eine "B spricht"-Phase erforderlich.')
-    if (phases.some(p => p.minutes * 60 + p.seconds < 30)) errs.push('Jede Phase muss mindestens 30 Sekunden dauern.')
-    setErrors(errs)
-    return errs.length === 0
-  }
+  const totalSeconds = slots.reduce((s, sl) => s + sl.minutes * 60 + sl.seconds, 0);
+  const hasSpeaker = slots.some((s) => s.slotType === "speaker");
 
-  const mode: SessionMode = useMemo(() => ({
-    id: `custom-${Date.now()}`,
-    name: sessionName || 'Eigene Sitzung',
-    phases: phases.map(toPhaseConfig),
-    guidanceLevel: 'moderate',
-    isLocked: false, isPreset: false,
-  }), [sessionName, phases])
+  // ── Handlers ──
+  const handlePopupConfirm = (config: SlotConfigResult) => {
+    if (!popupType) return;
+    const paletteItem = PALETTE.find((p) => p.type === popupType)!;
+    const newSlot: PlacedSlot = {
+      id: `slot-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      slotType: popupType,
+      phaseType: builderSlotToPhaseType(popupType, config.speakerKey),
+      label: config.label,
+      speakerKey: config.speakerKey,
+      soundType: config.soundType,
+      minutes: paletteItem.defaultMin,
+      seconds: 0,
+      color: config.color,
+      description: config.description,
+    };
+    setSlots((prev) => [...prev, newSlot]);
+    setPopupType(null);
+  };
 
-  const handleStart = async () => {
-    if (!validate()) return
-    await start(mode)
-    window.location.hash = '#/session'
-  }
+  const handleDurationChange = (id: string, minutes: number, seconds: number) => {
+    setSlots((prev) => prev.map((s) => (s.id === id ? { ...s, minutes, seconds } : s)));
+  };
+
+  const handleDelete = (id: string) => {
+    setSlots((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  const handleSave = async () => {
+    const name = sessionName.trim() || `Session_${String(Date.now()).slice(-4)}`;
+    const phases = slots.map((s) =>
+      createPhaseConfig(
+        s.id,
+        s.phaseType as PhaseType,
+        s.minutes * 60 + s.seconds,
+        undefined,
+        {
+          label: s.label || undefined,
+          focusText: s.description || undefined,
+          soundType: s.soundType as SoundType,
+        }
+      )
+    );
+    const mode = createSessionMode(
+      existingMode?.id || `custom-${Date.now()}`,
+      name,
+      phases,
+      "moderate",
+      false,
+      false,
+      undefined,
+      30
+    );
+
+    const persistence = getPersistenceService();
+    const existing = await persistence.loadCustomModes();
+
+    if (editMode && existingMode) {
+      const updated = existing.map((m) => (m.id === mode.id ? mode : m));
+      await persistence.saveCustomModes(updated);
+    } else {
+      await persistence.saveCustomModes([...existing, mode]);
+    }
+
+    window.location.href = "/#/";
+  };
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-20">
+    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white pb-24">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-xl mx-auto px-4 py-3 flex items-center gap-3">
-          <button onClick={() => window.history.back()}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600">
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <input type="text" value={sessionName}
-            onChange={e => setSessionName(e.target.value)}
-            maxLength={50}
-            className="flex-1 bg-transparent text-lg font-bold text-slate-800 focus:outline-none"
-            placeholder="Session-Name"
-          />
-          <span className="text-xs text-slate-400 shrink-0">
-            {formatDurationShort(totalSec)}
-          </span>
+      <header className="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-10">
+        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => (window.location.href = "/#/")}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <h1 className="text-lg font-semibold text-slate-800">
+              {editMode ? t("builder.editTitle") : t("builder.title")}
+            </h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-slate-400">
+              {t("builder.timeline.total")}: {formatDurationShort(totalSeconds)}
+            </span>
+            <LanguageToggle />
+          </div>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-xl mx-auto px-4 py-5 space-y-4">
-
-        {/* Errors */}
-        {errors.length > 0 && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-3">
-            {errors.map((e, i) => <p key={i} className="text-sm text-red-600">⚠ {e}</p>)}
-          </div>
-        )}
-
-        {/* Timeline */}
-        {phases.length > 0 && (
-          <div className="space-y-1">
-            <TimelineBar phases={phases} />
-            <p className="text-xs text-slate-400 text-right">
-              {phases.length} Phasen · {formatDurationShort(totalSec)}
-            </p>
-          </div>
-        )}
-
-        {/* Empty state */}
-        {phases.length === 0 && (
-          <div className="rounded-2xl border-2 border-dashed border-slate-200 p-8 text-center">
-            <p className="text-slate-400 text-sm">Noch keine Phasen. Füge deine erste Phase hinzu.</p>
-          </div>
-        )}
-
-        {/* Phase cards */}
-        {phases.map((p, i) => (
-          <PhaseCard key={p.id} phase={p} index={i} total={phases.length}
-            nameA={nameA} nameB={nameB}
-            onChange={updated => updatePhase(i, updated)}
-            onDelete={() => deletePhase(i)}
-            onMoveUp={() => moveUp(i)}
-            onMoveDown={() => moveDown(i)}
-          />
-        ))}
-
-        {/* Quick add */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
-            Schnell hinzufügen
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {QUICK_TEMPLATES.map(t => (
-              <button key={t.type} onClick={() => addQuick(t)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-all"
-                style={{ background: TYPE_COLORS[t.type] + '18', color: TYPE_COLORS[t.type], border: `1.5px solid ${TYPE_COLORS[t.type]}40` }}>
-                <Plus className="w-3.5 h-3.5" />
-                {t.label}
+      <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+        {/* ── PALETTE ── */}
+        <section>
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {PALETTE.map(({ type, icon: Icon, color }) => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => setPopupType(type)}
+                className="flex flex-col items-center gap-1.5 px-4 py-3 rounded-xl border-2 border-dashed hover:border-solid transition-all shrink-0"
+                style={{ borderColor: color }}
+              >
+                <div
+                  className="w-10 h-10 rounded-lg flex items-center justify-center"
+                  style={{ background: `${color}15` }}
+                >
+                  <Icon className="w-5 h-5" style={{ color }} />
+                </div>
+                <span className="text-xs font-medium" style={{ color }}>
+                  {t(`builder.palette.${type}`)}
+                </span>
               </button>
             ))}
-            <button onClick={() => setShowAddForm(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium
-                border border-dashed border-slate-300 text-slate-500 hover:border-slate-400">
-              <Plus className="w-3.5 h-3.5" />
-              Eigene Phase
-            </button>
           </div>
-        </div>
+        </section>
 
-        {/* Custom add form */}
-        {showAddForm && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-sm font-semibold text-slate-600 mb-3">Eigene Phase</p>
-            <p className="text-xs text-slate-400 mb-3">
-              Wähle einen Typ und konfiguriere ihn nach deinen Wünschen.
-            </p>
-            <div className="flex flex-wrap gap-2 mb-3">
-              {QUICK_TEMPLATES.map(t => (
-                <button key={t.type}
-                  onClick={() => { addQuick(t); setShowAddForm(false) }}
-                  className="px-3 py-1.5 rounded-xl text-sm font-medium border transition-all"
-                  style={{ borderColor: TYPE_COLORS[t.type], color: TYPE_COLORS[t.type] }}>
-                  {t.label}
-                </button>
-              ))}
-            </div>
-            <button onClick={() => setShowAddForm(false)}
-              className="text-sm text-slate-400 hover:text-slate-600">
-              Abbrechen
-            </button>
-          </div>
-        )}
+        {/* ── TIMELINE ── */}
+        <section className="space-y-3">
+          {slots.length > 0 && (
+            <Reorder.Group
+              axis="y"
+              values={slots}
+              onReorder={setSlots}
+              className="space-y-3"
+            >
+              <AnimatePresence>
+                {slots.map((slot) => (
+                  <Reorder.Item key={slot.id} value={slot}>
+                    <SlotCard
+                      slot={slot}
+                      nameA={nameA}
+                      nameB={nameB}
+                      onDurationChange={(m, s) => handleDurationChange(slot.id, m, s)}
+                      onDelete={() => handleDelete(slot.id)}
+                    />
+                  </Reorder.Item>
+                ))}
+              </AnimatePresence>
+            </Reorder.Group>
+          )}
+
+          {/* Empty drop target — always visible */}
+          <motion.button
+            type="button"
+            onClick={() => setPopupType("speaker")}
+            className="w-full py-8 rounded-xl border-2 border-dashed border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 transition-colors flex flex-col items-center gap-2"
+            whileHover={{ scale: 1.01 }}
+          >
+            <Plus className="w-6 h-6 text-slate-300" />
+            <span className="text-sm text-slate-400">{t("builder.timeline.empty")}</span>
+          </motion.button>
+        </section>
       </div>
 
-      {/* Start button (sticky bottom) */}
-      <div className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur border-t border-slate-200 px-4 py-4">
-        <div className="max-w-xl mx-auto">
-          <button onClick={handleStart}
-            disabled={phases.length === 0}
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl
-              bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed
-              text-white text-lg font-semibold shadow-lg transition-all active:scale-95">
-            <Play className="w-6 h-6" />
-            Session starten
+      {/* ── POPUP ── */}
+      {popupType && (
+        <SlotConfigPopup
+          slotType={popupType}
+          nameA={nameA}
+          nameB={nameB}
+          onConfirm={handlePopupConfirm}
+          onCancel={() => setPopupType(null)}
+        />
+      )}
+
+      {/* ── NAME PROMPT ── */}
+      {showNamePrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-5 space-y-4">
+            <h3 className="text-base font-semibold text-slate-800">{t("builder.namePrompt")}</h3>
+            <input
+              type="text"
+              value={sessionName}
+              onChange={(e) => setSessionName(e.target.value)}
+              placeholder={t("builder.namePlaceholder")}
+              maxLength={50}
+              autoFocus
+              className="w-full px-3 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
+            />
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setShowNamePrompt(false)}
+                className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200"
+              >
+                {t("builder.popup.cancel")}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setShowNamePrompt(false); handleSave(); }}
+                className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium text-white bg-sky-500 hover:bg-sky-600"
+              >
+                {editMode ? t("builder.update") : t("builder.save")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── STICKY FOOTER ── */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 p-4 z-10">
+        <div className="max-w-2xl mx-auto">
+          {!hasSpeaker && slots.length > 0 && (
+            <p className="text-xs text-amber-600 text-center mb-2">{t("builder.needsSpeaker")}</p>
+          )}
+          <button
+            type="button"
+            disabled={!hasSpeaker}
+            onClick={() => setShowNamePrompt(true)}
+            className="w-full py-3 rounded-xl text-sm font-semibold text-white bg-sky-500 hover:bg-sky-600 disabled:bg-slate-200 disabled:text-slate-400 transition-colors flex items-center justify-center gap-2"
+          >
+            <Save className="w-4 h-4" />
+            {editMode ? t("builder.update") : t("builder.save")}
           </button>
         </div>
       </div>
     </main>
-  )
+  );
 }
