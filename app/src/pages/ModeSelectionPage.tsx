@@ -1,5 +1,6 @@
 import { useTranslation } from "@/hooks/useTranslation";
 import { useModeSelection } from "@/viewModel/useModeSelection";
+import { useSession } from "@/viewModel/SessionContext";
 import { ModeCard } from "@/components/ModeCard";
 import { StreakDashboard } from "@/components/StreakDashboard";
 import { AdBanner } from "@/components/AdBanner";
@@ -19,10 +20,15 @@ export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
     selectMode,
     createCustomMode,
   } = useModeSelection();
+  const { start } = useSession();
 
-  const handleStartSession = () => {
-    if (selectedMode) {
-      window.location.href = "/#/session";
+  const handleStartSession = async () => {
+    if (!selectedMode) return;
+    if (selectedMode.isPreset) {
+      window.location.href = `/#/setup?preset=${selectedMode.id}`;
+    } else {
+      await start(selectedMode);
+      window.location.hash = "#/session";
     }
   };
 
