@@ -1,8 +1,10 @@
 import { ChevronLeft, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function PrivacyPage() {
+  const { t } = useTranslation();
   return (
     <main className="min-h-screen bg-slate-50">
       {/* Header */}
@@ -17,7 +19,7 @@ export default function PrivacyPage() {
               className="text-slate-500"
             >
               <ChevronLeft className="w-5 h-5 mr-1" />
-              Zurück
+              {t("nav.back")}
             </Button>
             <div className="flex items-center gap-2">
               <Shield className="w-5 h-5 text-sky-500" />
@@ -113,12 +115,12 @@ export default function PrivacyPage() {
         <div className="border-t border-slate-200 pt-6 flex justify-center gap-6 text-sm text-slate-400">
           <button type="button" onClick={() => (window.location.href = "/#/")}
             className="hover:text-slate-600 transition-colors">
-            Zur App
+            {t("nav.toApp")}
           </button>
           <span>·</span>
           <button type="button" onClick={() => (window.location.href = "/#/impressum")}
             className="hover:text-slate-600 transition-colors">
-            Impressum
+            {t("nav.impressum")}
           </button>
         </div>
       </div>

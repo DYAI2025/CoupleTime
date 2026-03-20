@@ -2,8 +2,10 @@ import { ChevronLeft, Heart, Clock, Shield, Zap, BookOpen, MessageCircle, Star, 
 import { Button } from "@/components/ui/button";
 import { AdBanner } from "@/components/AdBanner";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function AboutPage() {
+  const { t } = useTranslation();
   return (
     <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       <header className="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-10">
@@ -12,7 +14,7 @@ export default function AboutPage() {
             <Button type="button" variant="ghost" size="sm"
               onClick={() => (window.location.href = "/#/")} className="text-slate-500">
               <ChevronLeft className="w-5 h-5 mr-1" />
-              Zur App
+              {t("nav.toApp")}
             </Button>
             <h1 className="text-lg font-semibold text-slate-800">Die Zwiegespräch-Methode</h1>
           </div>
@@ -188,11 +190,11 @@ export default function AboutPage() {
             className="bg-gradient-to-r from-rose-400 to-sky-500 hover:from-rose-500 hover:to-sky-600 text-white rounded-xl px-8 py-6 text-base shadow-lg shadow-rose-200/50"
           >
             <Heart className="w-5 h-5 mr-2" />
-            Jetzt starten
+            {t("nav.startNow")}
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
           <p className="text-slate-400 text-sm mt-3">
-            Kostenlos · Keine Anmeldung · Direkt im Browser
+            {t("nav.freeNoSignup")}
           </p>
         </section>
 
@@ -200,12 +202,12 @@ export default function AboutPage() {
         <div className="border-t border-slate-200 pt-6 flex justify-center gap-6 text-sm text-slate-400">
           <button type="button" onClick={() => (window.location.href = "/#/privacy")}
             className="hover:text-slate-600 transition-colors">
-            Datenschutz
+            {t("nav.privacy")}
           </button>
           <span>·</span>
           <button type="button" onClick={() => (window.location.href = "/#/impressum")}
             className="hover:text-slate-600 transition-colors">
-            Impressum
+            {t("nav.impressum")}
           </button>
           <span>·</span>
           <span>© 2026 coupletimer.site</span>

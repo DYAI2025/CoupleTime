@@ -1,8 +1,10 @@
 import { ChevronLeft, Scale } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function ImpressumPage() {
+  const { t } = useTranslation();
   return (
     <main className="min-h-screen bg-slate-50">
       <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
@@ -16,7 +18,7 @@ export default function ImpressumPage() {
               className="text-slate-500"
             >
               <ChevronLeft className="w-5 h-5 mr-1" />
-              Zurück
+              {t("nav.back")}
             </Button>
             <div className="flex items-center gap-2">
               <Scale className="w-5 h-5 text-sky-500" />
