@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { Flame, Trophy, Clock, Calendar } from "lucide-react";
 import { getStreakService, type StreakStats } from "@/services/StreakService";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface Props {
-  refreshTrigger?: number; // increment to force refresh
+  refreshTrigger?: number;
 }
 
 export function StreakDashboard({ refreshTrigger = 0 }: Props) {
   const [stats, setStats] = useState<StreakStats | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const s = getStreakService().getStats();
@@ -18,7 +20,7 @@ export function StreakDashboard({ refreshTrigger = 0 }: Props) {
     return (
       <div className="bg-gradient-to-r from-sky-50 to-rose-50 rounded-2xl border border-slate-200 p-5 text-center">
         <p className="text-slate-400 text-sm">
-          Startet euer erstes Zwiegespräch – euer Streak beginnt hier 🌱
+          {t("streak.empty")}
         </p>
       </div>
     );
@@ -33,49 +35,46 @@ export function StreakDashboard({ refreshTrigger = 0 }: Props) {
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-      {/* Streak Header */}
       <div className={`bg-gradient-to-r ${streakColor} p-4 text-white`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Flame className="w-6 h-6" />
             <div>
-              <p className="text-xs font-medium opacity-80">Euer Streak</p>
+              <p className="text-xs font-medium opacity-80">{t("streak.title")}</p>
               <p className="text-3xl font-bold leading-none">
                 {stats.currentStreak}
                 <span className="text-lg font-normal ml-1">
-                  {stats.currentStreak === 1 ? "Tag" : "Tage"}
+                  {stats.currentStreak === 1 ? t("streak.daySingular") : t("streak.dayPlural")}
                 </span>
               </p>
             </div>
           </div>
           {stats.todayCompleted && (
             <div className="bg-white/20 rounded-full px-3 py-1 text-xs font-medium">
-              ✓ Heute erledigt
+              {t("streak.todayDone")}
             </div>
           )}
         </div>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-3 divide-x divide-slate-100 p-1">
         <StatCell
           icon={<Trophy className="w-4 h-4 text-amber-500" />}
-          label="Bester Streak"
+          label={t("streak.bestStreak")}
           value={`${stats.longestStreak}T`}
         />
         <StatCell
           icon={<Clock className="w-4 h-4 text-sky-500" />}
-          label="Gesamt"
+          label={t("streak.total")}
           value={`${stats.totalMinutes}m`}
         />
         <StatCell
           icon={<Calendar className="w-4 h-4 text-rose-500" />}
-          label="Diese Woche"
+          label={t("streak.thisWeek")}
           value={`${stats.sessionsThisWeek}×`}
         />
       </div>
 
-      {/* Weekly mini-calendar */}
       <WeeklyCalendar />
     </div>
   );
@@ -100,15 +99,16 @@ function StatCell({
 }
 
 function WeeklyCalendar() {
-  const days = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+  const { t, i18n } = useTranslation();
+  const days = i18n.language === "de"
+    ? ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+    : ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
   const records = getStreakService().getRecentRecords(30);
 
-  // Build set of dates with sessions in the last 7 days
   const completedDates = new Set(records.map((r) => r.date));
 
   const today = new Date();
-  const dayOfWeek = today.getDay(); // 0 = Sunday
-  // Make Monday = index 0
+  const dayOfWeek = today.getDay();
   const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
   const monday = new Date(today);
   monday.setDate(today.getDate() + mondayOffset);
@@ -125,7 +125,7 @@ function WeeklyCalendar() {
 
   return (
     <div className="px-4 pb-4">
-      <p className="text-xs text-slate-400 mb-2">Diese Woche</p>
+      <p className="text-xs text-slate-400 mb-2">{t("streak.thisWeek")}</p>
       <div className="flex justify-between">
         {weekDays.map(({ label, dateStr, isToday }) => {
           const done = completedDates.has(dateStr);

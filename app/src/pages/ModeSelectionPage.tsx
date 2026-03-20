@@ -57,7 +57,7 @@ export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
                 Couple Timer
               </h1>
               <p className="text-[11px] text-slate-400 leading-none mt-0.5">
-                Zwiegespräch für Paare
+                {t("home.subtitle")}
               </p>
             </div>
           </div>
@@ -67,7 +67,7 @@ export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
               className="text-xs text-slate-500 hover:text-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
               onClick={() => (window.location.href = "/#/about")}
             >
-              Über die Methode
+              {t("home.aboutMethod")}
             </button>
             <button
               type="button"
@@ -87,18 +87,16 @@ export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
         <section className="py-10 text-center">
           <div className="inline-flex items-center gap-2 bg-rose-50 text-rose-600 text-xs font-medium px-3 py-1.5 rounded-full mb-5">
             <MessageCircle className="w-3.5 h-3.5" />
-            Kostenloser Paar-Kommunikations-Timer
+            {t("home.heroTitle")}
           </div>
           <h2 className="text-3xl sm:text-4xl font-light text-slate-800 mb-4 leading-tight">
-            Das Zwiegespräch –<br />
+            {t("home.heroHighlight1")}<br />
             <span className="font-semibold bg-gradient-to-r from-rose-500 to-sky-500 bg-clip-text text-transparent">
-              einander wirklich zuhören
+              {t("home.heroHighlight2")}
             </span>
           </h2>
           <p className="text-slate-500 max-w-lg mx-auto text-base leading-relaxed">
-            Der Couple Timer begleitet euch durch strukturierte Zwiegespräche nach der bewährten
-            Methode von <strong>Michael Lukas Moeller</strong>. Jeder Partner kommt zu Wort –
-            ohne Unterbrechung, ohne Diskussion, ohne Druck.
+            {t("home.heroDescription")}
           </p>
         </section>
 
@@ -106,7 +104,7 @@ export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
         <section className="mb-8 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
           <div className="bg-gradient-to-r from-rose-50 to-sky-50 px-6 py-4 border-b border-slate-100">
             <h3 className="font-semibold text-slate-800 text-lg">
-              Was ist das Zwiegespräch?
+              {t("home.whatIs")}
             </h3>
           </div>
           <div className="px-6 py-5 space-y-4 text-slate-600 text-sm leading-relaxed">
@@ -126,38 +124,38 @@ export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
             <div className="grid sm:grid-cols-2 gap-3 pt-2">
               <PhaseCard
                 icon="🫁"
-                phase="1. Vorbereitung"
-                description="Beide kommen zur Ruhe. Atmen durch. Setzen eine positive Absicht."
+                phase={t("home.step1Title")}
+                description={t("home.step1Desc")}
                 color="slate"
               />
               <PhaseCard
                 icon="🗣️"
-                phase="2. Partner A spricht"
-                description="A redet über alles, was ihn/sie bewegt – ohne Zensur, ohne Struktur."
+                phase={t("home.step2Title")}
+                description={t("home.step2Desc")}
                 color="rose"
               />
               <PhaseCard
                 icon="👂"
-                phase="3. Partner B hört zu"
-                description="B hört aktiv zu – keine Kommentare, keine Fragen, keine Reaktionen."
+                phase={t("home.step3Title")}
+                description={t("home.step3Desc")}
                 color="sky"
               />
               <PhaseCard
                 icon="🔄"
-                phase="4. Rollentausch"
-                description="B erzählt, was in ihm/ihr vorging. A hört jetzt still zu."
+                phase={t("home.step4Title")}
+                description={t("home.step4Desc")}
                 color="sky"
               />
               <PhaseCard
                 icon="🤝"
-                phase="5. Abschluss"
-                description="Kurze Anerkennung: Danke fürs Zuhören. Keine Analyse, keine Bewertung."
+                phase={t("home.step5Title")}
+                description={t("home.step5Desc")}
                 color="green"
               />
               <PhaseCard
                 icon="🌿"
-                phase="6. Cooldown"
-                description="Stille. Kein Nachgespräch. Die Eindrücke dürfen sich setzen."
+                phase={t("home.step6Title")}
+                description={t("home.step6Desc")}
                 color="emerald"
               />
             </div>
@@ -170,23 +168,23 @@ export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
         {/* ── WARUM ES WIRKT ──────────────────────────────────────────────── */}
         <section className="mb-8">
           <h3 className="text-lg font-semibold text-slate-800 mb-4">
-            Warum funktioniert die Methode?
+            {t("home.whyWorks")}
           </h3>
           <div className="grid sm:grid-cols-3 gap-4">
             <BenefitCard
               icon={<Users className="w-5 h-5 text-rose-500" />}
-              title="Gleichgewicht"
-              text="Beide Partner haben exakt gleich viel Redezeit. Niemand dominiert das Gespräch."
+              title={t("home.balance")}
+              text={t("home.balanceDesc")}
             />
             <BenefitCard
               icon={<CheckCircle className="w-5 h-5 text-sky-500" />}
-              title="Sicherheit"
-              text="Der Rahmen (Timer, Phasen) gibt Sicherheit. Ihr müsst euch nicht um den Ablauf kümmern."
+              title={t("home.safety")}
+              text={t("home.safetyDesc")}
             />
             <BenefitCard
               icon={<Clock className="w-5 h-5 text-amber-500" />}
-              title="Regelmäßigkeit"
-              text="Moeller empfahl wöchentliche Zwiegespräche – wie ein Wartungsritual für die Beziehung."
+              title={t("home.regularity")}
+              text={t("home.regularityDesc")}
             />
           </div>
         </section>
@@ -194,7 +192,7 @@ export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
         {/* ── QUICK RITUALE ──────────────────────────────────────────────── */}
         <section className="mb-8">
           <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-4">
-            Schnell starten
+            {t("home.quickStart")}
           </h3>
           <div className="grid sm:grid-cols-3 gap-3">
             {([
@@ -230,7 +228,7 @@ export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
         <section className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider">
-              Vollständige Zwiegespräch-Formate
+              {t("home.fullFormats")}
             </h3>
           </div>
           <div className="grid gap-3">
@@ -320,7 +318,7 @@ export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
         {/* ── FAQ – weiterer substantieller Content ───────────────────────── */}
         <section className="mb-8">
           <h3 className="text-lg font-semibold text-slate-800 mb-4">
-            Häufige Fragen zum Zwiegespräch
+            {t("home.faqTitle")}
           </h3>
           <div className="space-y-3">
             <FaqItem
@@ -350,19 +348,19 @@ export default function ModeSelectionPage({ streakRefresh = 0 }: Props) {
         <footer className="border-t border-slate-200 py-6 text-center text-xs text-slate-400 space-y-2">
           <div className="flex justify-center gap-4">
             <button type="button" onClick={() => (window.location.href = "/#/about")} className="hover:text-slate-600 transition-colors">
-              Über die Methode
+              {t("home.footerAbout")}
             </button>
             <span>·</span>
             <button type="button" onClick={() => (window.location.href = "/#/privacy")} className="hover:text-slate-600 transition-colors">
-              Datenschutz
+              {t("home.footerPrivacy")}
             </button>
             <span>·</span>
             <button type="button" onClick={() => (window.location.href = "/#/impressum")} className="hover:text-slate-600 transition-colors">
-              Impressum
+              {t("home.footerImpressum")}
             </button>
           </div>
           <p className="text-slate-300 text-[10px]">
-            Basierend auf der Zwiegespräch-Methode nach Michael Lukas Moeller
+            {t("home.footerCredit")}
           </p>
         </footer>
 

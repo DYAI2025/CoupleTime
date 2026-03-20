@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { useSession } from '@/viewModel/SessionContext'
+import { useTranslation } from '@/hooks/useTranslation'
 import { SessionCompletedView } from '@/components/SessionCompletedView'
 import { Square, Pause, Play, Maximize2, Minimize2 } from 'lucide-react'
 import { useState } from 'react'
@@ -41,14 +42,15 @@ const PHASE_BADGE_BG: Record<string, string> = {
   closingB:   'bg-rose-100   text-rose-800',
   cooldown:   'bg-emerald-100 text-emerald-800',
 }
-const PHASE_LABELS: Record<string, string> = {
-  prep:       'Vorbereitung',
-  slotA:      'spricht',
-  slotB:      'spricht',
-  transition: 'Übergang',
-  closingA:   'Abschluss',
-  closingB:   'Abschluss',
-  cooldown:   'Ausklang',
+// Phase labels resolved via t() at render time — see getPhaseLabel()
+const PHASE_LABEL_KEYS: Record<string, string> = {
+  prep:       'phaseLabels.prep',
+  slotA:      'phaseLabels.speaks',
+  slotB:      'phaseLabels.speaks',
+  transition: 'phaseLabels.transition',
+  closingA:   'phaseLabels.closing',
+  closingB:   'phaseLabels.closing',
+  cooldown:   'phaseLabels.cooldown',
 }
 
 // ── SVG Ring Timer ────────────────────────────────────────────────────────────
@@ -78,7 +80,7 @@ function RingTimer({ progress, time, color, isPaused }: {
         </span>
         {isPaused && (
           <span className="mt-1 text-xs font-semibold tracking-widest uppercase text-slate-400 animate-pulse">
-            Pause
+            {isPaused ? 'PAUSE' : ''}
           </span>
         )}
       </div>
@@ -115,23 +117,23 @@ function PhaseStrip({ phases, currentIndex, progress }: {
 }
 
 // ── Restore Banner ────────────────────────────────────────────────────────────
-function RestoreBanner({ onRestore, onDiscard }: { onRestore: () => void; onDiscard: () => void }) {
+function RestoreBanner({ onRestore, onDiscard, t }: { onRestore: () => void; onDiscard: () => void; t: (key: string) => string }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
       <div className="bg-white rounded-2xl p-6 mx-4 max-w-sm shadow-2xl text-center">
         <div className="text-3xl mb-3">⏸</div>
-        <h2 className="text-lg font-bold text-slate-800 mb-2">Session fortsetzen?</h2>
+        <h2 className="text-lg font-bold text-slate-800 mb-2">{t("sessionPage.resumePrompt")}</h2>
         <p className="text-sm text-slate-500 mb-5">
-          Eine unterbrochene Session wurde gefunden. Möchtest du weitermachen?
+          {t("sessionPage.resumeDesc")}
         </p>
         <div className="flex gap-3">
           <button onClick={onDiscard}
             className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-600 hover:bg-slate-50">
-            Verwerfen
+            {t("sessionPage.discard")}
           </button>
           <button onClick={onRestore}
             className="flex-1 px-4 py-2.5 rounded-xl bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700">
-            Fortsetzen
+            {t("sessionPage.resume")}
           </button>
         </div>
       </div>
@@ -150,6 +152,7 @@ export default function SessionPage() {
     hasSavedSession, restoreSavedSession, discardSavedSession,
     nameA, nameB,
   } = useSession()
+  const { t } = useTranslation()
 
   const wrapRef = useRef<HTMLDivElement>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
@@ -194,7 +197,8 @@ export default function SessionPage() {
 
   // Phase-Badge label with real names
   const phaseBadgeLabel = (() => {
-    const base = PHASE_LABELS[phType] ?? phType
+    const key = PHASE_LABEL_KEYS[phType]
+    const base = key ? t(key) : phType
     if (phType === 'slotA' || phType === 'closingA') return `${nameA} ${base}`
     if (phType === 'slotB' || phType === 'closingB') return `${nameB} ${base}`
     return base
@@ -207,7 +211,7 @@ export default function SessionPage() {
   return (
     <>
       {hasSavedSession && (
-        <RestoreBanner onRestore={restoreSavedSession} onDiscard={discardSavedSession} />
+        <RestoreBanner onRestore={restoreSavedSession} onDiscard={discardSavedSession} t={t} />
       )}
 
       <main
@@ -231,7 +235,7 @@ export default function SessionPage() {
             <button
               onClick={toggleFullscreen}
               className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-white/50"
-              aria-label={isFullscreen ? 'Vollbild beenden' : 'Vollbild'}
+              aria-label={isFullscreen ? t('sessionPage.fullscreenExit') : t('sessionPage.fullscreen')}
             >
               {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
             </button>
@@ -288,9 +292,9 @@ export default function SessionPage() {
           {/* NEXT PHASE PREVIEW */}
           {nextPhase && (
             <div className="flex items-center gap-2 text-xs text-slate-400">
-              <span>Danach:</span>
+              <span>{t('sessionPage.nextUp')}</span>
               <span className={`px-2 py-0.5 rounded-full font-medium ${PHASE_BADGE_BG[nextPhase.type] ?? 'bg-slate-100'}`}>
-                {PHASE_LABELS[nextPhase.type] ?? nextPhase.type}
+                {PHASE_LABEL_KEYS[nextPhase.type] ? t(PHASE_LABEL_KEYS[nextPhase.type]) : nextPhase.type}
               </span>
               <span>{Math.round(nextPhase.duration / 60)} min</span>
             </div>
@@ -303,7 +307,7 @@ export default function SessionPage() {
             className="w-14 h-14 rounded-full border-2 border-slate-300 bg-white/80 text-slate-500
               hover:border-red-400 hover:text-red-500 hover:bg-red-50
               flex items-center justify-center shadow-sm transition-all"
-            aria-label="Session beenden">
+            aria-label={t('sessionPage.stopSession')}>
             <Square className="w-5 h-5 fill-current" />
           </button>
 
@@ -313,7 +317,7 @@ export default function SessionPage() {
                 ? 'bg-sky-500 hover:bg-sky-600 text-white border-2 border-sky-500'
                 : 'border-2 border-slate-300 bg-white/80 text-slate-500 hover:border-sky-400 hover:text-sky-600'
               }`}
-            aria-label={isPaused ? 'Fortsetzen' : 'Pause'}>
+            aria-label={isPaused ? t('sessionPage.resume') : t('session.controls.pause')}>
             {isPaused ? <Play className="w-6 h-6 ml-0.5" /> : <Pause className="w-6 h-6" />}
           </button>
         </footer>
