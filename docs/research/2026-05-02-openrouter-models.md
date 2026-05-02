@@ -62,19 +62,21 @@ OpenRouter's documented free-tier policy (as of 2026-05-02):
 
 ---
 
-## Cascade strategy (confirmed structure)
+## Cascade strategy — capability-first (chosen)
 
 The `LLMProvider` interface tries each step in order. Step N+1 fires only on 4xx / 5xx / network failure of Step N.
 
+User decision (2026-05-02): **capability-first ordering** — try the most capable free model first; accept higher rate-limit risk as the trade-off, since the lower-tier free models and the paid fallback exist precisely to absorb the rate-limit hits.
+
 | Step | Slug | Why this position |
 |---|---|---|
-| 1 | `nvidia/nemotron-3-nano-30b-a3b:free` | Largest free context (256k), good DE quality, MoE = fast |
-| 2 | `openai/gpt-oss-120b:free` | Strong general capability, OpenAI-family training |
-| 3 | `nousresearch/hermes-3-llama-3.1-405b:free` | Highest raw capacity, but rate-limited often → middle of cascade, not first |
-| 4 | (paid) — see **Paid-Fallback Decision** below | Cost-bounded safety net |
-| 5 | (local Ollama) — see **Local-Fallback Decision** below | Privacy escape hatch + offline survivability |
+| 1 | `nousresearch/hermes-3-llama-3.1-405b:free` | 405B params, highest raw capacity in the free tier, strongest summary quality first try. Most rate-limited free model — Step 2 will absorb 429s. |
+| 2 | `openai/gpt-oss-120b:free` | 120B, OpenAI-family training. Strong instruction-following, good DE coverage, lower rate-limit pressure than Hermes. |
+| 3 | `nvidia/nemotron-3-nano-30b-a3b:free` | 30B MoE (~3B active). Fast, large 256k context. Newer model = less popular = lowest rate-limit risk. Final free safety net. |
+| 4 | `google/gemini-2.5-flash` (paid) | See **Paid-Fallback Decision** below. ~$0.007/session ceiling. |
+| 5 | (local Ollama) | See **Local-Fallback Decision** in Task 4. Privacy escape hatch + offline survivability. |
 
-Cost ceiling per session if Steps 1-3 all fail and we land on Step 4: see decision below.
+**Trade-off accepted:** capability-first means the cascade hits Step 2/3 more often than a reliability-first ordering would, because Hermes-405B has the most aggressive rate limits among the three free models. The cost in latency is ~1-2 extra HTTP round-trips per failed call (~200-400 ms each). The benefit is that when Step 1 succeeds (typical case at single-user volume), the user sees the highest-quality summary on first try.
 
 ---
 
