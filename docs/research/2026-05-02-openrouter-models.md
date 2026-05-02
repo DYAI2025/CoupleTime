@@ -107,3 +107,48 @@ The paid-sibling-of-free-model options (~$0.0007/session) are tempting on cost b
 **Trigger condition:** any HTTP error or empty response from Steps 1-3 in sequence.
 
 **Override:** user can pin a different model per session via Settings → Advanced → "Force LLM model". Useful for evaluating alternatives or running on Claude Haiku for sensitive sessions.
+
+---
+
+## Local-fallback decision (resolves remaining `gemma4:e2b` ambiguity)
+
+**Pick:** `gemma3:4b-it-qat` (Ollama)
+
+**Why this and not `gemma4:e2b`:** the literal slug `gemma4:e2b` does not exist on Ollama or OpenRouter as of 2026-05-02. The intent — "small efficient Gemma as last-resort offline fallback" — is best served by the 4B instruction-tuned + quantization-aware-trained Gemma 3, which fits comfortably in the KVM 2's 8 GB RAM, supports 32k context (enough for full transcript + summary prompt), and is purpose-built for low-resource Q4 inference quality.
+
+**Available Gemma family on Ollama** (verified via `https://ollama.com/library/gemma3` on 2026-05-02):
+
+| Tag | Disk size | Inference RAM peak | Context | KVM 2 fit | Pick? |
+|---|---|---|---|---|---|
+| `gemma3:270m` | ~290 MB | <1 GB | 8k | trivial | too small for summary task |
+| `gemma3:1b` | ~815 MB | ~1.5 GB | 32k | easy | too weak for structured DE summary |
+| `gemma3:1b-it-qat` | ~815 MB | ~1.5 GB | 32k | easy | weak |
+| **`gemma3:4b-it-qat`** ← pick | **~3.3 GB** | **~5 GB** | **32k** | **tight but works** | **yes** |
+| `gemma3:4b` | ~3.3 GB | ~5 GB | 32k | tight but works | second choice — slightly worse quality at Q4 than `-it-qat` |
+| `gemma3:12b-it-qat` | ~8 GB | ~10 GB | 32k | OOM risk | no — 12B exceeds RAM headroom |
+| `gemma3:27b` | ~17 GB | ~20 GB | 32k | impossible | no |
+| `gemma3:Xb-cloud` | n/a | n/a | n/a | not local | excluded — these are Ollama Cloud variants, not local |
+
+**Considered and rejected alternative families:**
+- `qwen3:4b` — comparable size, slightly stronger on multilingual benchmarks. Rejected because the user explicitly nominated the Gemma family; behavior change between cloud Gemini fallback and local Qwen would surprise.
+- `gemma3:1b-it-qat` — half the RAM but degraded summary quality on long German transcripts. Rejected: if we're falling back this far, quality should still be passable.
+
+**RAM footprint on KVM 2:** ~5 GB peak during inference of an 8k-token transcript. KVM 2 has 8 GB total. With FastAPI + worker + OS at ~1.5 GB baseline, ~6.5 GB remains for the model — fits with ~1.5 GB headroom. Set up a 4 GB swap file as additional safety net.
+
+**Position in cascade:** Step 5 — last resort.
+
+**Trigger condition:** OpenRouter cascade returns 4xx/5xx for **all four** prior steps OR network to OpenRouter unreachable for > 30 seconds.
+
+**User opt-in:** also reachable via Settings → Privacy → "Lokale Verarbeitung erzwingen" toggle, which forces every summary to skip the cloud cascade and go straight to Step 5. Trade-off: ~1-3 min inference time on KVM 2 instead of ~10 sec cloud round-trip; surfaced as a "verarbeitet auf eigenem Server"-badge in the UI for honest disclosure.
+
+**Setup commands** (for the deployment plan, not this plan):
+```bash
+# Install Ollama on Hostinger KVM 2 (Linux x86_64)
+curl -fsSL https://ollama.com/install.sh | sh
+systemctl enable --now ollama
+ollama pull gemma3:4b-it-qat
+# Verify
+ollama run gemma3:4b-it-qat "Sag 'Hallo Welt' auf Deutsch."
+```
+
+The Ollama service binds to `127.0.0.1:11434` by default, which is what we want — VibeMind backend talks to it via localhost, never exposed externally.
