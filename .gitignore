@@ -29,3 +29,11 @@ app/dist/
 *.njsproj
 *.sln
 *.sw?
+
+# Claude Code session state
+.claude/
+app/.claude/
+
+# External upstream archive (not part of this repo)
+vibe-main/
+vibe-main.zip
