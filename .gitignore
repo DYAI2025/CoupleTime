@@ -37,3 +37,7 @@ app/.claude/
 # External upstream archive (not part of this repo)
 vibe-main/
 vibe-main.zip
+
+# Claude-Flow swarm state and vector DB (generated at runtime)
+.swarm/
+ruvector.db
