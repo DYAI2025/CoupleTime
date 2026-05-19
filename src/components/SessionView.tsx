@@ -209,8 +209,11 @@ function ActiveSessionView() {
             <RecBadge isRecording={isRecording} recordingEnabled={recordingEnabled} />
             <button
               onClick={toggleRecording}
-              aria-label={recordingEnabled ? 'Disable recording' : 'Enable recording'}
-              className={`p-1.5 rounded-md transition-colors ${
+              disabled={isRecording}
+              aria-pressed={recordingEnabled}
+              aria-label="Recording"
+              title={recordingEnabled ? 'Disable recording' : 'Enable recording'}
+              className={`p-1.5 rounded-md transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
                 recordingEnabled
                   ? 'text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
                   : 'text-gray-400 dark:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800'

@@ -10,7 +10,7 @@ import { GuidanceService, GuidanceServiceProtocol } from '../services/GuidanceSe
 import { PersistenceService, PersistenceServiceProtocol } from '../services/PersistenceService'
 import { ParticipantConfig } from '../domain/ParticipantConfig'
 import { participantPersistenceService } from '../services/ParticipantPersistenceService'
-import { AudioRecorderService } from '../services/AudioRecorderService'
+import { AudioRecorderService, RecordingState } from '../services/AudioRecorderService'
 import { SessionStatus } from '../domain/SessionState'
 
 /**
@@ -122,27 +122,36 @@ export function SessionProvider({
       if (state.status === SessionStatus.Running && prevStatus !== SessionStatus.Running && prevStatus !== SessionStatus.Paused) {
         navigator.mediaDevices?.getUserMedia({ audio: true })
           .then((stream) => {
-            recorder.startRecording(stream).then(() => setIsRecording(true))
+            return recorder.startRecording(stream).then(() => {
+              setIsRecording(true)
+              // Mark initial phase immediately so first phase is not lost
+              if (state.mode) {
+                const firstPhase = state.mode.phases[state.currentPhaseIndex]
+                if (firstPhase) recorder.markPhase(firstPhase.type, 0)
+              }
+            })
           })
           .catch(() => { /* mic denied — recording silently skipped */ })
       }
 
-      // Phase changed during recording
-      if (isRecording && state.currentPhaseIndex !== prevPhase && state.mode) {
+      // Phase changed during recording (use service state — not stale React isRecording)
+      if (recorder.getState() === RecordingState.Recording && state.currentPhaseIndex !== prevPhase && state.mode) {
         const phase = state.mode.phases[state.currentPhaseIndex]
         if (phase) recorder.markPhase(phase.type, Math.round(state.elapsedSessionTime))
       }
 
-      // Session stopped or finished
+      // Session stopped or finished — use service state to avoid stale closure
       if ((state.status === SessionStatus.Finished || state.status === SessionStatus.Idle) &&
-          (prevStatus === SessionStatus.Running || prevStatus === SessionStatus.Paused) && isRecording) {
+          (prevStatus === SessionStatus.Running || prevStatus === SessionStatus.Paused) &&
+          recorder.getState() === RecordingState.Recording) {
         recorder.stopRecording().then(() => setIsRecording(false))
       }
     }
 
     prevStatusRef.current = state.status
     prevPhaseIndexRef.current = state.currentPhaseIndex
-  }, [state.status, state.currentPhaseIndex, recordingEnabled, isRecording, state.elapsedSessionTime, state.mode])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.status, state.currentPhaseIndex, recordingEnabled, state.mode])
 
   // Actions
   const start = useCallback(async (mode: SessionMode, participantConfig?: ParticipantConfig): Promise<boolean> => {
