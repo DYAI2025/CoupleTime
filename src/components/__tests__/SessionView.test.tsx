@@ -92,27 +92,25 @@ describe('SessionView - GuidancePanel Integration', () => {
     )
   }
 
-  async function startSession() {
-    // Click on first mode card
+  async function startSessionWithMode(modeFragment: string) {
     const modeButtons = screen.getAllByRole('button')
     const modeCard = modeButtons.find(btn =>
-      btn.textContent?.includes('modes.') && !btn.getAttribute('aria-label')
+      btn.textContent?.includes(modeFragment) && !btn.getAttribute('aria-label')
     )
+    if (modeCard) fireEvent.click(modeCard)
 
-    if (modeCard) {
-      fireEvent.click(modeCard)
-    }
-
-    // Wait for and click start button
     await waitFor(() => {
       const startButton = screen.getAllByRole('button').find(btn =>
         btn.textContent?.toLowerCase().includes('start') ||
         btn.textContent?.toLowerCase().includes('session')
       )
-      if (startButton) {
-        fireEvent.click(startButton)
-      }
+      if (startButton) fireEvent.click(startButton)
     })
+  }
+
+  // Use commitment (non-maintain) so guidance is always shown regardless of enableInMaintain
+  async function startSession() {
+    return startSessionWithMode('commitment')
   }
 
   describe('GuidancePanel Visibility', () => {
@@ -134,6 +132,18 @@ describe('SessionView - GuidancePanel Integration', () => {
         expect(screen.getByText('Quick Tips')).toBeInTheDocument()
         expect(screen.getByText('Deep Dive')).toBeInTheDocument()
       })
+    })
+
+    it('hides GuidancePanel when mode is maintain and enableInMaintain is false', async () => {
+      // enableInMaintain defaults to false in DEFAULT_GUIDANCE_SETTINGS
+      renderWithProviders()
+      await startSessionWithMode('maintain')
+
+      // Wait long enough for panel to appear if it were going to
+      await waitFor(() => {
+        expect(screen.queryByText('Quick Tips')).not.toBeInTheDocument()
+        expect(screen.queryByText('Deep Dive')).not.toBeInTheDocument()
+      }, { timeout: 2000 })
     })
   })
 

@@ -161,6 +161,8 @@ function ActiveSessionView() {
   // Get tips from session context
   const currentPhaseTips = session.tips || []
 
+  const showGuidance = !(viewModel.modeId === 'maintain' && !guidanceSettings.enableInMaintain)
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header with mode name and progress */}
@@ -176,8 +178,8 @@ function ActiveSessionView() {
         <SessionProgressBar />
       </header>
 
-      {/* Main content - with bottom padding to avoid overlap with fixed guidance panel */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 py-8 gap-8 pb-[360px]">
+      {/* Main content - add bottom padding only when guidance panel is visible */}
+      <main className={`flex-1 flex flex-col items-center justify-center px-4 py-8 gap-8 ${showGuidance ? 'pb-[360px]' : 'pb-8'}`}>
         {/* Phase indicator */}
         <PhaseIndicator />
 
@@ -200,12 +202,14 @@ function ActiveSessionView() {
         </div>
       </footer>
 
-      {/* Guidance Panel - Fixed at bottom */}
-      <GuidancePanel
-        settings={guidanceSettings}
-        onSettingsChange={handleGuidanceSettingsChange}
-        currentPhaseTips={currentPhaseTips}
-      />
+      {/* Guidance Panel - Fixed at bottom, hidden for Maintain mode when disabled */}
+      {showGuidance && (
+        <GuidancePanel
+          settings={guidanceSettings}
+          onSettingsChange={handleGuidanceSettingsChange}
+          currentPhaseTips={currentPhaseTips}
+        />
+      )}
     </div>
   )
 }
