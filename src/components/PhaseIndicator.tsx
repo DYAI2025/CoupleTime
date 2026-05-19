@@ -119,7 +119,7 @@ export function PhaseIndicator({ phaseType, speaker, showPhaseNumber = true }: P
         {/* Speaker name for speaking phases */}
         {currentSpeaker !== Speaker.None && (
           <div className={`text-sm font-medium ${colors.text} opacity-80`}>
-            {t(`speaker.${currentSpeaker}`, viewModel.speakerDisplayName)}
+            {viewModel.speakerDisplayName}
           </div>
         )}
 
