@@ -18,8 +18,6 @@ const BACKGROUND_COLORS = [
 const BackgroundSettings: React.FC<BackgroundSettingsProps> = ({ config, onSave }) => {
   const { t } = useTranslation();
   const [localConfig, setLocalConfig] = useState<BackgroundConfig>(config);
-  const [isEditing, setIsEditing] = useState(false);
-
   useEffect(() => {
     setLocalConfig(config);
   }, [config]);
@@ -30,7 +28,6 @@ const BackgroundSettings: React.FC<BackgroundSettingsProps> = ({ config, onSave 
 
   const handleSave = () => {
     onSave(localConfig);
-    setIsEditing(false);
   };
 
   const handleReset = () => {

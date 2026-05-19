@@ -32,4 +32,4 @@ export { SessionView, SessionViewCompact } from './SessionView'
 export { CustomModeEditor } from './CustomModeEditor'
 
 // Settings
-export { SettingsButton } from './Settings'
+export { EnhancedSettingsButton } from './Settings'
