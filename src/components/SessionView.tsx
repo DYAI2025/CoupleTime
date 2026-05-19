@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import SessionSetup from './SessionSetup'
 import { useParticipantBackground } from '../hooks/useParticipantBackground'
+import { RecBadge } from './RecBadge'
 
 /**
  * Main session view - shows either mode selection or active session
@@ -163,6 +164,7 @@ function ModeSelectionView({
 function ActiveSessionView() {
   const viewModel = useSessionViewModel()
   const session = useSession()
+  const { isRecording, recordingEnabled, toggleRecording } = session
 
   // Guidance settings state
   const [guidanceSettings, setGuidanceSettings] = useState<GuidanceSettings>(
@@ -203,9 +205,25 @@ function ActiveSessionView() {
           <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
             {viewModel.modeName}
           </h2>
-          <span className="text-sm text-gray-500 dark:text-gray-400">
-            {viewModel.elapsedTimeFormatted}
-          </span>
+          <div className="flex items-center gap-2">
+            <RecBadge isRecording={isRecording} recordingEnabled={recordingEnabled} />
+            <button
+              onClick={toggleRecording}
+              aria-label={recordingEnabled ? 'Disable recording' : 'Enable recording'}
+              className={`p-1.5 rounded-md transition-colors ${
+                recordingEnabled
+                  ? 'text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
+                  : 'text-gray-400 dark:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <circle cx="10" cy="10" r="6" />
+              </svg>
+            </button>
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              {viewModel.elapsedTimeFormatted}
+            </span>
+          </div>
         </div>
         <SessionProgressBar />
       </header>
