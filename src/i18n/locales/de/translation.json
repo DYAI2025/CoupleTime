@@ -199,7 +199,8 @@
     "showPanel": "Anleitung anzeigen",
     "autoRotate": "Tipps automatisch wechseln",
     "previousTip": "Vorheriger Tipp",
-    "nextTip": "Nächster Tipp"
+    "nextTip": "Nächster Tipp",
+    "phaseTips": "Phasentipps"
   },
   "common": {
     "minutes": "Min",

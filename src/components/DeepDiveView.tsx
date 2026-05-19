@@ -47,15 +47,36 @@ const ICON_MAP: Record<string, LucideIcon> = {
 
 const SECTION_KEYS = ['beforeSession', 'duringListening', 'emergency'] as const
 
-export function DeepDiveView(_props: DeepDiveViewProps) {
+export function DeepDiveView({ tips, showAllTips }: DeepDiveViewProps) {
   const { t } = useTranslation()
 
   const sections = SECTION_KEYS.map(
     (key) => t(`guidance.deepDive.${key}`, { returnObjects: true }) as DeepDiveSection
   )
 
+  const displayedTips = showAllTips ? tips : tips.slice(0, 1)
+
   return (
     <div className="overflow-y-auto px-4 py-2 space-y-6">
+      {displayedTips.length > 0 && (
+        <div>
+          <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-3">
+            {t('guidancePanel.phaseTips', 'Phase Tips')}
+          </h2>
+          <div className="space-y-2">
+            {displayedTips.map((tip, i) => (
+              <div
+                key={i}
+                className="bg-white dark:bg-gray-800 rounded-lg p-3 flex items-start gap-3"
+              >
+                <HelpCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-indigo-500" />
+                <p className="text-sm text-gray-600 dark:text-gray-400">{tip}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {sections.map((section, si) => (
         <div key={si}>
           <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-3">

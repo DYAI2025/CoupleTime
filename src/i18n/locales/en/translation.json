@@ -199,7 +199,8 @@
     "showPanel": "Show Guidance",
     "autoRotate": "Auto-rotate tips",
     "previousTip": "Previous tip",
-    "nextTip": "Next tip"
+    "nextTip": "Next tip",
+    "phaseTips": "Phase Tips"
   },
   "common": {
     "minutes": "min",

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { DeepDiveView } from '../DeepDiveView'
 import { I18nextProvider } from 'react-i18next'
 import i18n from '../../i18n'
@@ -53,5 +53,31 @@ describe('DeepDiveView - Visual Integration', () => {
     // Should have multiple cards
     const cards = container.querySelectorAll('.bg-white')
     expect(cards.length).toBeGreaterThan(0)
+  })
+
+  it('renders phase-specific tips when provided', async () => {
+    await i18n.changeLanguage('en')
+    render(
+      <I18nextProvider i18n={i18n}>
+        <DeepDiveView tips={['Custom tip alpha', 'Custom tip beta']} showAllTips={true} />
+      </I18nextProvider>
+    )
+    await waitFor(() => {
+      expect(screen.getByText('Custom tip alpha')).toBeInTheDocument()
+      expect(screen.getByText('Custom tip beta')).toBeInTheDocument()
+    })
+  })
+
+  it('shows only first tip when showAllTips is false', async () => {
+    await i18n.changeLanguage('en')
+    render(
+      <I18nextProvider i18n={i18n}>
+        <DeepDiveView tips={['First tip', 'Second tip']} showAllTips={false} />
+      </I18nextProvider>
+    )
+    await waitFor(() => {
+      expect(screen.getByText('First tip')).toBeInTheDocument()
+      expect(screen.queryByText('Second tip')).not.toBeInTheDocument()
+    })
   })
 })

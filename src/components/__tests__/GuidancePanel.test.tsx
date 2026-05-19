@@ -180,7 +180,7 @@ describe('GuidancePanel', () => {
         tips: mockTips,
         autoRotate: true, // showAllTips === true means autoRotate is true
         interval: 30,
-        shuffleMode: true, // showAllTips === true means shuffleMode is true
+        shuffleMode: false, // sequential rotation always (shuffle degrades UX)
       })
     })
 

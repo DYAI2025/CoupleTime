@@ -44,7 +44,7 @@ export function GuidancePanel({ settings, onSettingsChange, currentPhaseTips }: 
             tips={currentPhaseTips}
             autoRotate={settings.showAllTips}
             interval={settings.autoRotateInterval}
-            shuffleMode={settings.showAllTips}
+            shuffleMode={false}
           />
         ) : (
           <DeepDiveView
