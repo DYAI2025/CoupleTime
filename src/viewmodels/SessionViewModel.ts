@@ -3,6 +3,7 @@ import { PhaseType, getPhaseDisplayName, getPhaseColor } from '../domain/PhaseTy
 import { Speaker, getSpeakerForPhase, getSpeakerDisplayName } from '../domain/Speaker'
 import { formatDuration } from '../domain/PhaseConfig'
 import { shouldShowTips } from '../services/GuidanceService'
+import { ParticipantConfig, createDefaultParticipantConfig } from '../domain/ParticipantConfig'
 
 /**
  * UI-ready view model for session display
@@ -52,12 +53,18 @@ export interface SessionViewModel {
 
   // Guidance info
   showGuidanceTips: boolean
+
+  // Participant personalization
+  participantNameA: string
+  participantNameB: string
+  participantColorA: string
+  participantColorB: string
 }
 
 /**
  * Transform SessionState into SessionViewModel
  */
-export function createSessionViewModel(state: SessionState, participantConfig?: { nameA: string; nameB: string }): SessionViewModel {
+export function createSessionViewModel(state: SessionState, participantConfig?: ParticipantConfig): SessionViewModel {
   const currentPhase = getCurrentPhase(state)
   const phaseType = currentPhase?.type ?? null
   const speaker = phaseType ? getSpeakerForPhase(phaseType) : Speaker.None
@@ -65,15 +72,12 @@ export function createSessionViewModel(state: SessionState, participantConfig?: 
   const phaseProgress = getPhaseProgress(state)
   const sessionProgress = getSessionProgress(state)
 
-  // Determine speaker display name based on participant config
-  let speakerDisplayName = getSpeakerDisplayName(speaker);
-  if (participantConfig) {
-    if (speaker === Speaker.A) {
-      speakerDisplayName = participantConfig.nameA;
-    } else if (speaker === Speaker.B) {
-      speakerDisplayName = participantConfig.nameB;
-    }
-  }
+  const defaults = createDefaultParticipantConfig()
+  const config = participantConfig ?? defaults
+
+  let speakerDisplayName = getSpeakerDisplayName(speaker)
+  if (speaker === Speaker.A) speakerDisplayName = config.nameA
+  else if (speaker === Speaker.B) speakerDisplayName = config.nameB
 
   return {
     // Status
@@ -120,6 +124,12 @@ export function createSessionViewModel(state: SessionState, participantConfig?: 
 
     // Guidance info
     showGuidanceTips: state.mode && currentPhase ? shouldShowTips(currentPhase.type, state.mode.guidanceLevel) : false,
+
+    // Participant personalization
+    participantNameA: config.nameA,
+    participantNameB: config.nameB,
+    participantColorA: config.colorA,
+    participantColorB: config.colorB,
   }
 }
 
@@ -202,5 +212,11 @@ export function createIdleViewModel(): SessionViewModel {
 
     // Guidance info
     showGuidanceTips: false,
+
+    // Participant personalization
+    participantNameA: 'Partner A',
+    participantNameB: 'Partner B',
+    participantColorA: '#3b82f6',
+    participantColorB: '#8b5cf6',
   }
 }

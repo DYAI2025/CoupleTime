@@ -339,4 +339,46 @@ describe('SessionViewModel', () => {
       expect(getSpeakerI18nKey(Speaker.None)).toBe('speaker.none')
     })
   })
+
+  describe('Participant personalization', () => {
+    it('exposes default participant names when no config provided', () => {
+      const state = createInitialState()
+      const vm = createSessionViewModel(state)
+      expect(vm.participantNameA).toBe('Partner A')
+      expect(vm.participantNameB).toBe('Partner B')
+    })
+
+    it('exposes custom participant names from config', () => {
+      const state = createInitialState()
+      const vm = createSessionViewModel(state, {
+        nameA: 'Alice', nameB: 'Bob', colorA: '#ff0000', colorB: '#0000ff',
+      })
+      expect(vm.participantNameA).toBe('Alice')
+      expect(vm.participantNameB).toBe('Bob')
+    })
+
+    it('exposes default participant colors when no config provided', () => {
+      const state = createInitialState()
+      const vm = createSessionViewModel(state)
+      expect(vm.participantColorA).toBe('#3b82f6')
+      expect(vm.participantColorB).toBe('#8b5cf6')
+    })
+
+    it('exposes custom participant colors from config', () => {
+      const state = createInitialState()
+      const vm = createSessionViewModel(state, {
+        nameA: 'Alice', nameB: 'Bob', colorA: '#ff0000', colorB: '#0000ff',
+      })
+      expect(vm.participantColorA).toBe('#ff0000')
+      expect(vm.participantColorB).toBe('#0000ff')
+    })
+
+    it('createIdleViewModel has default participant fields', () => {
+      const vm = createIdleViewModel()
+      expect(vm.participantNameA).toBe('Partner A')
+      expect(vm.participantNameB).toBe('Partner B')
+      expect(vm.participantColorA).toBe('#3b82f6')
+      expect(vm.participantColorB).toBe('#8b5cf6')
+    })
+  })
 })
