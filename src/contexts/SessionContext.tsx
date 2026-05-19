@@ -10,6 +10,8 @@ import { GuidanceService, GuidanceServiceProtocol } from '../services/GuidanceSe
 import { PersistenceService, PersistenceServiceProtocol } from '../services/PersistenceService'
 import { ParticipantConfig } from '../domain/ParticipantConfig'
 import { participantPersistenceService } from '../services/ParticipantPersistenceService'
+import { AudioRecorderService } from '../services/AudioRecorderService'
+import { SessionStatus } from '../domain/SessionState'
 
 /**
  * Session context value
@@ -43,6 +45,11 @@ interface SessionContextValue {
   // Tips
   tips: string[]
   randomTip: string | null
+
+  // Audio recording
+  isRecording: boolean
+  recordingEnabled: boolean
+  toggleRecording: () => void
 }
 
 const SessionContext = createContext<SessionContextValue | null>(null)
@@ -69,6 +76,13 @@ export function SessionProvider({
   guidanceService = GuidanceService,
   persistenceService = PersistenceService,
 }: SessionProviderProps) {
+  // Audio recorder
+  const recorderRef = useRef<AudioRecorderService>(new AudioRecorderService())
+  const [isRecording, setIsRecording] = useState(false)
+  const [recordingEnabled, setRecordingEnabled] = useState(false)
+  const prevPhaseIndexRef = useRef<number>(-1)
+  const prevStatusRef = useRef<SessionStatus>(SessionStatus.Idle)
+
   // Session engine instance
   const engineRef = useRef<SessionEngine | null>(null)
 
@@ -97,6 +111,39 @@ export function SessionProvider({
     return unsubscribe
   }, [engine])
 
+  // Recording lifecycle: start/stop with session, mark phase transitions
+  useEffect(() => {
+    const recorder = recorderRef.current
+    const prevStatus = prevStatusRef.current
+    const prevPhase = prevPhaseIndexRef.current
+
+    if (recordingEnabled) {
+      // Session just started
+      if (state.status === SessionStatus.Running && prevStatus !== SessionStatus.Running && prevStatus !== SessionStatus.Paused) {
+        navigator.mediaDevices?.getUserMedia({ audio: true })
+          .then((stream) => {
+            recorder.startRecording(stream).then(() => setIsRecording(true))
+          })
+          .catch(() => { /* mic denied — recording silently skipped */ })
+      }
+
+      // Phase changed during recording
+      if (isRecording && state.currentPhaseIndex !== prevPhase && state.mode) {
+        const phase = state.mode.phases[state.currentPhaseIndex]
+        if (phase) recorder.markPhase(phase.type, Math.round(state.elapsedSessionTime))
+      }
+
+      // Session stopped or finished
+      if ((state.status === SessionStatus.Finished || state.status === SessionStatus.Idle) &&
+          (prevStatus === SessionStatus.Running || prevStatus === SessionStatus.Paused) && isRecording) {
+        recorder.stopRecording().then(() => setIsRecording(false))
+      }
+    }
+
+    prevStatusRef.current = state.status
+    prevPhaseIndexRef.current = state.currentPhaseIndex
+  }, [state.status, state.currentPhaseIndex, recordingEnabled, isRecording, state.elapsedSessionTime, state.mode])
+
   // Actions
   const start = useCallback(async (mode: SessionMode, participantConfig?: ParticipantConfig): Promise<boolean> => {
     const config = participantConfig || participantPersistenceService.loadConfig()
@@ -122,6 +169,10 @@ export function SessionProvider({
   const updateParticipantConfig = useCallback((config: ParticipantConfig) => {
     participantPersistenceService.saveConfig(config)
     setParticipantConfig(config)
+  }, [])
+
+  const toggleRecording = useCallback(() => {
+    setRecordingEnabled((prev) => !prev)
   }, [])
 
   // Custom mode management
@@ -170,6 +221,9 @@ export function SessionProvider({
     deleteCustomMode,
     tips,
     randomTip,
+    isRecording,
+    recordingEnabled,
+    toggleRecording,
   }
 
   return (
