@@ -1,5 +1,5 @@
 import { SessionMode } from '../domain/SessionMode'
-import { GuidanceSettings, DEFAULT_GUIDANCE_SETTINGS } from '../domain/GuidanceSettings'
+import { GuidanceSettings, DEFAULT_GUIDANCE_SETTINGS, isValidGuidanceSettings } from '../domain/GuidanceSettings'
 
 const STORAGE_KEY = 'couples-timer-custom-modes'
 const SETTINGS_KEY = 'couples-timer-settings'
@@ -142,12 +142,9 @@ class PersistenceServiceImpl implements PersistenceServiceProtocol {
     try {
       const stored = localStorage.getItem(GUIDANCE_SETTINGS_KEY)
       if (!stored) return { ...DEFAULT_GUIDANCE_SETTINGS }
-
-      const parsed = JSON.parse(stored)
-      return {
-        ...DEFAULT_GUIDANCE_SETTINGS,
-        ...parsed,
-      }
+      const merged = { ...DEFAULT_GUIDANCE_SETTINGS, ...JSON.parse(stored) }
+      if (!isValidGuidanceSettings(merged)) return { ...DEFAULT_GUIDANCE_SETTINGS }
+      return merged
     } catch {
       console.warn('Failed to load guidance settings from localStorage')
       return { ...DEFAULT_GUIDANCE_SETTINGS }

@@ -219,5 +219,23 @@ describe('PersistenceService', () => {
       const loaded = PersistenceService.loadGuidanceSettings()
       expect(loaded).toEqual(customSettings)
     })
+
+    it('should return defaults when stored guidanceMode is invalid', () => {
+      localStorage.setItem(
+        'couples-timer-guidance-settings',
+        JSON.stringify({ guidanceMode: 'garbage', enableInMaintain: false, showAllTips: false, autoRotateInterval: 20 })
+      )
+      const settings = PersistenceService.loadGuidanceSettings()
+      expect(settings).toEqual(DEFAULT_GUIDANCE_SETTINGS)
+    })
+
+    it('should return defaults when stored autoRotateInterval is out of range', () => {
+      localStorage.setItem(
+        'couples-timer-guidance-settings',
+        JSON.stringify({ guidanceMode: 'quick', enableInMaintain: false, showAllTips: false, autoRotateInterval: 999 })
+      )
+      const settings = PersistenceService.loadGuidanceSettings()
+      expect(settings).toEqual(DEFAULT_GUIDANCE_SETTINGS)
+    })
   })
 })
