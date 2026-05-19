@@ -54,6 +54,7 @@
     },
     "setup": {
       "title": "Sitzungseinrichtung",
+      "open": "Teilnehmer einrichten",
       "nameA": "Name von Partner A",
       "nameB": "Name von Partner B",
       "colorA": "Farbe von Partner A",

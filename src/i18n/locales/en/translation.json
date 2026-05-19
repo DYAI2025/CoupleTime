@@ -54,6 +54,7 @@
     },
     "setup": {
       "title": "Session Setup",
+      "open": "Participant setup",
       "nameA": "Partner A Name",
       "nameB": "Partner B Name",
       "colorA": "Partner A Color",

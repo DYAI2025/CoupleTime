@@ -186,7 +186,7 @@ function ActiveSessionView() {
 
   const showGuidance = !(viewModel.modeId === 'maintain' && !guidanceSettings.enableInMaintain)
 
-  const { backgroundColor, textColor } = useParticipantBackground(
+  const { backgroundColor } = useParticipantBackground(
     viewModel.speaker,
     viewModel.participantColorA,
     viewModel.participantColorB
@@ -195,7 +195,7 @@ function ActiveSessionView() {
   return (
     <div
       className="flex flex-col min-h-screen transition-colors duration-700"
-      style={backgroundColor !== 'transparent' ? { backgroundColor, color: textColor } : undefined}
+      style={backgroundColor !== 'transparent' ? { backgroundColor } : undefined}
     >
       {/* Header with mode name and progress */}
       <header className="px-4 py-4 border-b border-gray-200 dark:border-gray-700">
