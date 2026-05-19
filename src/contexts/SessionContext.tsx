@@ -8,7 +8,7 @@ import { AudioService, AudioServiceProtocol } from '../services/AudioService'
 import { TimerService, TimerServiceProtocol } from '../services/TimerService'
 import { GuidanceService, GuidanceServiceProtocol } from '../services/GuidanceService'
 import { PersistenceService, PersistenceServiceProtocol } from '../services/PersistenceService'
-import { ParticipantConfig, createDefaultParticipantConfig } from '../domain/ParticipantConfig'
+import { ParticipantConfig } from '../domain/ParticipantConfig'
 import { participantPersistenceService } from '../services/ParticipantPersistenceService'
 
 /**
