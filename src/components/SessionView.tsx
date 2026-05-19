@@ -14,6 +14,8 @@ import { GuidanceSettings, DEFAULT_GUIDANCE_SETTINGS } from '../domain/GuidanceS
 import { PersistenceService } from '../services/PersistenceService'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
+import SessionSetup from './SessionSetup'
+import { useParticipantBackground } from '../hooks/useParticipantBackground'
 
 /**
  * Main session view - shows either mode selection or active session
@@ -52,7 +54,9 @@ function ModeSelectionView({
   onSelectMode: (mode: SessionMode | null) => void
 }) {
   const { t } = useTranslation()
+  const { participantConfig, updateParticipantConfig } = useSession()
   const [showOnboarding, setShowOnboarding] = useState(false)
+  const [showSetup, setShowSetup] = useState(false)
 
   const handleOnboardingComplete = (mode?: SessionMode) => {
     setShowOnboarding(false)
@@ -70,10 +74,29 @@ function ModeSelectionView({
         onComplete={handleOnboardingComplete}
       />
 
+      {/* Session Setup Modal */}
+      {showSetup && (
+        <SessionSetup
+          config={participantConfig}
+          onSave={(cfg) => { updateParticipantConfig(cfg); setShowSetup(false) }}
+          onCancel={() => setShowSetup(false)}
+        />
+      )}
+
       {/* Header */}
       <header className="px-4 py-6">
         <div className="flex items-start justify-between">
-          <div className="flex-1" />
+          <div className="flex-1 flex justify-start">
+            <button
+              onClick={() => setShowSetup(true)}
+              aria-label={t('session.setup.open', 'Participant setup')}
+              className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+          </div>
           <div className="text-center flex-1">
             <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
               {t('app.title', 'Couples Timer')}
@@ -163,8 +186,17 @@ function ActiveSessionView() {
 
   const showGuidance = !(viewModel.modeId === 'maintain' && !guidanceSettings.enableInMaintain)
 
+  const { backgroundColor, textColor } = useParticipantBackground(
+    viewModel.speaker,
+    viewModel.participantColorA,
+    viewModel.participantColorB
+  )
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div
+      className="flex flex-col min-h-screen transition-colors duration-700"
+      style={backgroundColor !== 'transparent' ? { backgroundColor, color: textColor } : undefined}
+    >
       {/* Header with mode name and progress */}
       <header className="px-4 py-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between mb-2">
