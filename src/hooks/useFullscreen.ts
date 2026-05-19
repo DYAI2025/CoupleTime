@@ -5,12 +5,11 @@ const useFullscreen = () => {
   const [isSupported, setIsSupported] = useState(false);
 
   useEffect(() => {
-    // Check if fullscreen API is supported
     setIsSupported(!!(
-      document.fullscreenEnabled || 
-      document.webkitFullscreenEnabled || 
-      document.mozFullScreenEnabled || 
-      document.msFullscreenEnabled
+      document.fullscreenEnabled ||
+      (document as any).webkitFullscreenEnabled ||
+      (document as any).mozFullScreenEnabled ||
+      (document as any).msFullscreenEnabled
     ));
   }, []);
 
@@ -18,27 +17,25 @@ const useFullscreen = () => {
     if (!isSupported) return;
 
     if (!document.fullscreenElement) {
-      // Enter fullscreen
       const element = document.documentElement;
       if (element.requestFullscreen) {
         element.requestFullscreen();
-      } else if (element.webkitRequestFullscreen) { /* Safari */
-        element.webkitRequestFullscreen();
-      } else if (element.mozRequestFullScreen) { /* Firefox */
-        element.mozRequestFullScreen();
-      } else if (element.msRequestFullscreen) { /* IE/Edge */
-        element.msRequestFullscreen();
+      } else if ((element as any).webkitRequestFullscreen) {
+        (element as any).webkitRequestFullscreen();
+      } else if ((element as any).mozRequestFullScreen) {
+        (element as any).mozRequestFullScreen();
+      } else if ((element as any).msRequestFullscreen) {
+        (element as any).msRequestFullscreen();
       }
     } else {
-      // Exit fullscreen
       if (document.exitFullscreen) {
         document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) { /* Safari */
-        document.webkitExitFullscreen();
-      } else if (document.mozCancelFullScreen) { /* Firefox */
-        document.mozCancelFullScreen();
-      } else if (document.msExitFullscreen) { /* IE/Edge */
-        document.msExitFullscreen();
+      } else if ((document as any).webkitExitFullscreen) {
+        (document as any).webkitExitFullscreen();
+      } else if ((document as any).mozCancelFullScreen) {
+        (document as any).mozCancelFullScreen();
+      } else if ((document as any).msExitFullscreen) {
+        (document as any).msExitFullscreen();
       }
     }
   };
@@ -47,9 +44,9 @@ const useFullscreen = () => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!(
         document.fullscreenElement ||
-        document.webkitFullscreenElement ||
-        document.mozFullScreenElement ||
-        document.msFullscreenElement
+        (document as any).webkitFullscreenElement ||
+        (document as any).mozFullScreenElement ||
+        (document as any).msFullscreenElement
       ));
     };
 
