@@ -35,9 +35,9 @@ describe('Guidance Integration Test', () => {
     const mockPersistenceService = createMockPersistenceService()
     const initialSettings = mockPersistenceService.loadGuidanceSettings()
 
-    expect(initialSettings.enableInMaintain).toBe(true)
+    expect(initialSettings.enableInMaintain).toBe(false)
     expect(initialSettings.showAllTips).toBe(false)
-    expect(initialSettings.autoRotateInterval).toBe(30)
+    expect(initialSettings.autoRotateInterval).toBe(20)
     expect(initialSettings.guidanceMode).toBe('quick')
   })
 

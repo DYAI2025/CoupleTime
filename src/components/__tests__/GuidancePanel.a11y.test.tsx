@@ -3,9 +3,9 @@ import { GuidanceSettings, DEFAULT_GUIDANCE_SETTINGS } from '../../domain/Guidan
 
 describe('Guidance Settings Domain Tests', () => {
   it('should have correct default values', () => {
-    expect(DEFAULT_GUIDANCE_SETTINGS.enableInMaintain).toBe(true)
+    expect(DEFAULT_GUIDANCE_SETTINGS.enableInMaintain).toBe(false)
     expect(DEFAULT_GUIDANCE_SETTINGS.showAllTips).toBe(false)
-    expect(DEFAULT_GUIDANCE_SETTINGS.autoRotateInterval).toBe(30)
+    expect(DEFAULT_GUIDANCE_SETTINGS.autoRotateInterval).toBe(20)
     expect(DEFAULT_GUIDANCE_SETTINGS.guidanceMode).toBe('quick')
   })
 

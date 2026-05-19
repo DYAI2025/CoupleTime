@@ -8,7 +8,7 @@ import { ControlButtons, StartButton } from './ControlButtons'
 import { ModeSelector } from './ModeSelector'
 import { TipDisplay } from './TipDisplay'
 import { EnhancedSettingsButton } from './EnhancedSettings'
-import GuidancePanel from './GuidancePanel'
+import { GuidancePanel } from './GuidancePanel'
 import { OnboardingModal } from './onboarding/OnboardingModal'
 import { GuidanceSettings, DEFAULT_GUIDANCE_SETTINGS } from '../domain/GuidanceSettings'
 import { PersistenceService } from '../services/PersistenceService'
@@ -152,6 +152,11 @@ function ActiveSessionView() {
     setGuidanceSettings(settings)
   }, [])
 
+  const handleGuidanceSettingsChange = (partial: Partial<GuidanceSettings>) => {
+    const newSettings = { ...guidanceSettings, ...partial }
+    setGuidanceSettings(newSettings)
+    PersistenceService.saveGuidanceSettings(newSettings)
+  }
 
   // Get tips from session context
   const currentPhaseTips = session.tips || []
@@ -198,6 +203,7 @@ function ActiveSessionView() {
       {/* Guidance Panel - Fixed at bottom */}
       <GuidancePanel
         settings={guidanceSettings}
+        onSettingsChange={handleGuidanceSettingsChange}
         currentPhaseTips={currentPhaseTips}
       />
     </div>
