@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import PlainTextResponse, RedirectResponse
 
 import session_store
 import transcription as transcription_module
@@ -59,6 +59,12 @@ app.add_middleware(
 def health() -> dict[str, str]:
     """Simple liveness probe."""
     return {"status": "ok"}
+
+
+@app.get("/")
+def root() -> RedirectResponse:
+    """Redirect humans to interactive API docs."""
+    return RedirectResponse(url="/docs")
 
 
 @app.post("/sessions", response_model=SessionCreateResponse, status_code=201)
