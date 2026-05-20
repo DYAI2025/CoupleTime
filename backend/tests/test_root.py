@@ -1,11 +1,6 @@
 """Tests for root redirect and health endpoint."""
 from __future__ import annotations
 
-import sys
-import os
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
 from fastapi.testclient import TestClient
 from main import app
 
