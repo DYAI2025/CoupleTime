@@ -11,10 +11,13 @@ Each session lives in {STORAGE_PATH}/{session_id}/ with:
 from __future__ import annotations
 
 import json
+import logging
 import os
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
+
+logger = logging.getLogger("session_store")
 
 from models import (
     PhaseMarker,
@@ -26,6 +29,12 @@ from models import (
 
 def _storage_root() -> Path:
     raw = os.environ.get("STORAGE_PATH", "/tmp/vibemind")
+    if raw.startswith("/tmp"):
+        logger.warning(
+            "STORAGE_PATH=%s is ephemeral — sessions will be lost on redeploy. "
+            "Set STORAGE_PATH to a Railway volume mount (e.g. /data/vibemind-sessions).",
+            raw,
+        )
     p = Path(raw)
     p.mkdir(parents=True, exist_ok=True)
     return p
