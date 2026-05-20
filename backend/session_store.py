@@ -18,6 +18,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 logger = logging.getLogger("session_store")
+_ephemeral_warned = False
 
 from models import (
     PhaseMarker,
@@ -28,8 +29,10 @@ from models import (
 
 
 def _storage_root() -> Path:
+    global _ephemeral_warned
     raw = os.environ.get("STORAGE_PATH", "/tmp/vibemind")
-    if raw.startswith("/tmp"):
+    if raw.startswith("/tmp") and not _ephemeral_warned:
+        _ephemeral_warned = True
         logger.warning(
             "STORAGE_PATH=%s is ephemeral — sessions will be lost on redeploy. "
             "Set STORAGE_PATH to a Railway volume mount (e.g. /data/vibemind-sessions).",

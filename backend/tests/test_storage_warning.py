@@ -4,6 +4,17 @@ from __future__ import annotations
 import importlib
 import logging
 
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def reset_ephemeral_warned():
+    """Reset the once-only warning flag between tests."""
+    import session_store
+    session_store._ephemeral_warned = False
+    yield
+    session_store._ephemeral_warned = False
+
 
 def test_warns_on_tmp_storage_path(monkeypatch, caplog, tmp_path):
     """_storage_root() should warn when STORAGE_PATH starts with /tmp."""
