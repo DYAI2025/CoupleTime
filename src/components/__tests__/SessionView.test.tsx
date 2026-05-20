@@ -101,15 +101,14 @@ describe('SessionView - GuidancePanel Integration', () => {
     )
     if (modeCard) fireEvent.click(modeCard)
 
-    // Throw when startButton not found so waitFor retries until Start button appears
-    await waitFor(() => {
-      const startButton = screen.getAllByRole('button').find(btn =>
-        btn.textContent?.toLowerCase().includes('start') ||
-        btn.textContent?.toLowerCase().includes('session')
-      )
-      expect(startButton).toBeDefined()
-      fireEvent.click(startButton!)
-    })
+    // getByRole throws when absent, so waitFor retries automatically.
+    // The i18n mock returns the key "controls.startSession" as text content.
+    // Use exact=false with a name that matches the key but not the settings
+    // button aria-label ("session.setup.open").
+    const startButton = await waitFor(() =>
+      screen.getByRole('button', { name: /controls\.startSession|Start Session/i })
+    )
+    fireEvent.click(startButton)
   }
 
   // Use commitment (non-maintain) so guidance is always shown regardless of enableInMaintain
