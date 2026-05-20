@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSession, useSessionViewModel } from '../contexts/SessionContext'
+import { isVibeMindEnabled } from '../services/VibeMindService'
 import type { SessionMode } from '../domain/SessionMode'
 import { TimerDisplay } from './TimerDisplay'
 import { PhaseIndicator } from './PhaseIndicator'
@@ -273,7 +274,7 @@ function ActiveSessionView() {
 function FinishedSessionView({ onRestart }: { onRestart: () => void }) {
   const { t } = useTranslation()
   const viewModel = useSessionViewModel()
-  const { stop } = useSession()
+  const { stop, uploadStatus } = useSession()
 
   const handleNewSession = () => {
     stop()
@@ -319,6 +320,30 @@ function FinishedSessionView({ onRestart }: { onRestart: () => void }) {
             </span>
           </div>
         </div>
+
+        {/* VibeMind upload status — only shown when backend is configured */}
+        {isVibeMindEnabled() && (
+          <div className="mb-4">
+            {uploadStatus === 'uploading' && (
+              <div className="flex items-center justify-center gap-2 text-sm text-blue-600 dark:text-blue-400">
+                <SpinnerIcon className="w-4 h-4 animate-spin" />
+                <span>Uploading to VibeMind...</span>
+              </div>
+            )}
+            {uploadStatus === 'uploaded' && (
+              <div className="flex items-center justify-center gap-2 text-sm text-emerald-600 dark:text-emerald-400">
+                <CheckCircleIcon className="w-4 h-4" />
+                <span>Session saved — transcript processing</span>
+              </div>
+            )}
+            {uploadStatus === 'error' && (
+              <div className="flex items-center justify-center gap-2 text-sm text-amber-600 dark:text-amber-400">
+                <WarningIcon className="w-4 h-4" />
+                <span>Upload failed</span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Actions */}
         <div className="space-y-3">
@@ -369,6 +394,23 @@ function CheckCircleIcon({ className = 'w-6 h-6' }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  )
+}
+
+function SpinnerIcon({ className = 'w-6 h-6' }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+    </svg>
+  )
+}
+
+function WarningIcon({ className = 'w-6 h-6' }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
     </svg>
   )
 }

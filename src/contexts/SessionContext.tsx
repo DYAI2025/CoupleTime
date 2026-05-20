@@ -12,6 +12,12 @@ import { ParticipantConfig } from '../domain/ParticipantConfig'
 import { participantPersistenceService } from '../services/ParticipantPersistenceService'
 import { AudioRecorderService, RecordingState } from '../services/AudioRecorderService'
 import { SessionStatus } from '../domain/SessionState'
+import {
+  isVibeMindEnabled,
+  createSession as vibemindCreateSession,
+  uploadRecording as vibemindUpload,
+  triggerTranscription as vibemindTranscribe,
+} from '../services/VibeMindService'
 
 /**
  * Session context value
@@ -50,6 +56,10 @@ interface SessionContextValue {
   isRecording: boolean
   recordingEnabled: boolean
   toggleRecording: () => void
+
+  // VibeMind upload status
+  uploadStatus: 'idle' | 'uploading' | 'uploaded' | 'error'
+  lastSessionId: string | null
 }
 
 const SessionContext = createContext<SessionContextValue | null>(null)
@@ -82,6 +92,17 @@ export function SessionProvider({
   const [recordingEnabled, setRecordingEnabled] = useState(false)
   const prevPhaseIndexRef = useRef<number>(-1)
   const prevStatusRef = useRef<SessionStatus>(SessionStatus.Idle)
+
+  // VibeMind upload state
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'uploaded' | 'error'>('idle')
+  const [lastSessionId, setLastSessionId] = useState<string | null>(null)
+  // Snapshot of the mode/participants active when the session started, for upload
+  const sessionMetaRef = useRef<{
+    modeId: string
+    modeName: string
+    nameA: string
+    nameB: string
+  } | null>(null)
 
   // Session engine instance
   const engineRef = useRef<SessionEngine | null>(null)
@@ -144,7 +165,27 @@ export function SessionProvider({
       if ((state.status === SessionStatus.Finished || state.status === SessionStatus.Idle) &&
           (prevStatus === SessionStatus.Running || prevStatus === SessionStatus.Paused) &&
           recorder.getState() === RecordingState.Recording) {
-        recorder.stopRecording().then(() => setIsRecording(false))
+        recorder.stopRecording().then(async (blob) => {
+          setIsRecording(false)
+          if (!isVibeMindEnabled()) return
+          const meta = sessionMetaRef.current
+          if (!meta) return
+          setUploadStatus('uploading')
+          try {
+            const { session_id } = await vibemindCreateSession({
+              participant_name_a: meta.nameA,
+              participant_name_b: meta.nameB,
+              mode_name: meta.modeName,
+              mode_id: meta.modeId,
+            })
+            setLastSessionId(session_id)
+            await vibemindUpload(session_id, blob, recorder.getPhaseMarkers())
+            await vibemindTranscribe(session_id)
+            setUploadStatus('uploaded')
+          } catch {
+            setUploadStatus('error')
+          }
+        })
       }
     }
 
@@ -159,6 +200,15 @@ export function SessionProvider({
     const success = await engine.start(mode, config)
     if (success) {
       persistenceService.updateSetting('lastUsedModeId', mode.id)
+      // Snapshot meta for upload after the session ends
+      sessionMetaRef.current = {
+        modeId: mode.id,
+        modeName: mode.name,
+        nameA: config.nameA,
+        nameB: config.nameB,
+      }
+      setUploadStatus('idle')
+      setLastSessionId(null)
     }
     return success
   }, [engine, persistenceService])
@@ -233,6 +283,8 @@ export function SessionProvider({
     isRecording,
     recordingEnabled,
     toggleRecording,
+    uploadStatus,
+    lastSessionId,
   }
 
   return (
