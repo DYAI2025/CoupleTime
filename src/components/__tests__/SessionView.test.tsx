@@ -93,18 +93,22 @@ describe('SessionView - GuidancePanel Integration', () => {
   }
 
   async function startSessionWithMode(modeFragment: string) {
+    // Case-insensitive match so 'commitment' finds 'Commitment'
     const modeButtons = screen.getAllByRole('button')
     const modeCard = modeButtons.find(btn =>
-      btn.textContent?.includes(modeFragment) && !btn.getAttribute('aria-label')
+      btn.textContent?.toLowerCase().includes(modeFragment.toLowerCase()) &&
+      !btn.getAttribute('aria-label')
     )
     if (modeCard) fireEvent.click(modeCard)
 
+    // Throw when startButton not found so waitFor retries until Start button appears
     await waitFor(() => {
       const startButton = screen.getAllByRole('button').find(btn =>
         btn.textContent?.toLowerCase().includes('start') ||
         btn.textContent?.toLowerCase().includes('session')
       )
-      if (startButton) fireEvent.click(startButton)
+      expect(startButton).toBeDefined()
+      fireEvent.click(startButton!)
     })
   }
 
