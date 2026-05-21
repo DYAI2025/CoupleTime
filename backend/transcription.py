@@ -10,6 +10,7 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 
+from llm_client import call_llm
 from models import PhaseMarker, TranscriptResult, TranscriptTurn, WhisperSegment
 
 
@@ -62,6 +63,63 @@ def _speaker_for_phase(phase_type: str, name_a: str, name_b: str) -> str:
     if phase_type in ("slotB", "closingB"):
         return name_b
     return "—"
+
+
+# ---------------------------------------------------------------------------
+# LLM semantic summary
+# ---------------------------------------------------------------------------
+
+_SUMMARY_SYSTEM = (
+    "You are an expert couples communication analyst. "
+    "Describe only observable communication patterns and content — "
+    "do NOT make psychological diagnoses or therapeutic recommendations. "
+    "Respond in the same language as the transcript."
+)
+
+_SUMMARY_SECTION_HEADERS = [
+    "Kurzüberblick",
+    "Hauptthemen",
+    "Was {name_a} sagte",
+    "Was {name_b} sagte",
+    "Gesprächsdynamik",
+    "Vereinbarungen",
+    "Offene Fragen",
+    "Nächste Schritte",
+]
+
+
+def summarize_transcript(
+    transcript: TranscriptResult,
+    name_a: str,
+    name_b: str,
+    mode_name: str,
+) -> str:
+    """Generate a structured semantic summary via LLM.
+
+    Returns stub text when no LLM key is configured.
+    """
+    speaking_turns = [t for t in transcript.turns if t.phase_type in _SPEAKING_PHASE_TYPES]
+    transcript_text = "\n\n".join(
+        f"[{t.speaker} – {t.phase_type}]\n{t.text}"
+        for t in speaking_turns
+    )
+
+    section_list = "\n".join(
+        f"- {h.format(name_a=name_a, name_b=name_b)}"
+        for h in _SUMMARY_SECTION_HEADERS
+    )
+
+    prompt = (
+        f"Session mode: {mode_name}\n"
+        f"Participants: {name_a} (Speaker A) and {name_b} (Speaker B)\n\n"
+        f"Transcript:\n{transcript_text}\n\n"
+        f"Write a structured summary with exactly these sections (use ## headings):\n"
+        f"{section_list}\n\n"
+        "Keep each section concise (2–5 sentences). "
+        "Describe what was said and how communication flowed — no diagnoses, no therapy language."
+    )
+
+    return call_llm(prompt, system=_SUMMARY_SYSTEM)
 
 
 # ---------------------------------------------------------------------------
@@ -280,15 +338,16 @@ def render_transcript_markdown(
     name_b: str,
     result: TranscriptResult,
     created_at_iso: str,
+    summary: str | None = None,
 ) -> str:
-    """Build the structured markdown transcript."""
+    """Build the structured markdown transcript with optional LLM summary."""
     lines: list[str] = []
 
     # Header
     lines.append(f"# Session: {mode_name} — {created_at_iso[:10]}")
     lines.append("")
 
-    # Kurzüberblick
+    # Kurzüberblick (stat line)
     lines.append("## Kurzüberblick")
     lines.append("")
     speaking_phases = [t for t in result.turns if t.phase_type in _SPEAKING_PHASE_TYPES]
@@ -298,6 +357,11 @@ def render_transcript_markdown(
         f"Insgesamt {len(speaking_phases)} Sprechblöcke, ~{total_words} Wörter transkribiert."
     )
     lines.append("")
+
+    # LLM summary sections (injected between stat line and timeline)
+    if summary:
+        lines.append(summary.strip())
+        lines.append("")
 
     # Phase Timeline table
     lines.append("## Phase Timeline")
