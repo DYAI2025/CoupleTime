@@ -144,6 +144,18 @@ def load_transcript_md(session_id: str) -> str | None:
     return path.read_text(encoding="utf-8")
 
 
+def save_summary_md(session_id: str, content: str) -> None:
+    path = _session_dir(session_id) / "summary.md"
+    path.write_text(content, encoding="utf-8")
+
+
+def load_summary_md(session_id: str) -> str | None:
+    path = _session_dir(session_id) / "summary.md"
+    if not path.exists():
+        return None
+    return path.read_text(encoding="utf-8")
+
+
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------

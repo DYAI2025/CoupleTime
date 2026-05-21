@@ -129,6 +129,7 @@ def get_session(session_id: str) -> SessionDetailResponse:
     """Return session metadata and transcript (if available)."""
     meta = _get_or_404(session_id)
     transcript = session_store.load_transcript(session_id)
+    summary_available = session_store.load_summary_md(session_id) is not None
     return SessionDetailResponse(
         session_id=meta.session_id,
         status=meta.status,
@@ -137,6 +138,7 @@ def get_session(session_id: str) -> SessionDetailResponse:
         participant_name_a=meta.participant_name_a,
         participant_name_b=meta.participant_name_b,
         transcript=transcript,
+        summary_available=summary_available,
         error=meta.error,
     )
 
@@ -185,6 +187,16 @@ def get_transcript_md(session_id: str) -> str:
     return content
 
 
+@app.get("/sessions/{session_id}/summary.md", response_class=PlainTextResponse)
+def get_summary_md(session_id: str) -> str:
+    """Return the LLM-generated summary as Markdown."""
+    _get_or_404(session_id)
+    content = session_store.load_summary_md(session_id)
+    if content is None:
+        raise HTTPException(status_code=404, detail="Summary not yet available")
+    return content
+
+
 # ---------------------------------------------------------------------------
 # Background task
 # ---------------------------------------------------------------------------
@@ -215,12 +227,21 @@ def _run_transcription(session_id: str) -> None:
         )
         session_store.save_transcript(session_id, result)
 
+        summary_text = transcription_module.summarize_transcript(
+            transcript=result,
+            name_a=meta.participant_name_a,
+            name_b=meta.participant_name_b,
+            mode_name=meta.mode_name,
+        )
+        session_store.save_summary_md(session_id, summary_text)
+
         md = transcription_module.render_transcript_markdown(
             mode_name=meta.mode_name,
             name_a=meta.participant_name_a,
             name_b=meta.participant_name_b,
             result=result,
             created_at_iso=meta.created_at.isoformat(),
+            summary=summary_text,
         )
         session_store.save_transcript_md(session_id, md)
 
