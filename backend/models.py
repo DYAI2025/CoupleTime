@@ -109,5 +109,6 @@ class SessionDetailResponse(BaseModel):
     participant_name_a: str
     participant_name_b: str
     transcript: TranscriptResult | None = None
+    transcript_available: bool = False
     summary_available: bool = False
     error: str | None = None

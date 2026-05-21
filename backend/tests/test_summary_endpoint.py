@@ -30,3 +30,13 @@ def test_session_detail_has_summary_available_false():
     resp = client.get(f"/sessions/{sid}")
     assert resp.status_code == 200
     assert resp.json()["summary_available"] is False
+
+
+def test_session_detail_has_transcript_available_false():
+    """GET /sessions/{id} includes transcript_available: false before transcription."""
+    sid = _create_session()
+    resp = client.get(f"/sessions/{sid}")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "transcript_available" in data
+    assert data["transcript_available"] is False

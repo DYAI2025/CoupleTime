@@ -129,6 +129,7 @@ def get_session(session_id: str) -> SessionDetailResponse:
     """Return session metadata and transcript (if available)."""
     meta = _get_or_404(session_id)
     transcript = session_store.load_transcript(session_id)
+    transcript_available = session_store.load_transcript_md(session_id) is not None
     summary_available = session_store.load_summary_md(session_id) is not None
     return SessionDetailResponse(
         session_id=meta.session_id,
@@ -138,6 +139,7 @@ def get_session(session_id: str) -> SessionDetailResponse:
         participant_name_a=meta.participant_name_a,
         participant_name_b=meta.participant_name_b,
         transcript=transcript,
+        transcript_available=transcript_available,
         summary_available=summary_available,
         error=meta.error,
     )
