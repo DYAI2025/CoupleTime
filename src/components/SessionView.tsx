@@ -163,6 +163,7 @@ function ModeSelectionView({
  * Active session display (running or paused)
  */
 function ActiveSessionView() {
+  const { t } = useTranslation()
   const viewModel = useSessionViewModel()
   const session = useSession()
   const { isRecording, recordingEnabled, toggleRecording } = session
@@ -229,6 +230,14 @@ function ActiveSessionView() {
             </span>
           </div>
         </div>
+        {isRecording && (
+          <div className="mt-2 px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 flex items-center gap-2 text-xs text-red-700 dark:text-red-300">
+            <svg className="w-3 h-3 flex-shrink-0 fill-current" viewBox="0 0 8 8">
+              <circle cx="4" cy="4" r="4" />
+            </svg>
+            {t('session.recording.notice', 'Session audio is being recorded')}
+          </div>
+        )}
         <SessionProgressBar />
       </header>
 

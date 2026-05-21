@@ -62,6 +62,10 @@
       "nameB": "Partner B Name",
       "colorA": "Partner A Color",
       "colorB": "Partner B Color"
+    },
+    "recording": {
+      "notice": "Session audio is being recorded",
+      "enableLabel": "Enable recording"
     }
   },
   "controls": {

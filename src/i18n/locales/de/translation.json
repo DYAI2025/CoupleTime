@@ -62,6 +62,10 @@
       "nameB": "Name von Partner B",
       "colorA": "Farbe von Partner A",
       "colorB": "Farbe von Partner B"
+    },
+    "recording": {
+      "notice": "Sitzungsaudio wird aufgezeichnet",
+      "enableLabel": "Aufnahme aktivieren"
     }
   },
   "controls": {
