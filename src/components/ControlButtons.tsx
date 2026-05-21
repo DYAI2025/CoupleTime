@@ -232,6 +232,7 @@ export function StartButton({
       whileTap={{ scale: disabled ? 1 : 0.98 }}
       onClick={handleStart}
       disabled={disabled}
+      data-testid="start-session-button"
       className={`
         ${fullWidth ? 'w-full' : ''}
         px-8 py-4 rounded-xl

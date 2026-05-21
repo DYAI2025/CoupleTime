@@ -93,20 +93,13 @@ describe('SessionView - GuidancePanel Integration', () => {
   }
 
   async function startSessionWithMode(modeFragment: string) {
-    // Case-insensitive match so 'commitment' finds 'Commitment'
-    const modeButtons = screen.getAllByRole('button')
-    const modeCard = modeButtons.find(btn =>
-      btn.textContent?.toLowerCase().includes(modeFragment.toLowerCase()) &&
-      !btn.getAttribute('aria-label')
-    )
+    // data-testid is immune to i18n mock and aria-label changes
+    const modeCard = screen.queryByTestId(`mode-card-${modeFragment}`)
     if (modeCard) fireEvent.click(modeCard)
 
-    // getByRole throws when absent, so waitFor retries automatically.
-    // The i18n mock returns the key "controls.startSession" as text content.
-    // Use exact=false with a name that matches the key but not the settings
-    // button aria-label ("session.setup.open").
     const startButton = await waitFor(() =>
-      screen.getByRole('button', { name: /controls\.startSession|Start Session/i })
+      screen.getByTestId('start-session-button'),
+      { timeout: 3000 }
     )
     fireEvent.click(startButton)
   }

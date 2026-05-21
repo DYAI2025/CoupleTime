@@ -166,6 +166,7 @@ function ModeCard({
         <button
           onClick={onSelect}
           className="flex-1 text-left"
+          data-testid={`mode-card-${mode.id}`}
         >
           <div className="flex items-center gap-2">
             <h3 className={`font-semibold ${isSelected ? 'text-blue-700 dark:text-blue-300' : 'text-gray-800 dark:text-gray-100'}`}>
