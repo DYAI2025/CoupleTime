@@ -116,6 +116,7 @@ export function ControlButtons({
         whileTap={{ scale: 0.95 }}
         onClick={handlePlayPause}
         disabled={viewModel.isFinished && !selectedMode}
+        data-testid="pause-resume-button"
         className={`
           ${sizeClasses[size]}
           rounded-full
@@ -152,6 +153,7 @@ export function ControlButtons({
         whileTap={{ scale: 0.95 }}
         onClick={handleStop}
         disabled={!viewModel.canStop}
+        data-testid="stop-button"
         className={`
           ${sizeClasses[size]}
           rounded-full
@@ -189,6 +191,7 @@ export function ControlButtonsMinimal() {
         onClick={viewModel.canPause ? session.pause : session.resume}
         className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         aria-label={viewModel.canPause ? t('controls.pause', 'Pause') : t('controls.resume', 'Resume')}
+        data-testid="pause-resume-button"
       >
         {viewModel.canPause ? (
           <PauseIcon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
@@ -200,6 +203,7 @@ export function ControlButtonsMinimal() {
         onClick={session.stop}
         className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
         aria-label={t('controls.stop', 'Stop')}
+        data-testid="stop-button"
       >
         <StopIcon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
       </button>
