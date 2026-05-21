@@ -17,6 +17,7 @@ import {
   createSession as vibemindCreateSession,
   uploadRecording as vibemindUpload,
   triggerTranscription as vibemindTranscribe,
+  startStatusPolling,
 } from '../services/VibeMindService'
 
 /**
@@ -60,6 +61,8 @@ interface SessionContextValue {
   // VibeMind upload status
   uploadStatus: 'idle' | 'uploading' | 'uploaded' | 'error'
   lastSessionId: string | null
+  transcriptReady: boolean
+  summaryReady: boolean
 }
 
 const SessionContext = createContext<SessionContextValue | null>(null)
@@ -96,6 +99,9 @@ export function SessionProvider({
   // VibeMind upload state
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'uploading' | 'uploaded' | 'error'>('idle')
   const [lastSessionId, setLastSessionId] = useState<string | null>(null)
+  const [transcriptReady, setTranscriptReady] = useState(false)
+  const [summaryReady, setSummaryReady] = useState(false)
+  const pollingCancelRef = useRef<(() => void) | null>(null)
   // Snapshot of the mode/participants active when the session started, for upload
   const sessionMetaRef = useRef<{
     modeId: string
@@ -182,6 +188,11 @@ export function SessionProvider({
             await vibemindUpload(session_id, blob, recorder.getPhaseMarkers())
             await vibemindTranscribe(session_id)
             setUploadStatus('uploaded')
+            const cancel = startStatusPolling(session_id, (data) => {
+              if (data.transcript_available) setTranscriptReady(true)
+              if (data.summary_available) setSummaryReady(true)
+            })
+            pollingCancelRef.current = cancel
           } catch {
             setUploadStatus('error')
           }
@@ -209,6 +220,12 @@ export function SessionProvider({
       }
       setUploadStatus('idle')
       setLastSessionId(null)
+      setTranscriptReady(false)
+      setSummaryReady(false)
+      if (pollingCancelRef.current) {
+        pollingCancelRef.current()
+        pollingCancelRef.current = null
+      }
     }
     return success
   }, [engine, persistenceService])
@@ -285,6 +302,8 @@ export function SessionProvider({
     toggleRecording,
     uploadStatus,
     lastSessionId,
+    transcriptReady,
+    summaryReady,
   }
 
   return (

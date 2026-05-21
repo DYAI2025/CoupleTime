@@ -56,6 +56,8 @@ export interface SessionDetailResponse {
   participant_name_a: string
   participant_name_b: string
   transcript: unknown | null
+  transcript_available: boolean
+  summary_available: boolean
   error: string | null
 }
 
@@ -126,6 +128,37 @@ export async function getSession(sessionId: string): Promise<SessionDetailRespon
     throw new Error(`getSession failed (${res.status}): ${text}`)
   }
   return res.json() as Promise<SessionDetailResponse>
+}
+
+/**
+ * Poll session status until done/error or max attempts reached.
+ * Returns a cancel function.
+ */
+export function startStatusPolling(
+  sessionId: string,
+  onUpdate: (response: SessionDetailResponse) => void,
+  intervalMs = 5000,
+  maxAttempts = 36,
+): () => void {
+  let attempts = 0
+  let cancelled = false
+
+  const tick = async () => {
+    if (cancelled) return
+    try {
+      const data = await getSession(sessionId)
+      if (cancelled) return
+      onUpdate(data)
+      attempts++
+      if (data.status === 'done' || data.status === 'error' || attempts >= maxAttempts) return
+      setTimeout(tick, intervalMs)
+    } catch {
+      if (!cancelled) setTimeout(tick, intervalMs)
+    }
+  }
+
+  setTimeout(tick, intervalMs)
+  return () => { cancelled = true }
 }
 
 /**
