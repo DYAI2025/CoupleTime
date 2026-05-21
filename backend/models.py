@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field
 class PhaseMarker(BaseModel):
     phaseType: str
     elapsedSeconds: float
-    timestamp: int  # epoch ms from frontend Date.now()
+    timestamp: int | None = None  # epoch ms from frontend Date.now(); optional for test/stub uploads
 
 
 # ---------------------------------------------------------------------------

@@ -6,7 +6,7 @@ import json
 import os
 from datetime import datetime, timezone
 
-from fastapi import BackgroundTasks, FastAPI, HTTPException, UploadFile
+from fastapi import BackgroundTasks, FastAPI, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse, RedirectResponse
 
@@ -86,7 +86,7 @@ def create_session(body: SessionCreateRequest) -> SessionCreateResponse:
 async def upload_recording(
     session_id: str,
     audio: UploadFile,
-    phases: str,
+    phases: str = Form(...),
 ) -> UploadResponse:
     """Receive the audio file and phase markers.
 
@@ -145,7 +145,7 @@ def get_session(session_id: str) -> SessionDetailResponse:
     )
 
 
-@app.post("/sessions/{session_id}/transcribe", response_model=TranscribeResponse)
+@app.post("/sessions/{session_id}/transcribe", response_model=TranscribeResponse, status_code=202)
 def trigger_transcription(
     session_id: str,
     background_tasks: BackgroundTasks,
@@ -179,14 +179,14 @@ def trigger_transcription(
     )
 
 
-@app.get("/sessions/{session_id}/transcript.md", response_class=PlainTextResponse)
-def get_transcript_md(session_id: str) -> str:
+@app.get("/sessions/{session_id}/transcript.md")
+def get_transcript_md(session_id: str) -> PlainTextResponse:
     """Return the formatted Markdown transcript."""
     _get_or_404(session_id)
     content = session_store.load_transcript_md(session_id)
     if content is None:
         raise HTTPException(status_code=404, detail="Transcript not yet available")
-    return content
+    return PlainTextResponse(content, media_type="text/markdown")
 
 
 @app.get("/sessions/{session_id}/summary.md", response_class=PlainTextResponse)
