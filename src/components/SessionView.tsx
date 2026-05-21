@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSession, useSessionViewModel } from '../contexts/SessionContext'
-import { isVibeMindEnabled } from '../services/VibeMindService'
+import { isVibeMindEnabled, getTranscriptMdUrl, getSummaryMdUrl } from '../services/VibeMindService'
 import type { SessionMode } from '../domain/SessionMode'
 import { TimerDisplay } from './TimerDisplay'
 import { PhaseIndicator } from './PhaseIndicator'
@@ -274,7 +274,7 @@ function ActiveSessionView() {
 function FinishedSessionView({ onRestart }: { onRestart: () => void }) {
   const { t } = useTranslation()
   const viewModel = useSessionViewModel()
-  const { stop, uploadStatus } = useSession()
+  const { stop, uploadStatus, lastSessionId } = useSession()
 
   const handleNewSession = () => {
     stop()
@@ -331,9 +331,36 @@ function FinishedSessionView({ onRestart }: { onRestart: () => void }) {
               </div>
             )}
             {uploadStatus === 'uploaded' && (
-              <div className="flex items-center justify-center gap-2 text-sm text-emerald-600 dark:text-emerald-400">
-                <CheckCircleIcon className="w-4 h-4" />
-                <span>Session saved — transcript processing</span>
+              <div className="space-y-2">
+                <div className="flex items-center justify-center gap-2 text-sm text-emerald-600 dark:text-emerald-400">
+                  <CheckCircleIcon className="w-4 h-4" />
+                  <span>Session saved — transcript processing</span>
+                </div>
+                {lastSessionId && (
+                  <div className="flex flex-col gap-2 pt-2">
+                    <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
+                      {t('session.finished.transcriptNote', 'Links become available once processing completes (~1–2 min)')}
+                    </p>
+                    <div className="flex gap-2 justify-center">
+                      <a
+                        href={getTranscriptMdUrl(lastSessionId) ?? '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                      >
+                        {t('session.finished.viewTranscript', 'View transcript')}
+                      </a>
+                      <a
+                        href={getSummaryMdUrl(lastSessionId) ?? '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+                      >
+                        {t('session.finished.viewSummary', 'View summary')}
+                      </a>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
             {uploadStatus === 'error' && (

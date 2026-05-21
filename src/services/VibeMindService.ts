@@ -127,3 +127,23 @@ export async function getSession(sessionId: string): Promise<SessionDetailRespon
   }
   return res.json() as Promise<SessionDetailResponse>
 }
+
+/**
+ * Construct the direct URL to a session's transcript markdown.
+ * Returns null when VibeMind is not configured.
+ */
+export function getTranscriptMdUrl(sessionId: string): string | null {
+  const base = _base()
+  if (!base) return null
+  return `${base}/sessions/${sessionId}/transcript.md`
+}
+
+/**
+ * Construct the direct URL to a session's summary markdown.
+ * Returns null when VibeMind is not configured.
+ */
+export function getSummaryMdUrl(sessionId: string): string | null {
+  const base = _base()
+  if (!base) return null
+  return `${base}/sessions/${sessionId}/summary.md`
+}

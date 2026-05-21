@@ -50,7 +50,10 @@
       "message": "Gut gemacht! Ihr habt eure Gesprächssitzung erfolgreich beendet.",
       "mode": "Modus",
       "duration": "Dauer",
-      "newSession": "Neue Sitzung starten"
+      "newSession": "Neue Sitzung starten",
+      "viewTranscript": "Transkript öffnen",
+      "viewSummary": "Zusammenfassung öffnen",
+      "transcriptNote": "Links werden verfügbar sobald die Verarbeitung abgeschlossen ist (~1–2 Min.)"
     },
     "setup": {
       "title": "Sitzungseinrichtung",

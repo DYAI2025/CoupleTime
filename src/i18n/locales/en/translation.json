@@ -50,7 +50,10 @@
       "message": "Great job completing your conversation session.",
       "mode": "Mode",
       "duration": "Duration",
-      "newSession": "Start New Session"
+      "newSession": "Start New Session",
+      "viewTranscript": "View transcript",
+      "viewSummary": "View summary",
+      "transcriptNote": "Links become available once processing completes (~1–2 min)"
     },
     "setup": {
       "title": "Session Setup",
