@@ -150,8 +150,8 @@ describe('SessionMode.presets', () => {
   })
 
   describe('PRESET_MODES', () => {
-    it('contains all 3 presets', () => {
-      expect(PRESET_MODES).toHaveLength(3)
+    it('contains all 4 presets', () => {
+      expect(PRESET_MODES).toHaveLength(4)
       expect(PRESET_MODES).toContain(MAINTAIN_MODE)
       expect(PRESET_MODES).toContain(COMMITMENT_MODE)
       expect(PRESET_MODES).toContain(LISTENING_MODE)

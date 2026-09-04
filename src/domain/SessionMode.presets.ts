@@ -103,12 +103,43 @@ export const LISTENING_MODE: SessionMode = {
 }
 
 /**
+ * CoupleCare Mode - Regelmäßige Paar-Retrospektive mit rotierenden Themen
+ * ~45 Minuten, 2 Runden x 10 min + 1 Runde x 8 min, GuidanceLevel: High (falls vorhanden, sonst das hochste verfugbare)
+ */
+function createCoupleCarePhases(): PhaseConfig[] {
+  return [
+    createPhaseConfig(PhaseType.Prep, 120, 'couplecare-prep'),
+    createPhaseConfig(PhaseType.SlotA, 600, 'couplecare-slotA-1'),
+    createPhaseConfig(PhaseType.SlotB, 600, 'couplecare-slotB-1'),
+    createPhaseConfig(PhaseType.Transition, 60, 'couplecare-transition-1'),
+    createPhaseConfig(PhaseType.SlotA, 600, 'couplecare-slotA-2'),
+    createPhaseConfig(PhaseType.SlotB, 600, 'couplecare-slotB-2'),
+    createPhaseConfig(PhaseType.Transition, 60, 'couplecare-transition-2'),
+    createPhaseConfig(PhaseType.SlotA, 480, 'couplecare-slotA-3'),
+    createPhaseConfig(PhaseType.SlotB, 480, 'couplecare-slotB-3'),
+    createPhaseConfig(PhaseType.ClosingA, 120, 'couplecare-closingA'),
+    createPhaseConfig(PhaseType.ClosingB, 120, 'couplecare-closingB'),
+    createPhaseConfig(PhaseType.Cooldown, 300, 'couplecare-cooldown'),
+  ]
+}
+
+export const COUPLECARE_MODE: SessionMode = {
+  id: 'couplecare',
+  name: 'modes.couplecare.name',
+  description: 'modes.couplecare.description',
+  phases: createCoupleCarePhases(),
+  guidanceLevel: GuidanceLevel.High, // oder hochstes verfugbares Level
+  isLocked: true,
+}
+
+/**
  * All preset modes
  */
 export const PRESET_MODES: SessionMode[] = [
   MAINTAIN_MODE,
   COMMITMENT_MODE,
   LISTENING_MODE,
+  COUPLECARE_MODE,
 ]
 
 /**

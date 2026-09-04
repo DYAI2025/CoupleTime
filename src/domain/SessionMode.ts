@@ -31,7 +31,7 @@ export interface SessionMode {
 /**
  * Mode type identifier for presets
  */
-export type PresetModeId = 'maintain' | 'commitment' | 'listening'
+export type PresetModeId = 'maintain' | 'commitment' | 'listening' | 'couplecare'
 
 /**
  * Check if a session mode has at least one slotA phase
