@@ -12,6 +12,12 @@ import { AudioEvent } from './AudioEvent'
 import { AudioServiceProtocol } from '../services/AudioService'
 import { TimerServiceProtocol, TimerCallback } from '../services/TimerService'
 import { GuidanceServiceProtocol } from '../services/GuidanceService'
+import { selectThemeForSession } from './RetroTheme'
+import {
+  getCoupleCareSessionCount,
+  incrementCoupleCareSessionCount,
+} from '../services/CoupleCareRotationService'
+import { getCoupleCareTipKeys, CoupleCareSlot } from '../services/CoupleCareGuidance'
 
 /**
  * Callback for state changes
@@ -96,6 +102,11 @@ export class SessionEngine {
       participantConfig: participantConfig ?? null,
     }
     this.phaseStartElapsed = 0
+
+    // CoupleCare: count this session for theme rotation (once per start)
+    if (mode.id === 'couplecare') {
+      incrementCoupleCareSessionCount()
+    }
 
     // Enable and play start audio
     await this.audioService.enable()
@@ -308,6 +319,24 @@ export class SessionEngine {
   getTips(): string[] {
     const currentPhase = getCurrentPhase(this.state)
     if (!currentPhase || !this.state.mode) return []
+
+    // CoupleCare: themed impulse questions during speaking slots
+    if (this.state.mode.id === 'couplecare') {
+      if (currentPhase.type === PhaseType.SlotA || currentPhase.type === PhaseType.SlotB) {
+        const sessionIndex = getCoupleCareSessionCount()
+        const theme = selectThemeForSession(sessionIndex - 1)
+        // 1-based count of slotA phases up to and including the current phase
+        const round = this.state.mode.phases
+          .slice(0, this.state.currentPhaseIndex + 1)
+          .filter((p) => p.type === PhaseType.SlotA).length
+        return getCoupleCareTipKeys(theme.id, round, currentPhase.type as CoupleCareSlot)
+      }
+      // prep/transition/closing/cooldown keep normal guidance tips
+      return this.guidanceService.getTipsForPhase(
+        currentPhase.type,
+        this.state.mode.guidanceLevel
+      )
+    }
 
     return this.guidanceService.getTipsForPhase(
       currentPhase.type,

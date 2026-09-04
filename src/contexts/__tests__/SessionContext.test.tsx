@@ -56,7 +56,7 @@ describe('SessionContext', () => {
     it('provides preset modes', () => {
       const { result } = renderHook(() => useSession(), { wrapper })
 
-      expect(result.current.presets).toHaveLength(3)
+      expect(result.current.presets).toHaveLength(4) // 3 classic presets + couplecare
       expect(result.current.presets).toContain(MAINTAIN_MODE)
       expect(result.current.presets).toContain(COMMITMENT_MODE)
       expect(result.current.presets).toContain(LISTENING_MODE)
@@ -235,7 +235,7 @@ describe('SessionContext', () => {
 
       const { result } = renderHook(() => useAvailableModes(), { wrapper: customWrapper })
 
-      expect(result.current).toHaveLength(4) // 3 presets + 1 custom
+      expect(result.current).toHaveLength(5) // 4 presets + 1 custom
     })
   })
 

@@ -123,7 +123,12 @@ export function createSessionViewModel(state: SessionState, participantConfig?: 
     canStop: state.status === SessionStatus.Running || state.status === SessionStatus.Paused,
 
     // Guidance info
-    showGuidanceTips: state.mode && currentPhase ? shouldShowTips(currentPhase.type, state.mode.guidanceLevel) : false,
+    showGuidanceTips:
+      state.mode && currentPhase
+        ? shouldShowTips(currentPhase.type, state.mode.guidanceLevel) ||
+          (state.mode.id === 'couplecare' &&
+            (currentPhase.type === PhaseType.SlotA || currentPhase.type === PhaseType.SlotB))
+        : false,
 
     // Participant personalization
     participantNameA: config.nameA,

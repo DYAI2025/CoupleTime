@@ -20,6 +20,10 @@
     "listening": {
       "name": "Listening",
       "description": "Shorter sessions focused on mindful listening"
+    },
+    "couplecare": {
+      "name": "CoupleCare",
+      "description": "Weekly couple retrospective with rotating themes"
     }
   },
   "phases": {
@@ -390,6 +394,232 @@
       "subtitle": "We recommend starting with Listening Mode for your first conversation.",
       "recommended": "Recommended",
       "note": "Select a mode, then click \"Start Session\" to begin your first conversation."
+    }
+  },
+  "couplecare": {
+    "themes": {
+      "appreciation": "Appreciation",
+      "everyday-load": "Everyday load",
+      "wishes": "Wishes & longings",
+      "repair": "Repair & forgiveness",
+      "future": "Shared future",
+      "boundaries": "Boundaries & space"
+    },
+    "appreciation": {
+      "slotA": {
+        "r1": {
+          "1": "What did you enjoy about me this week – a small moment you like to remember?",
+          "2": "Is there something I did this week that deserves a bit of praise? Tell me about it.",
+          "3": "Which day of this week was your favorite – and what made it special?"
+        },
+        "r2": {
+          "1": "How does appreciation reach you most clearly – through words, gestures, time, or something else?",
+          "2": "Was there a moment this week when you wished for more recognition?",
+          "3": "Where is it easy for you to show me gratitude, and where is it harder?"
+        },
+        "r3": {
+          "1": "Is there something about you that you wish I would notice and value more often?",
+          "2": "When does appreciation from me feel less than genuine – and what would need to change?",
+          "3": "Which part of you feels especially precious to you that I rarely mention?"
+        }
+      },
+      "slotB": {
+        "r1": {
+          "1": "When did you feel seen or understood by me this week?",
+          "2": "Which compliment from this week has stayed with you – from anyone at all?",
+          "3": "What would you like to say out loud right now about what you love about us?"
+        },
+        "r2": {
+          "1": "Honestly: how well did I show this week that I cherish you?",
+          "2": "What sometimes keeps you from telling me what you like about me in everyday life?",
+          "3": "If we introduced a small ritual of gratitude – what would it look like?"
+        },
+        "r3": {
+          "1": "When was it last hard for you to accept a thank-you from me – and how did that feel?",
+          "2": "Were there times in our relationship when you felt less appreciated? What has changed since?",
+          "3": "How would you like to be appreciated by me exactly as you are – not as you should be?"
+        }
+      }
+    },
+    "everyday-load": {
+      "slotA": {
+        "r1": {
+          "1": "What was your biggest everyday strain this week – and how did you handle it?",
+          "2": "Which small chore or duty is annoying you the most right now?",
+          "3": "Was there a moment when you thought: “I could use a hand right now”?"
+        },
+        "r2": {
+          "1": "How did we make everyday life easier for each other this week – or harder?",
+          "2": "Does the way our tasks are divided feel right to you?",
+          "3": "What would ease this week for you the most, even if it is something small?"
+        },
+        "r3": {
+          "1": "Is there a load you have carried for a long time that we have never really talked about?",
+          "2": "What makes it hard for you to ask for relief before it becomes too much?",
+          "3": "If we could put down one of your burdens for good – which one would it be?"
+        }
+      },
+      "slotB": {
+        "r1": {
+          "1": "What did everyday life throw at you this week without any warning?",
+          "2": "Where did you feel this week that you were carrying something alone?",
+          "3": "Which daily routine helps you best get through the week?"
+        },
+        "r2": {
+          "1": "Where do we notice too little what the other one is carrying?",
+          "2": "How does the pace of the last few weeks feel to you – too fast, too slow, about right?",
+          "3": "Which burden do you quietly carry because you believe it is only yours?"
+        },
+        "r3": {
+          "1": "When did you last feel completely exhausted and hide it anyway?",
+          "2": "Which everyday worry weighs on you, even if it may be unlikely?",
+          "3": "What would it take for you to confide in me when everything feels like too much?"
+        }
+      }
+    },
+    "wishes": {
+      "slotA": {
+        "r1": {
+          "1": "What did you wish for this week that you did not get – no matter how small?",
+          "2": "If you had a free day tomorrow: would you spend it alone or with me – and how?",
+          "3": "What would you still like to experience together with me this week?"
+        },
+        "r2": {
+          "1": "Which longing has accompanied you for a while – in our life together or within yourself?",
+          "2": "How have your wishes for us changed since we have been together?",
+          "3": "How do you recognize that a wish of yours truly matters?"
+        },
+        "r3": {
+          "1": "What do you wish for from us – or from yourself – so deeply that you almost never say it?",
+          "2": "Is there a dream you gave up on? Would you like to talk about it?",
+          "3": "If anything were possible: what would a day look like after which you would say you received everything you need?"
+        }
+      },
+      "slotB": {
+        "r1": {
+          "1": "Which wish is very present for you right now, even if it seems out of reach?",
+          "2": "Is there something you are secretly looking forward to – and what is it?",
+          "3": "If you could pick one thing for our tomorrow – what would it be?"
+        },
+        "r2": {
+          "1": "Which of your wishes has gotten too little room in our everyday life so far?",
+          "2": "How would you like to feel about us in five years – and what would that take?",
+          "3": "Is there a wish you prefer to keep to yourself? Would you like to share it anyway?"
+        },
+        "r3": {
+          "1": "What do you fear when you think about speaking your deeper wishes out loud?",
+          "2": "Which of your longings is about our relationship – and which is not?",
+          "3": "What would you like to be allowed in our relationship, even though you have not dared it so far?"
+        }
+      }
+    },
+    "repair": {
+      "slotA": {
+        "r1": {
+          "1": "Was there a moment this week when we talked past each other – and how did we find our way back to each other?",
+          "2": "How do you notice in yourself that a misunderstanding needs clearing up?",
+          "3": "What helps you fastest when something feels tense between us?"
+        },
+        "r2": {
+          "1": "What does reconciliation look like between us – and which role do I play in it, which one do you?",
+          "2": "Is there something you have recently wanted to apologize to me for?",
+          "3": "What do you do when you sense that I am not ready to clear things up yet?"
+        },
+        "r3": {
+          "1": "Is there something older between us that you have forgiven – or would still like to forgive?",
+          "2": "What does reconciliation do to you – and what does it need from me to feel real?",
+          "3": "Which old argument would you like to have differently, if it were possible?"
+        }
+      },
+      "slotB": {
+        "r1": {
+          "1": "Is there something small from this week still standing between us that you would like to bring up?",
+          "2": "How do I show you – perhaps unintentionally – that something is still unresolved?",
+          "3": "What does us the most good after an argument?"
+        },
+        "r2": {
+          "1": "How do you feel when I apologize to you – is it easy for you to accept?",
+          "2": "What does an apology from me need so that it truly reaches you?",
+          "3": "Is there a topic where we keep sliding into the same conflict?"
+        },
+        "r3": {
+          "1": "Is there something where you feel you have not fully let go, even though it seemed settled?",
+          "2": "What makes forgiving hardest for you – and what might help?",
+          "3": "Being completely honest: what do you need from me to feel safe with us again?"
+        }
+      }
+    },
+    "future": {
+      "slotA": {
+        "r1": {
+          "1": "Which shared plan are you looking forward to next – and what exactly about it?",
+          "2": "What have we talked about lately that you would like to take on?",
+          "3": "What would be a lovely next step for the two of us?"
+        },
+        "r2": {
+          "1": "What belongs to a good shared life for you – beyond plans and appointments?",
+          "2": "How do we handle wishes where we do not see eye to eye?",
+          "3": "Which part of our future do we shape deliberately – and where are we drifting?"
+        },
+        "r3": {
+          "1": "Which question about our shared future occupies you the most right now – and do you let it in?",
+          "2": "What would you like to be able to say about our life today in ten years?",
+          "3": "Is there something you fear about our future? Would you like to say it here?"
+        }
+      },
+      "slotB": {
+        "r1": {
+          "1": "Where do you see us in a year – in broad strokes?",
+          "2": "Is there something you are quietly already preparing for our future?",
+          "3": "What would you like to be able to look back on a year from now and say?"
+        },
+        "r2": {
+          "1": "Which shared goal gives you strength right now – and which one rather drains you?",
+          "2": "How important are reliability and planning to you – and how much surprise does your life need?",
+          "3": "What would you like to do consciously differently in our future than in your past?"
+        },
+        "r3": {
+          "1": "When you think of growing old together: how would you like us to treat each other then?",
+          "2": "Which values should guide our decisions – and where do we already live them today?",
+          "3": "What does our relationship need so that it keeps growing over many years?"
+        }
+      }
+    },
+    "boundaries": {
+      "slotA": {
+        "r1": {
+          "1": "How much space for yourself did you have this week – enough, too little, just right?",
+          "2": "Is there something you did not say this week because you were being considerate?",
+          "3": "What is your favorite moment to yourself – and how often does it fit into your day?"
+        },
+        "r2": {
+          "1": "Where might our boundaries have quietly blurred lately – to both of our disadvantage?",
+          "2": "What makes it hard for you to put your boundaries into words with me?",
+          "3": "How do I notice that you feel a boundary has been crossed – and how would you like to show me?"
+        },
+        "r3": {
+          "1": "Is there a boundary you have not voiced for a long time because you wanted to keep the peace?",
+          "2": "What do you fear when you think of saying “no” more clearly in our relationship?",
+          "3": "How may I support you when you feel squeezed between me and yourself?"
+        }
+      },
+      "slotB": {
+        "r1": {
+          "1": "When did you set a boundary well lately – and when hardly at all?",
+          "2": "What do you need to feel safe enough with me to say “no”?",
+          "3": "How do you feel when I need time just for myself?"
+        },
+        "r2": {
+          "1": "Which boundary of yours would you like to live more clearly – and what holds you back?",
+          "2": "How can we give each other more room without either of us feeling left behind?",
+          "3": "Were there moments when you felt my boundaries – how did you handle them?"
+        },
+        "r3": {
+          "1": "Were there times in your life when your boundaries mattered little? What did that do to you?",
+          "2": "What would a togetherness look like in which both of us remain fully ourselves?",
+          "3": "If you could voice one boundary right now without anything shifting – which one would it be?"
+        }
+      }
     }
   }
 }

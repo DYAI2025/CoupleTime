@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback, use
 import { SessionEngine } from '../domain/SessionEngine'
 import { SessionState, createInitialState } from '../domain/SessionState'
 import { SessionMode } from '../domain/SessionMode'
-import { MAINTAIN_MODE, COMMITMENT_MODE, LISTENING_MODE } from '../domain/SessionMode.presets'
+import { PRESET_MODES } from '../domain/SessionMode.presets'
 import { SessionViewModel, createSessionViewModel } from '../viewmodels/SessionViewModel'
 import { AudioService, AudioServiceProtocol } from '../services/AudioService'
 import { TimerService, TimerServiceProtocol } from '../services/TimerService'
@@ -268,11 +268,7 @@ export function SessionProvider({
   }, [persistenceService])
 
   // Presets
-  const presets = useMemo(() => [
-    MAINTAIN_MODE,
-    COMMITMENT_MODE,
-    LISTENING_MODE,
-  ], [])
+  const presets = PRESET_MODES
 
   // View model
   const viewModel = useMemo(() => createSessionViewModel(state, participantConfig), [state, participantConfig])
