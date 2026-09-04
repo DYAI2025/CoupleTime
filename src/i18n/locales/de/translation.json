@@ -20,6 +20,10 @@
     "listening": {
       "name": "Zuhören",
       "description": "Kürzere Sitzungen mit Fokus auf achtsames Zuhören"
+    },
+    "couplecare": {
+      "name": "CoupleCare",
+      "description": "Wöchentliche Paar-Retrospektive mit wechselnden Themen"
     }
   },
   "phases": {
@@ -390,6 +394,232 @@
       "subtitle": "Wir empfehlen, für dein erstes Gespräch mit dem Zuhör-Modus zu beginnen.",
       "recommended": "Empfohlen",
       "note": "Wähle einen Modus und klicke dann auf \"Sitzung starten\" um dein erstes Gespräch zu beginnen."
+    }
+  },
+  "couplecare": {
+    "themes": {
+      "appreciation": "Wertschätzung",
+      "everyday-load": "Alltagsbelastung",
+      "wishes": "Wünsche & Sehnsüchte",
+      "repair": "Reparatur & Verzeihen",
+      "future": "Gemeinsame Zukunft",
+      "boundaries": "Grenzen & Raum"
+    },
+    "appreciation": {
+      "slotA": {
+        "r1": {
+          "1": "Was hat dir in dieser Woche an mir gut gefallen – ein kleiner Moment, an den du dich gerne erinnerst?",
+          "2": "Gibt es etwas, das ich diese Woche getan habe, wofür ich mir selbst ein Lob gönnen würde? Erzähl mir davon.",
+          "3": "Welcher Tag dieser Woche war dein Lieblingstag – und was hat ihn besonders gemacht?"
+        },
+        "r2": {
+          "1": "Wie erreicht dich Wertschätzung am deutlichsten – durch Worte, Gesten, Zeit oder etwas anderes?",
+          "2": "Gab es in dieser Woche einen Moment, in dem du dir mehr Anerkennung gewünscht hättest?",
+          "3": "Wobei fällt es dir leicht, mir Dankbarkeit zu zeigen, und wo eher schwer?"
+        },
+        "r3": {
+          "1": "Gibt es etwas an dir, das du dir wünschst, würde ich es häufiger sehen und wertschätzen?",
+          "2": "Wann fühlt sich Wertschätzung von mir nicht ganz echt an – und was müsste anders sein?",
+          "3": "Welchen Anteil an dir findest du besonders kostbar, den ich vielleicht zu selten erwähne?"
+        }
+      },
+      "slotB": {
+        "r1": {
+          "1": "Wann hast du dich in dieser Woche von mir gesehen oder verstanden gefühlt?",
+          "2": "Welches Kompliment dieser Woche ist dir hängengeblieben – von wem auch immer?",
+          "3": "Was möchtest du an dieser Stelle einfach mal laut sagen, was dir an uns gefällt?"
+        },
+        "r2": {
+          "1": "Wie gut habe ich diese Woche gezeigt, dass ich dich schätze – ehrlich gefragt?",
+          "2": "Was nimmt dir im Alltag manchmal die Muße, mir zu sagen, was du an mir magst?",
+          "3": "Wenn wir ein kleines Ritual der Dankbarkeit einführen würden – wie sähe es aus?"
+        },
+        "r3": {
+          "1": "Wann war es zuletzt schwer für dich, einen Dank von mir anzunehmen – und wie ging es dir dabei?",
+          "2": "Gab es Zeiten in unserer Beziehung, in denen du dich weniger geschätzt gefühlt hast? Was hat sich seitdem verändert?",
+          "3": "Wie möchtest du von mir geschätzt werden, ganz so wie du bist – nicht so, wie du sein solltest?"
+        }
+      }
+    },
+    "everyday-load": {
+      "slotA": {
+        "r1": {
+          "1": "Was war diese Woche dein größter Kraftakt im Alltag – und wie bist du damit umgegangen?",
+          "2": "Welche kleine Aufgabe oder Pflicht nervt dich gerade am meisten?",
+          "3": "Gab es einen Moment, in dem du dachtest: „Jetzt bräuchte ich kurz Unterstützung“?"
+        },
+        "r2": {
+          "1": "Wie haben wir uns diese Woche den Alltag gegenseitig erleichtert – oder erschwert?",
+          "2": "Verteilen sich unsere Aufgaben so, wie es sich für dich stimmig anfühlt?",
+          "3": "Was würde dir diese Woche am meisten erleichtern, auch wenn es nur eine Kleinigkeit ist?"
+        },
+        "r3": {
+          "1": "Gibt es eine Last, die du schon lange mit dir trägst und über die wir noch nie richtig gesprochen haben?",
+          "2": "Was macht es dir schwer, um Entlastung zu bitten, bevor es zu viel wird?",
+          "3": "Wenn wir eine Last von dir für immer ablegen könnten – welche wäre das?"
+        }
+      },
+      "slotB": {
+        "r1": {
+          "1": "Was hat dir der Alltag diese Woche ohne Vorwarnung zugeworfen?",
+          "2": "Wobei hattest du in dieser Woche das Gefühl, du trägst es allein?",
+          "3": "Welche Alltagsroutine hilft dir am besten, gut durch die Woche zu kommen?"
+        },
+        "r2": {
+          "1": "Wo nehmen wir uns gegenseitig zu wenig ab, was der andere gerade stemmt?",
+          "2": "Wie geht es dir mit dem Tempo der letzten Wochen – zu schnell, zu langsam, passend?",
+          "3": "Welche Belastung trägst du still, weil du glaubst, sie betreffe nur dich?"
+        },
+        "r3": {
+          "1": "Wann hast du dich zuletzt komplett erschöpft gefühlt und es trotzdem verborgen?",
+          "2": "Welche Sorge im Alltag belastet dich, auch wenn sie vielleicht unwahrscheinlich ist?",
+          "3": "Was braucht es, damit du mir anvertraust, wenn dir alles zu viel wird?"
+        }
+      }
+    },
+    "wishes": {
+      "slotA": {
+        "r1": {
+          "1": "Was hast du dir in dieser Woche gewünscht, das du nicht bekommen hast – egal wie klein?",
+          "2": "Wenn du morgen einen freien Tag hättest: Würdest du ihn allein oder mit mir verbringen – und wie?",
+          "3": "Was möchtest du diese Woche noch gemeinsam mit mir erleben?"
+        },
+        "r2": {
+          "1": "Welche Sehnsucht begleitet dich schon länger – in unserem Leben oder in dir selbst?",
+          "2": "Wie hat sich verändert, was du dir von uns wünschst, seit wir zusammen sind?",
+          "3": "Woran erkennst du, dass ein Wunsch von dir wirklich wichtig ist?"
+        },
+        "r3": {
+          "1": "Was wünschst du dir von uns – oder von dir – so tief, dass du es fast nie aussprichst?",
+          "2": "Gibt es einen Traum, den du aufgegeben hast? Magst du davon erzählen?",
+          "3": "Wenn alles möglich wäre: Wie würde ein Tag aussehen, nach dem du sagen würdest, du hast alles bekommen, was du brauchst?"
+        }
+      },
+      "slotB": {
+        "r1": {
+          "1": "Welcher Wunsch ist dir gerade sehr präsent, auch wenn er gerade unerreichbar wirkt?",
+          "2": "Gibt es etwas, auf das du dich heimlich schon freust – und worauf?",
+          "3": "Wenn du dir für unser Morgen etwas aussuchen dürftest – was wäre das?"
+        },
+        "r2": {
+          "1": "Welcher deiner Wünsche hat in unserem Alltag bisher zu wenig Platz bekommen?",
+          "2": "Wie möchtest du dich in fünf Jahren von uns fühlen – und was braucht es dafür?",
+          "3": "Gibt es einen Wunsch, den du lieber für dich behältst? Magst du ihn trotzdem teilen?"
+        },
+        "r3": {
+          "1": "Was fürchtest du, wenn du daran denkst, deine tieferen Wünsche offen auszusprechen?",
+          "2": "Welche deiner Sehnsüchte hat mit unserer Beziehung zu tun – und welche eher nicht?",
+          "3": "Wovon wünschst du dir, dass es in unserer Beziehung erlaubt ist, obwohl du es bisher nicht gewagt hast?"
+        }
+      }
+    },
+    "repair": {
+      "slotA": {
+        "r1": {
+          "1": "Gab es diese Woche einen Moment, in dem wir aneinander vorbeigeredet haben – und wie haben wir uns wieder gefunden?",
+          "2": "Wie merkst du bei dir, dass ein Missverständnis geklärt werden will?",
+          "3": "Was hilft dir am schnellsten, wenn zwischen uns etwas spannt?"
+        },
+        "r2": {
+          "1": "Wie sieht Versöhnung bei uns aus – und welche Rolle spiele ich dabei, welche du?",
+          "2": "Gibt es etwas, wofür du dich in letzter Zeit bei mir entschuldigen wolltest?",
+          "3": "Was machst du, wenn du spürst, dass ich noch nicht bereit bin, es zu klären?"
+        },
+        "r3": {
+          "1": "Gibt es etwas Älteres zwischen uns, das du verziehen hast – oder noch verzeihen möchtest?",
+          "2": "Was macht Versöhnung mit dir – und was braucht sie von mir, um echt zu sein?",
+          "3": "Welchen alten Streit würdest du gerne noch einmal anders führen, wenn es möglich wäre?"
+        }
+      },
+      "slotB": {
+        "r1": {
+          "1": "Gibt es etwas Kleines aus dieser Woche, das noch zwischen uns steht und das du ansprechen möchtest?",
+          "2": "Wie zeige ich dir – vielleicht unabsichtlich – dass etwas noch nicht geklärt ist?",
+          "3": "Was tut uns nach einem Streit am meisten gut?"
+        },
+        "r2": {
+          "1": "Wie geht es dir, wenn ich mich bei dir entschuldige – fällt dir das Annehmen leicht?",
+          "2": "Was braucht eine Entschuldigung von mir, damit sie bei dir wirklich ankommt?",
+          "3": "Gibt es ein Thema, bei dem wir immer wieder in denselben Konflikt rutschen?"
+        },
+        "r3": {
+          "1": "Gibt es etwas, bei dem du spürst, dass du es noch nicht losgelassen hast, obwohl es geklärt schien?",
+          "2": "Was macht dir das Verzeihen am schwersten – und was könnte helfen?",
+          "3": "Wenn du ganz ehrlich bist: Was brauchst du von mir, damit du dich bei uns wieder sicher fühlst?"
+        }
+      }
+    },
+    "future": {
+      "slotA": {
+        "r1": {
+          "1": "Auf welches gemeinsame Vorhaben freust du dich als Nächstes – und was genau daran?",
+          "2": "Wovon haben wir in letzter Zeit geredet, das du gerne angehen möchtest?",
+          "3": "Was wäre für dich ein schöner nächster Schritt für uns beide?"
+        },
+        "r2": {
+          "1": "Was gehört für dich zu einem guten gemeinsamen Leben – jenseits von Plänen und Terminen?",
+          "2": "Wie gehen wir mit Wünschen um, bei denen wir nicht einer Meinung sind?",
+          "3": "Welchen Teil unserer Zukunft gestalten wir bewusst – und wo treiben wir eher?"
+        },
+        "r3": {
+          "1": "Welche Frage über unsere gemeinsame Zukunft beschäftigt dich gerade am meisten – und lässt du sie zu?",
+          "2": "Was möchtest du in zehn Jahren über unser heutiges Leben sagen können?",
+          "3": "Gibt es etwas, das du für unsere Zukunft fürchtest? Magst du es hier aussprechen?"
+        }
+      },
+      "slotB": {
+        "r1": {
+          "1": "Wo siehst du uns in einem Jahr – in groben Zügen?",
+          "2": "Gibt es etwas, das du für unsere Zukunft schon still vorbereitest?",
+          "3": "Was möchtest du in einem Jahr an dieser Stelle zurückblicken und sagen können?"
+        },
+        "r2": {
+          "1": "Welches gemeinsame Ziel gibt dir gerade Kraft – und welches kostet eher?",
+          "2": "Wie wichtig sind dir Verlässlichkeit und Planung – und wie viel Überraschung braucht dein Leben?",
+          "3": "Was möchtest du in unserer Zukunft bewusst anders machen als in deiner Vergangenheit?"
+        },
+        "r3": {
+          "1": "Wenn du an ein gemeinsames Älterwerden denkst: Wie möchtest du dann mit mir umgehen?",
+          "2": "Welche Werte sollen unsere Entscheidungen künftig leiten – und wo leben wir sie schon heute?",
+          "3": "Was braucht unsere Beziehung, damit sie über viele Jahre weiterwächst?"
+        }
+      }
+    },
+    "boundaries": {
+      "slotA": {
+        "r1": {
+          "1": "Wie viel Raum für dich selbst hattest du diese Woche – genug, zu wenig, genau richtig?",
+          "2": "Gibt es etwas, das du diese Woche nicht gesagt hast, weil du Rücksicht genommen hast?",
+          "3": "Was ist dein Lieblingsmoment für dich allein – und wie oft passt er in deinen Alltag?"
+        },
+        "r2": {
+          "1": "Wo könnten unsere Grenzen in letzter Zeit unsichtbar verwischt haben – zu unser beider Nachteil?",
+          "2": "Was macht es dir schwer, deine Grenzen mir gegenüber in Worte zu fassen?",
+          "3": "Wie merke ich, dass du eine Grenze überschritten siehst – und wie würdest du es mir gerne zeigen?"
+        },
+        "r3": {
+          "1": "Gibt es eine Grenze, die du lange nicht ausgesprochen hast, weil du den Frieden bewahren wolltest?",
+          "2": "Was fürchtest du, wenn du daran denkst, in unserer Beziehung deutlicher „Nein“ zu sagen?",
+          "3": "Wie darf ich dich unterstützen, wenn du dich zwischen mir und dir selbst zerrieben fühlst?"
+        }
+      },
+      "slotB": {
+        "r1": {
+          "1": "Wann hast du dich in letzter Zeit gut abgegrenzt – und wann kaum?",
+          "2": "Was brauchst du, um dich sicher genug zu fühlen, mir gegenüber „Nein“ zu sagen?",
+          "3": "Wie geht es dir damit, wenn ich Zeit nur für mich brauche?"
+        },
+        "r2": {
+          "1": "Welche Grenze von dir möchtest du deutlicher leben – und was hält dich zurück?",
+          "2": "Wie können wir uns gegenseitig mehr Freiraum schenken, ohne dass sich jemand zurückgesetzt fühlt?",
+          "3": "Gab es Momente, in denen du meine Grenzen gespürt hast – wie bist du damit umgegangen?"
+        },
+        "r3": {
+          "1": "Gab es Zeiten in deinem Leben, in denen deine Grenzen wenig galten? Was hat das mit dir gemacht?",
+          "2": "Wie sieht für dich ein Miteinander aus, in dem beide ganz sich selbst bleiben?",
+          "3": "Wenn du jetzt eine Grenze aussprechen dürftest, ohne dass sich etwas verschiebt – welche wäre das?"
+        }
+      }
     }
   }
 }
